@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-			System.out.println("test code");
+			System.out.println("test code2");
 
 		Scanner sc = new Scanner(System.in);
 

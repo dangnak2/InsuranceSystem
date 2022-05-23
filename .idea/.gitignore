@@ -1,0 +1,17 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+misc.xml
+modules.xml
+vcs.xml
+workspace.xml
+InsuranceSystem.iml
+README.md
+boonsan0517.eml
+boonsan0517.iml
+boonsan_0515.iml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
