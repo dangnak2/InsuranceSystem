@@ -12,6 +12,8 @@ public class Insurance {
 	private Date modifiedDate;
 	private String name;
 	private int premium;
+	private int premiumRate;
+
 
 	public Insurance(){
 
@@ -82,4 +84,11 @@ public class Insurance {
 		this.authorization = authorization;
 	}
 
+	public int getPremiumRate() {
+		return premiumRate;
+	}
+
+	public void setPremiumRate(int premiumRate) {
+		this.premiumRate = premiumRate;
+	}
 }

@@ -1,11 +1,10 @@
-package Policyholder;
+package Customer;
 
 import Contract.Accident;
 
 import java.util.Date;
-import java.util.Scanner;
 
-public class Policyholder {
+public class Customer {
 
 	private Accident accident;
 	private String account;
@@ -22,9 +21,9 @@ public class Policyholder {
 	private Date joinDate;
 
 	private boolean testPay;
-	Scanner sc = new Scanner(System.in);
 
-	public Policyholder(){
+
+	public Customer(){
 
 	}
 

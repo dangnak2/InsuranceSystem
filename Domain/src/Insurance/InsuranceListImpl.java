@@ -47,4 +47,9 @@ public class InsuranceListImpl implements InsuranceList {
 		}
 		return null;
 	}
+
+	@Override
+	public int getSize() {
+		return this.insuranceList.size();
+	}
 }

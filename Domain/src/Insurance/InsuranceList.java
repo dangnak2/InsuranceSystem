@@ -16,5 +16,6 @@ public interface InsuranceList {
 	public Insurance get(int insuranceId);
 	//public void update();
 
+	public int getSize();
 
 }
