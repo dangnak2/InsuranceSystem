@@ -1,4 +1,4 @@
-package Policyholder;
+package Customer;
 
 
 
@@ -7,14 +7,15 @@ package Policyholder;
  * @version 1.0
  * @created 09-5-2022 ���� 4:51:10
  */
-public interface PolicyholderList {
+public interface CutomerList {
 
 
-	public boolean add(Policyholder policyholder);
+	public boolean add(Customer policyholder);
 
 	public boolean delete(int policyholderId);
 
-	public Policyholder get(int policyholderId);
+	public Customer get(int policyholderId);
 	//public void update();
 
+	public int getSize();
 }
