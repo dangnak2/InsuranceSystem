@@ -35,4 +35,9 @@ public class StaffListImpl implements StaffList{
         }
         return null;
     }
+
+    @Override
+    public void update() {
+
+    }
 }

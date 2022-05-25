@@ -1,12 +1,12 @@
 package Staff;
 
-import Contract.InsuranceContract;
-import Contract.InsuranceContractListImpl;
+import Contract.Contract;
+import Contract.ContractListImpl;
+import Customer.Customer;
+import Customer.CustomerListImpl;
+import Customer.MedicalHistory;
+import Customer.MedicalHistory.disease;
 import Insurance.Insurance;
-import Policyholder.MedicalHistory;
-import Policyholder.MedicalHistory.disease;
-import Policyholder.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -14,25 +14,24 @@ import java.util.Scanner;
 public class Sales extends Staff {
 
 	private int contractCount;
-	public InsuranceContract insuranceContract;
+	public Contract insuranceContract;
 	MedicalHistory medicalHistory;
-	Policyholder policyholder;
-	Scanner sc = new Scanner(System.in);
+	Customer customer;
 
 	public Sales(){
 
 	}
 
-	public void addContract(InsuranceContract insuranceContract){
+	public void addContract(Contract insuranceContract){
 
 	}
 
-	public void addPolicyholder(Policyholder policyHolder){
+	public void addPolicyholder(Customer policyHolder){
 
 	}
 
-	public boolean deleteContract(String selectContract, InsuranceContractListImpl insuranceContractList, InsuranceContractListImpl findContract){
-		InsuranceContract cancleContract = findContract.get(Integer.parseInt(selectContract));
+	public boolean deleteContract(String selectContract, ContractListImpl insuranceContractList, ContractListImpl findContract){
+		Contract cancleContract = findContract.get(Integer.parseInt(selectContract));
 
 		if (cancleContract != null) {
 			if (insuranceContractList.delete(cancleContract.getContractId())) {
@@ -46,10 +45,14 @@ public class Sales extends Staff {
 
 	}
 
-	public void findContratct(String id, String name, InsuranceContractListImpl insuranceContractList, InsuranceContractListImpl findContract){
-		for (InsuranceContract insuranceContract : insuranceContractList.getInsuranceContractList()) {
-			if (Integer.parseInt(id) == insuranceContract.getPolicyholder().getId()
-					&& name.equals(insuranceContract.getPolicyholder().getName())) {
+	public void findContract(String id, String name, ContractListImpl insuranceContractList, ContractListImpl findContract){
+		CustomerListImpl customerListImpl = new CustomerListImpl();
+
+
+		for (Contract insuranceContract : insuranceContractList.getContractList()) {
+			Customer customer = customerListImpl.get(insuranceContract.getCustomerId());
+			if (Integer.parseInt(id) == insuranceContract.getCustomerId()
+					&& name.equals(customer.getName())) {
 				findContract.add(insuranceContract);
 			}
 		}
@@ -59,20 +62,20 @@ public class Sales extends Staff {
 		return 0;
 	}
 
-	public int computePolicyholder(InsuranceContractListImpl insuranceContractList) {
+	public int computeCustomer(ContractListImpl insuranceContractList) {
 		ArrayList<Integer> check = new ArrayList<>();
 		int count = 0;
-		for (InsuranceContract insuranceContract : insuranceContractList.getInsuranceContractList()) {
+		for (Contract insuranceContract : insuranceContractList.getContractList()) {
 			if (!check.isEmpty()) {
 				for (Integer id : check) {
-					if (id == insuranceContract.getPolicyholder().getId()) {
+					if (id == insuranceContract.getCustomerId()) {
 						break;
 					}
 				}
-				check.add(insuranceContract.getPolicyholder().getId());
+				check.add(insuranceContract.getCustomerId());
 				count++;
 			} else {
-				check.add(insuranceContract.getPolicyholder().getId());
+				check.add(insuranceContract.getCustomerId());
 				count++;
 				continue;
 			}
@@ -80,33 +83,39 @@ public class Sales extends Staff {
 		return count;
 	}
 
-	public int computePayment(InsuranceContractListImpl insuranceContractList) {
+	public int computePayment(ContractListImpl insuranceContractList) {
 		int count = 0;
-		for (InsuranceContract insuranceContract : insuranceContractList.getInsuranceContractList()) {
-			if (!insuranceContract.getPolicyholder().isTestPay()) {
+		for (Contract insuranceContract : insuranceContractList.getContractList()) {
+			CustomerListImpl customerList = new CustomerListImpl();
+			Customer customer = customerList.get(insuranceContract.getCustomerId());
+			if (!customer.isTestPay()) {
 				count++;
 			}
 		}
 		return count;
 	}
 
-	public int computeThisMonthJoin(InsuranceContractListImpl insuranceContractList) {
+	public int computeThisMonthJoin(ContractListImpl insuranceContractList) {
 		Date date = new Date();
 		int count = 0;
-		for (InsuranceContract insuranceContract : insuranceContractList.getInsuranceContractList()) {
-			if (date.getMonth() == insuranceContract.getPolicyholder().getJoinDate().getMonth()) {
+		for (Contract insuranceContract : insuranceContractList.getContractList()) {
+			CustomerListImpl customerList = new CustomerListImpl();
+			Customer customer = customerList.get(insuranceContract.getCustomerId());
+			if (date.getMonth() == customer.getJoinDate().getMonth()) {
 				count++;
 			}
 		}
 		return count;
 	}
 
-	public void insuracePayment(InsuranceContractListImpl insuranceContractList) {
-		ArrayList<InsuranceContract> insuranceContracts = insuranceContractList.getInsuranceContractList();
+	public void insuracePayment(ContractListImpl insuranceContractList) {
+		ArrayList<Contract> insuranceContracts = insuranceContractList.getContractList();
 
-		for (InsuranceContract insuranceContract : insuranceContracts) {
-			if (!insuranceContract.getPolicyholder().isPay()) {
-				insuranceContract.getPolicyholder().setPay(true);
+		for (Contract insuranceContract : insuranceContracts) {
+			CustomerListImpl customerList = new CustomerListImpl();
+			Customer customer = customerList.get(insuranceContract.getCustomerId());
+			if (!customer.isPay()) {
+				customer.setPay(true);
 			}
 		}
 	}
@@ -117,19 +126,19 @@ public class Sales extends Staff {
 
 
 
-	public Policyholder joinPolicyholder(String name, String SSN, String sex, String email, String phoneNumber, String account, String address, String medicalName, String medicalYear, String medicalCure, PolicyholderListImpl policyholderList) {
-		Policyholder policyholder = new Policyholder();
-		policyholder.setName(name);
-		policyholder.setSSN(SSN);
+	public Customer joinCustomer(String name, String SSN, String sex, String email, String phoneNumber, String account, String address, String medicalName, String medicalYear, String medicalCure, CustomerListImpl customerList) {
+		Customer customer = new Customer();
+		customer.setName(name);
+		customer.setSSN(SSN);
 		if (sex.equals("1")) {
-			policyholder.setSex(true);
+			customer.setSex(true);
 		} else if (sex.equals("2")) {
-			policyholder.setSex(false);
+			customer.setSex(false);
 		}
-		policyholder.setEmail(email);
-		policyholder.setPhoneNumber(phoneNumber);
-		policyholder.setAccount(account);
-		policyholder.setAddress(address);
+		customer.setEmail(email);
+		customer.setPhoneNumber(phoneNumber);
+		customer.setAccount(account);
+		customer.setAddress(address);
 
 		MedicalHistory medicalHistory = new MedicalHistory();
 		switch (Integer.parseInt(medicalName)) {
@@ -151,19 +160,19 @@ public class Sales extends Staff {
 		} else if (medicalCure.equals("2")) {
 			medicalHistory.setCureComplete(false);
 		}
-		policyholder.setMedicalHistory(medicalHistory);
+		customer.setMedicalHistory(medicalHistory);
 
-		policyholderList.add(policyholder);
-		return policyholder;
+		customerList.add(customer);
+		return customer;
 	}
 
-	public void createContract(Policyholder policyholder, Insurance selectInsurance, InsuranceContractListImpl insuranceContractList) {
-		InsuranceContract insuranceContract = new InsuranceContract();
-		insuranceContract.setContractId(insuranceContractList.getInsuranceContractList().size() + 1);
-		insuranceContract.setInsurance(selectInsurance);
-		insuranceContract.setPolicyholder(policyholder);
-		insuranceContract.setSalesId(this.getId());
+	public void createContract(Customer customer, Insurance selectInsurance, ContractListImpl contractList) {
+		Contract contract = new Contract();
+		contract.setContractId(contractList.getContractList().size() + 1);
+		contract.setInsuranceId(selectInsurance.getId());
+		contract.setCustomerId(customer.getId());
+		contract.setSalesId(this.getId());
 
-		insuranceContractList.add(insuranceContract);
+		contractList.add(contract);
 	}
 }

@@ -1,4 +1,4 @@
-package Policyholder;
+package Customer;
 
 import java.util.Scanner;
 

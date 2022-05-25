@@ -21,26 +21,26 @@ public class CustomerListImpl implements CutomerList {//impl이 저장소
 	}
 
 	@Override
-	public boolean add(Customer policyholder) {
-		if (this.customerList.add(policyholder)) {
+	public boolean add(Customer customer) {
+		if (this.customerList.add(customer)) {
 			return true;
 		}else
 			return false;
 	}
 
 	@Override
-	public boolean delete(int policyholderId) {
-		if (this.customerList.remove(this.get(policyholderId))) {
+	public boolean delete(int customerId) {
+		if (this.customerList.remove(this.get(customerId))) {
 			return true;
 		}else
 			return false;
 	}
 
 	@Override
-	public Customer get(int policyholderId) {
-		for (Customer policyholder : customerList) {
-			if (policyholderId == policyholder.getId()) {
-				return policyholder;
+	public Customer get(int customerId) {
+		for (Customer customer : customerList) {
+			if (customerId == customer.getId()) {
+				return customer;
 			}
 		}
 		return null;

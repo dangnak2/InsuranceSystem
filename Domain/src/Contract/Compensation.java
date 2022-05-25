@@ -1,31 +1,13 @@
 package Contract;
 
 
+import java.util.Date;
+
 public class Compensation {
 
-	private Accident accident;
-	private String account;
 	private int compensationAmount;
-
-	public Compensation(){
-
-	}
-
-	public Accident getAccident() {
-		return accident;
-	}
-
-	public void setAccident(Accident accident) {
-		this.accident = accident;
-	}
-
-	public String getAccount() {
-		return account;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
-	}
+	private Date compensationDate;
+	private int id;
 
 	public int getCompensationAmount() {
 		return compensationAmount;
@@ -34,4 +16,25 @@ public class Compensation {
 	public void setCompensationAmount(int compensationAmount) {
 		this.compensationAmount = compensationAmount;
 	}
+
+	public Date getCompensationDate() {
+		return compensationDate;
+	}
+
+	public void setCompensationDate(Date compensationDate) {
+		this.compensationDate = compensationDate;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Compensation(){
+
+	}
+
 }
