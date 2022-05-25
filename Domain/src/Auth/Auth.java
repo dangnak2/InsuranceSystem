@@ -7,12 +7,12 @@ import Staff.StaffListImpl;
 import java.util.Date;
 
 
-public class Login {
+public class Auth {
 
 
 
 
-	public Login() {
+	public Auth() {
 
 	}
 

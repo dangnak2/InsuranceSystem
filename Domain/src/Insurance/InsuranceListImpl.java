@@ -3,11 +3,7 @@ package Insurance;
 
 import java.util.ArrayList;
 
-/**
- * @author crossover
- * @version 1.0
- * @created 09-5-2022 ���� 4:51:09
- */
+
 public class InsuranceListImpl implements InsuranceList {
 
 	private ArrayList<Insurance> insuranceList;

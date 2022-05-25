@@ -1,12 +1,14 @@
 package Staff;
 
-import Contract.Accident;
 import Contract.Compensation;
-import Contract.InsuranceContract;
-import Contract.InsuranceContractListImpl;
+import Contract.ContractListImpl;
+import Contract.Contract;
 
+import Customer.Customer;
+import Customer.CustomerListImpl;
+import Insurance.Insurance;
+import Insurance.InsuranceListImpl;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class CompensationManagement extends Staff {
 
@@ -15,41 +17,42 @@ public class CompensationManagement extends Staff {
     }
 
 
-    public InsuranceContractListImpl findInsuranceContracts(String id, String name, InsuranceContractListImpl insuranceContractListImpl) {
-        ArrayList<InsuranceContract> insuranceContracts = insuranceContractListImpl.getInsuranceContractList();
-        InsuranceContractListImpl policyholderContractsList = new InsuranceContractListImpl();
+    public ContractListImpl findInsuranceContracts(String id, String name,
+        ContractListImpl insuranceContractListImpl) {
+        ArrayList<Contract> insuranceContracts = insuranceContractListImpl.getContractList();
+        ContractListImpl customerContractsList = new ContractListImpl();
+        CustomerListImpl customerList = new CustomerListImpl();
+        InsuranceListImpl insuranceList = new InsuranceListImpl();
 
-        for (InsuranceContract insuranceContract : insuranceContracts) {
-            if (insuranceContract.getPolicyholder().getId() == Integer.parseInt(id)
-                    && name.equals(insuranceContract.getPolicyholder().getName()) && insuranceContract.getInsurance().isAuthorization()) {
-                policyholderContractsList.add(insuranceContract);
+        for (Contract insuranceContract : insuranceContracts) {
+            Customer customer = customerList.get(insuranceContract.getCustomerId());
+            Insurance insurance = insuranceList.get(insuranceContract.getInsuranceId());
+            if (insuranceContract.getCustomerId() == Integer.parseInt(id)
+                && name.equals(customer.getName()) && insurance.isAuthorization()) {
+                customerContractsList.add(insuranceContract);
             }
         }
 
-        return policyholderContractsList;
+        return customerContractsList;
     }
 
 
-    public void judgeIndemnification(String selectCause, String selectOriginator, String selectOccurringArea, String brokenCondition, String humanDamage, String surroundingDamage, InsuranceContract insuranceContract) {
+    public void judgeIndemnification(String selectCause, String selectOriginator,
+        String selectOccurringArea, String brokenCondition, String humanDamage,
+        String surroundingDamage, Contract insuranceContract) {
 
-        Accident accident = new Accident();
-
-        accident.setCauses(Integer.parseInt(selectCause) - 1);
-        accident.setOccurringArea(Integer.parseInt(selectOccurringArea) - 1);
-        accident.setOriginator(Integer.parseInt(selectOriginator) - 1);
-        accident.setBrokenCondition(Integer.parseInt(brokenCondition));
-        accident.setHumanDamage(Integer.parseInt(humanDamage));
-        accident.setSurroundingDamage(Integer.parseInt(surroundingDamage));
-        insuranceContract.setAccident(accident);
 
     }
-    public Compensation compensation(InsuranceContract insuranceContract) {
+
+    public Compensation compensation(Contract insuranceContract) {
         //계산 식에 따라 달라짐
-        Compensation compensation = new Compensation();
-        compensation.setAccident(insuranceContract.getAccident());
-        compensation.setAccount(insuranceContract.getPolicyholder().getAccount());
-        compensation.setCompensationAmount((insuranceContract.getAccident().getBrokenCondition() +insuranceContract.getAccident().getHumanDamage()
-                + insuranceContract.getAccident().getSurroundingDamage()) * 1000 );
-        return compensation;
+//        Compensation compensation = new Compensation();
+//        compensation.setAccident(insuranceContract.getAccident());
+//        compensation.setAccount(insuranceContract.getPolicyholder().getAccount());
+//        compensation.setCompensationAmount((insuranceContract.getAccident().getBrokenCondition() +insuranceContract.getAccident().getHumanDamage()
+//                + insuranceContract.getAccident().getSurroundingDamage()) * 1000 );
+//        return compensation;
+        return null;
     }
 }
+

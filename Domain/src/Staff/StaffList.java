@@ -7,5 +7,6 @@ public interface StaffList {
     public boolean delete(int staffId);
 
     public Staff get(int staffId);
-    //public void update();
+
+    public void update();
 }

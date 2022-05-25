@@ -50,6 +50,11 @@ public class ContractListImpl implements ContractList {
 	}
 
 	@Override
+	public void update() {
+
+	}
+
+	@Override
 	public int getSize() {
 		return this.contractList.size();
 	}

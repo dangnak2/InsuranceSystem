@@ -5,6 +5,16 @@ public class Contract {
 
 	private int contractId;
 	private int customerId;
+
+	public int getSalesId() {
+		return salesId;
+	}
+
+	public void setSalesId(int salesId) {
+		this.salesId = salesId;
+	}
+
+	private int salesId;
 	private int insuranceId;
 	private int insurancePrice;
 	private int premiumRate;

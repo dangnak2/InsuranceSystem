@@ -1,12 +1,10 @@
 package Customer;
 
-import Contract.Accident;
-
 import java.util.Date;
 
 public class Customer {
 
-	private Accident accident;
+	//private Accident accident;
 	private String account;
 	private String address;
 	private String email;
@@ -19,6 +17,9 @@ public class Customer {
 	private String SSN;
 	private boolean pay;
 	private Date joinDate;
+	private House house;
+	private Car car;
+	private Ship ship;
 
 	private boolean testPay;
 
@@ -50,14 +51,6 @@ public class Customer {
 
 	public void setTestPay(boolean testPay) {
 		this.testPay = testPay;
-	}
-
-	public Accident getAccident() {
-		return accident;
-	}
-
-	public void setAccident(Accident accident) {
-		this.accident = accident;
 	}
 
 	public String getAccount() {
