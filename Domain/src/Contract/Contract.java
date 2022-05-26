@@ -1,6 +1,8 @@
 package Contract;
 
 
+import Insurance.Insurance;
+
 public class Contract {
 
 	private int contractId;
@@ -19,6 +21,7 @@ public class Contract {
 	private int insurancePrice;
 	private int premiumRate;
 	private Compensation compensation;
+	private Insurance insurance;
 
 	public Contract(){
 
@@ -70,5 +73,13 @@ public class Contract {
 
 	public void setCompensation(Compensation compensation) {
 		this.compensation = compensation;
+	}
+
+	public Insurance getInsurance() {
+		return insurance;
+	}
+
+	public void setInsurance(Insurance insurance) {
+		this.insurance = insurance;
 	}
 }

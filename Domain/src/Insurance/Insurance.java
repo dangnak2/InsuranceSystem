@@ -28,6 +28,7 @@ public abstract class Insurance {
   }
 
 
+
   public InsuranceType getType() {
     return type;
   }

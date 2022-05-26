@@ -5,15 +5,19 @@ import java.util.Date;
 
 public class Compensation {
 
-	private int compensationAmount;
+	private double compensationAmount;
 	private Date compensationDate;
 	private int id;
 
-	public int getCompensationAmount() {
+	public Compensation(){
+
+	}
+
+	public double getCompensationAmount() {
 		return compensationAmount;
 	}
 
-	public void setCompensationAmount(int compensationAmount) {
+	public void setCompensationAmount(double compensationAmount) {
 		this.compensationAmount = compensationAmount;
 	}
 
@@ -31,10 +35,6 @@ public class Compensation {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public Compensation(){
-
 	}
 
 }
