@@ -10,6 +10,9 @@ import Staff.Design;
 import Staff.*;
 import Staff.Staff.Department;
 import Staff.StaffListImpl;
+import Insurance.FireInsurance;
+import Insurance.CarInsurance;
+import Insurance.SeaInsurance;
 
 
 import java.util.Scanner;
@@ -238,16 +241,16 @@ public class Main {
 								findContract:
 								while (true) {
 									System.out.println("보험 가입자 id : ");
-									String policyholderId = sc.next();
+									String customerId = sc.next();
 									System.out.println("보험 가입자 이름 : ");
-									String policyholderName = sc.next();
+									String customerName = sc.next();
 
-									if (policyholderId.isEmpty() || policyholderName.isEmpty()) {
+									if (customerId.isEmpty() || customerName.isEmpty()) {
 										System.out.println("보험 가입자의 정보를 모두 입력하고 시도해주세요.");
 										continue findContract;
 									} else {
 										ContractListImpl customerContractsList = compensationManagement.findInsuranceContracts(
-												policyholderId, policyholderName, contractList);
+												customerId, customerName, contractList);
 
 										for (Contract contract : customerContractsList.getContractList()) {
 											Insurance insurance = insuranceList.get(contract.getInsuranceId());
@@ -263,9 +266,11 @@ public class Main {
 													selectInsuranceContract = insuranceContract;
 												}
 											}
-											if (selectInsuranceContract != null) {
+
+											if(selectInsuranceContract.getInsurance() instanceof FireInsurance){
 												String selectCause, selectOccurringArea, selectOriginator = null;
-												String brokenCondition, humanDamage, surroundingDamage;
+												String brokenCondition, humanDamage, buildingDamage,
+														housingPrice, basicPrice, surroundingDamage;
 												createAccident:
 												while (true) {
 													System.out.println("사고 발생의 주체를 선택해 주세요.\n" +
@@ -358,25 +363,198 @@ public class Main {
 													brokenCondition = sc.next();
 													System.out.println("인적 피해 (0~100) : ");
 													humanDamage = sc.next();
+													System.out.println("건물 피해 (0~100) : ");
+													buildingDamage = sc.next();
 													System.out.println("주변 피해 (0~100) : ");
 													surroundingDamage = sc.next();
+													System.out.println("주택 가격 :");
+													housingPrice = sc.next();
+													System.out.println("기본 보상 금액 :");
+													basicPrice = sc.next();
 
 													if (!(Integer.parseInt(brokenCondition) >= 0
 															&& Integer.parseInt(brokenCondition) <= 100)
 															|| !((Integer.parseInt(humanDamage) >= 0
 															&& Integer.parseInt(humanDamage) <= 100))
 															|| !((Integer.parseInt(surroundingDamage) >= 0
-															&& Integer.parseInt(surroundingDamage) <= 100))) {
+															&& Integer.parseInt(surroundingDamage) <= 100))
+															|| !((Integer.parseInt(buildingDamage) >= 0
+															&& Integer.parseInt(buildingDamage) <= 100))) {
 														System.out.println("피해 정도는 0부터 100까지의 숫자로 입력해주세요.");
 														continue createAccident;
 													} else {
-														compensationManagement.judgeIndemnification(selectCause,
-																selectOriginator, selectOccurringArea,
-																brokenCondition, humanDamage, surroundingDamage,
-																selectInsuranceContract);
+														compensationManagement.judgeFireIndemnification(humanDamage,
+																buildingDamage, housingPrice, basicPrice, insurance);
 													}
 												}
-											} else {
+											} else if(selectInsuranceContract.getInsurance() instanceof CarInsurance){
+												String selectCause, selectOriginator = null;
+												String accidentDegree, humanDamage, errorRate,
+														surroundingDamage, carPrice, basicPrice, isDomestic;
+
+												createAccident:
+												while (true) {
+													System.out.println("사고 발생의 주체를 선택해 주세요.\n" +
+															"1. 보험 가입자\n" +
+															"2. 사고\n");
+
+													selectCause = sc.next();
+													if (!(Integer.parseInt(selectCause) > 0
+															&& Integer.parseInt(selectCause) < 4)) {
+														System.out.println("목록에 있는 항목을 선택해주세요.");
+														continue createAccident;
+													} else {
+														if (selectCause.equals("1")) {
+															System.out.println("사고 발생의 원인을 선택해 주세요.\n" +
+																	"4. 고의적으로 발생한 사고\n" +
+																	"5. 중대한 과실로 발생한 사고\n" +
+																	"6. 경미한 과실(실수)로 발생한 사고\n");
+
+															selectOriginator = sc.next();
+
+															if (!(Integer.parseInt(selectOriginator) > 3
+																	&& Integer.parseInt(selectOriginator) < 7)) {
+																System.out.println("목록에 있는 항목을 선택해주세요.");
+																continue createAccident;
+															} else {
+																if (Integer.parseInt(selectOriginator) == 4) {
+																	System.out.println("죄송합니다. 고의적으로 발생한 사고는 보험금지급 의무 면책 사유입니다.");
+																	continue compensation;
+																} else if (Integer.parseInt(selectOriginator) == 5) {
+																	System.out.println("죄송합니다. 중대한 과실로 발생한 사고는 보험금지급 의무 면책 사유입니다.");
+																	continue compensation;
+																} else {
+																	break createAccident;
+																}
+															}
+														} else if (Integer.parseInt(selectCause) == 3) {
+															System.out.println("죄송합니다. 자연재해로 인한 발생한 사고는 보험금지급 의무 면책 사유입니다.");
+															continue compensation;
+														}
+													}
+												}
+
+												createAccident:
+												while (true) {
+													System.out.println("사고난 정도 (0~100) : ");
+													accidentDegree = sc.next();
+													System.out.println("인적 피해 (0~100) : ");
+													humanDamage = sc.next();
+													System.out.println("보험자 과실 (0~100) : ");
+													errorRate = sc.next();
+													System.out.println("주변 피해 (0~100) : ");
+													surroundingDamage = sc.next();
+													System.out.println("차량 가격 :");
+													carPrice = sc.next();
+													System.out.println("기본 보상 금액 :");
+													basicPrice = sc.next();
+													System.out.println("1.국내차 2.해외차 :");
+													isDomestic = sc.next();
+
+													if(isDomestic.equals("1")){
+														isDomestic = "국내차";
+													} else{
+														isDomestic = "해외차";
+													}
+
+													if (!(Integer.parseInt(accidentDegree) >= 0
+															&& Integer.parseInt(accidentDegree) <= 100)
+															|| !((Integer.parseInt(humanDamage) >= 0
+															&& Integer.parseInt(humanDamage) <= 100))
+															|| !((Integer.parseInt(errorRate) >= 0
+															&& Integer.parseInt(errorRate) <= 100))
+															|| !((Integer.parseInt(surroundingDamage) >= 0
+															&& Integer.parseInt(surroundingDamage) <= 100))
+													) {
+														System.out.println("피해 정도는 0부터 100까지의 숫자로 입력해주세요.");
+														continue createAccident;
+													}
+
+													else {
+														compensationManagement.judgeCarIndemnification(accidentDegree, humanDamage, errorRate, carPrice, basicPrice, isDomestic, insurance);
+													}
+												}
+
+											} else if(selectInsuranceContract.getInsurance() instanceof  SeaInsurance){
+												String selectCause, selectOriginator = null;
+												String accidentDegree, generalDamage, revenueDamage,
+												       shipPrice, basicPrice, surroundingDamage;
+
+												createAccident:
+												while (true) {
+													System.out.println("사고 발생의 주체를 선택해 주세요.\n" +
+															"1. 보험 가입자\n" +
+															"2. 사고\n");
+
+													selectCause = sc.next();
+													if (!(Integer.parseInt(selectCause) > 0
+															&& Integer.parseInt(selectCause) < 4)) {
+														System.out.println("목록에 있는 항목을 선택해주세요.");
+														continue createAccident;
+													} else {
+														if (selectCause.equals("1")) {
+															System.out.println("사고 발생의 원인을 선택해 주세요.\n" +
+																	"4. 고의적으로 발생한 사고\n" +
+																	"5. 중대한 과실로 발생한 사고\n" +
+																	"6. 경미한 과실(실수)로 발생한 사고\n");
+
+															selectOriginator = sc.next();
+
+															if (!(Integer.parseInt(selectOriginator) > 3
+																	&& Integer.parseInt(selectOriginator) < 7)) {
+																System.out.println("목록에 있는 항목을 선택해주세요.");
+																continue createAccident;
+															} else {
+																if (Integer.parseInt(selectOriginator) == 4) {
+																	System.out.println("죄송합니다. 고의적으로 발생한 사고는 보험금지급 의무 면책 사유입니다.");
+																	continue compensation;
+																} else if (Integer.parseInt(selectOriginator) == 5) {
+																	System.out.println("죄송합니다. 중대한 과실로 발생한 사고는 보험금지급 의무 면책 사유입니다.");
+																	continue compensation;
+																} else {
+																	break createAccident;
+																}
+															}
+														} else if (Integer.parseInt(selectCause) == 3) {
+															System.out.println("죄송합니다. 자연재해로 인한 발생한 사고는 보험금지급 의무 면책 사유입니다.");
+															continue compensation;
+														}
+													}
+												}
+
+												createAccident:
+												while (true) {
+													System.out.println("사고난 정도 (0~100) : ");
+													accidentDegree = sc.next();
+													System.out.println("재반 손해 (0~100) : ");
+													generalDamage = sc.next();
+													System.out.println("수익 손해 (0~100) : ");
+													revenueDamage = sc.next();
+													System.out.println("주변 피해 (0~100) : ");
+													surroundingDamage = sc.next();
+													System.out.println("선박 가격 :");
+													shipPrice = sc.next();
+													System.out.println("기본 보상 금액 :");
+													basicPrice = sc.next();
+
+													if (!(Integer.parseInt(accidentDegree) >= 0
+															&& Integer.parseInt(accidentDegree) <= 100)
+															|| !((Integer.parseInt(generalDamage) >= 0
+															&& Integer.parseInt(generalDamage) <= 100))
+															|| !((Integer.parseInt(revenueDamage) >= 0
+															&& Integer.parseInt(revenueDamage) <= 100))
+															|| !((Integer.parseInt(surroundingDamage) >= 0
+															&& Integer.parseInt(surroundingDamage) <= 100))
+													) {
+														System.out.println("피해 정도는 0부터 100까지의 숫자로 입력해주세요.");
+														continue createAccident;
+													} else {
+														compensationManagement.judgeSeaIndemnification(generalDamage, revenueDamage, shipPrice, basicPrice, insurance);
+													}
+												}
+											}
+
+											else {
 												System.out.println("가입된 보험이 없습니다. 인수 심사 완료 후 다시 진행해 주세요.");
 												continue compensation;
 											}

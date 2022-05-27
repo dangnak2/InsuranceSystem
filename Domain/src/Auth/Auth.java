@@ -9,13 +9,9 @@ import java.util.Date;
 
 public class Auth {
 
-
-
-
 	public Auth() {
 
 	}
-
 
 	public Staff createStaff(String name, String ssn, String gender, String email, String phone, String department, StaffListImpl staffList) {
 		Staff createdStaff = null;

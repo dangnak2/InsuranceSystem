@@ -2,6 +2,8 @@ package Insurance;
 
 public class SeaInsurance extends Insurance {
 
+
+  private int shipPrice;
   private int generalDamage; //제반 손해 정도
   private int revenueDamage; //수익 손해 정도
 
@@ -21,5 +23,11 @@ public class SeaInsurance extends Insurance {
     this.revenueDamage = revenueDamage;
   }
 
+  public int getShipPrice() {
+    return shipPrice;
+  }
 
+  public void setShipPrice(int shipPrice) {
+    this.shipPrice = shipPrice;
+  }
 }
