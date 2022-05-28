@@ -1,4 +1,4 @@
-package Control;
+package Control.Sale;
 
 import Customer.Customer;
 

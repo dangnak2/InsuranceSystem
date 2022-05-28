@@ -17,10 +17,6 @@ public class Staff {
   private Date joinDate;
   private String name;
   private String phoneNum;
-
-  private enum position {}
-
-  ;
   private int salary;
   private String SSN;
   private String password;

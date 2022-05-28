@@ -21,7 +21,6 @@ public class Customer {
 	private Car car;
 	private Ship ship;
 
-	private boolean testPay;
 
 
 	public Customer(){
@@ -43,14 +42,6 @@ public class Customer {
 
 	public void setJoinDate(Date joinDate) {
 		this.joinDate = joinDate;
-	}
-
-	public boolean isTestPay() {
-		return testPay;
-	}
-
-	public void setTestPay(boolean testPay) {
-		this.testPay = testPay;
 	}
 
 	public String getAccount() {
@@ -126,7 +117,27 @@ public class Customer {
 	}
 
 
+	public House getHouse() {
+		return house;
+	}
 
+	public void setHouse(House house) {
+		this.house = house;
+	}
 
+	public Car getCar() {
+		return car;
+	}
 
+	public void setCar(Car car) {
+		this.car = car;
+	}
+
+	public Ship getShip() {
+		return ship;
+	}
+
+	public void setShip(Ship ship) {
+		this.ship = ship;
+	}
 }

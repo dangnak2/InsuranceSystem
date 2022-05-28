@@ -1,5 +1,6 @@
 package Auth;
 
+import Control.Design.Design;
 import Staff.*;
 import Staff.Staff.Department;
 import Staff.StaffListImpl;
@@ -14,20 +15,18 @@ public class Auth {
 	}
 
 	public Staff createStaff(String name, String ssn, String gender, String email, String phone, String department, StaffListImpl staffList) {
-		Staff createdStaff = null;
+		Staff createdStaff = new Staff();
 		Date date = new Date();
+
 
 		switch (Integer.parseInt(department)) {
 			case 1:
-				createdStaff = new Design();
 				createdStaff.setDepartment(Department.Design);
 				break;
 			case 2:
-				createdStaff = new Sales();
 				createdStaff.setDepartment(Department.Sales);
 				break;
 			case 3:
-//				createdStaff = new CompensationManagement();
 				createdStaff.setDepartment(Department.CompensationManagement);
 				break;
 		}

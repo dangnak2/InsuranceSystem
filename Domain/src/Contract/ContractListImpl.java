@@ -31,8 +31,8 @@ public class ContractListImpl implements ContractList {
 	}
 
 	@Override
-	public boolean delete(int insuranceContractId) {
-		if (contractList.remove(this.get(insuranceContractId))) {
+	public boolean delete(int contractId) {
+		if (contractList.remove(this.get(contractId))) {
 			return true;
 		} else {
 			return false;
@@ -40,9 +40,9 @@ public class ContractListImpl implements ContractList {
 	}
 
 	@Override
-	public Contract get(int insuranceContractId) {
+	public Contract get(int contractId) {
 		for (Contract contract : contractList) {
-			if (insuranceContractId == contract.getContractId()) {
+			if (contractId == contract.getContractId()) {
 				return contract;
 			}
 		}
@@ -50,8 +50,9 @@ public class ContractListImpl implements ContractList {
 	}
 
 	@Override
-	public void update() {
-
+	public void update(Contract contract) {
+		int index = this.contractList.indexOf(contract);
+		this.contractList.set(index, contract);
 	}
 
 	@Override
