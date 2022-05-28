@@ -1,4 +1,4 @@
-package Control;
+package Control.Sale;
 
 import Contract.Contract;
 import Contract.ContractList;
@@ -11,13 +11,13 @@ import Customer.CutomerList;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Sales {
+public class Sale {
 	private InsuranceList insuranceList;
 	private CutomerList cutomerList;
 	private ContractList contractList;
 	private CalculatePremium calculatePremium;
 
-	public Sales(InsuranceList insuranceList, CutomerList cutomerList, ContractList contractList, CalculatePremium calculatePremium) {
+	public Sale(InsuranceList insuranceList, CutomerList cutomerList, ContractList contractList, CalculatePremium calculatePremium) {
 		this.insuranceList = insuranceList;
 		this.cutomerList = cutomerList;
 		this.contractList = contractList;

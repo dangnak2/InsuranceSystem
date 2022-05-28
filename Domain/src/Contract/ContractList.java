@@ -4,11 +4,11 @@ public interface ContractList {
 
 	public boolean add(Contract contract);
 
-	public boolean delete(int insuranceContractId);
+	public boolean delete(int contractId);
 
-	public Contract get(int insuranceContractId);
+	public Contract get(int contractId);
 
-	public void update();
+	public void update( Contract contract);
 
 	public int getSize();
 }

@@ -7,14 +7,6 @@ public abstract class Insurance {
 
   private int id;
   private String name;
-  public enum InsuranceType{
-    Fire,
-    Car,
-    Sea
-  }
-
-
-  private InsuranceType type;
   private String explanation;
   private int premium;
   private int basicConpensation;
@@ -29,13 +21,6 @@ public abstract class Insurance {
 
 
 
-  public InsuranceType getType() {
-    return type;
-  }
-
-  public void setType(InsuranceType type) {
-    this.type = type;
-  }
 
   public int getBasicConpensation() {
     return basicConpensation;
