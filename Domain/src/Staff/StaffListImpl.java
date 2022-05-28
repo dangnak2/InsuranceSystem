@@ -1,5 +1,7 @@
 package Staff;
 
+import Insurance.Insurance;
+
 import java.util.ArrayList;
 
 public class StaffListImpl implements StaffList{
@@ -8,6 +10,10 @@ public class StaffListImpl implements StaffList{
 
     public StaffListImpl() {
         this.staffList = new ArrayList<>();
+    }
+
+    public ArrayList<Staff> getStaffList() {
+        return this.staffList;
     }
 
     @Override
@@ -20,7 +26,7 @@ public class StaffListImpl implements StaffList{
 
     @Override
     public boolean delete(int staffId) {
-        if (this.staffList.add(this.get(staffId))) {
+        if (this.staffList.remove(this.get(staffId))) {
             return true;
         } else
             return false;
@@ -37,7 +43,8 @@ public class StaffListImpl implements StaffList{
     }
 
     @Override
-    public void update() {
-
+    public void update(Staff staff) {
+        int index = this.staffList.indexOf(staff);
+        this.staffList.set(index, staff);
     }
 }
