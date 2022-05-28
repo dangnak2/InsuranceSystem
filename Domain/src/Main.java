@@ -33,6 +33,8 @@ public class Main {
 		CustomerListImpl customerList = new CustomerListImpl();
 		ContractListImpl contractList = new ContractListImpl();
 
+		CompensationManagement compensationManagement = new CompensationManagement(insuranceList);
+
 		main:
 		while (true) {
 
@@ -231,7 +233,7 @@ public class Main {
 					}
 				} else if (Integer.parseInt(select) == 4) {
 					if (staff.getDepartment() == Department.CompensationManagement) {
-						CompensationManagement compensationManagement = (CompensationManagement) staff;
+//						CompensationManagement compensationManagement = (CompensationManagement) staff;
 						compensation:
 						while (true) {
 							System.out.println("1. 검색하기\n" +
@@ -384,7 +386,7 @@ public class Main {
 														continue createAccident;
 													} else {
 														compensationManagement.judgeFireIndemnification(humanDamage,
-																buildingDamage, housingPrice, basicPrice, insurance);
+																buildingDamage, surroundingDamage, housingPrice, basicPrice, insurance);
 													}
 												}
 											} else if(selectInsuranceContract.getInsurance() instanceof CarInsurance){

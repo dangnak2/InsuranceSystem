@@ -14,6 +14,7 @@ import Insurance.InsuranceListImpl;
 import java.util.ArrayList;
 import java.util.Date;
 import Insurance.FireInsurance.buildingType;
+import Insurance.InsuranceList;
 
 
 public class CompensationManagement extends Staff {
@@ -22,8 +23,20 @@ public class CompensationManagement extends Staff {
     private CarInsurance carInsurance;
     private SeaInsurance seaInsurance;
 
-    public CompensationManagement() {
+    private InsuranceList insuranceList;
 
+    private int humanDamage;
+    // FireInsurance
+    private int buildingDamage;
+    private int surroundingDamage;
+    // CarInsurance
+    private int accidentDegree;
+    // SeaInsurance
+    private int generalDamage;
+    private int revenueDamage;
+
+    public CompensationManagement(InsuranceListImpl insuranceList) {
+        this.insuranceList = insuranceList;
     }
 
 
@@ -46,20 +59,31 @@ public class CompensationManagement extends Staff {
         return customerContractsList;
     }
 
-    public void judgeFireIndemnification(String humanDamage, String buildingDamage, String housingPrice, String basicPrice,  Insurance insurance) {
-        fireInsurance = (FireInsurance) insurance;
+    public void judgeFireIndemnification(String humanDamage, String buildingDamage, String surroundingDamage, String housingPrice, String basicPrice,  Insurance insurance) {
+        fireInsurance = (FireInsurance) this.insuranceList.get(insurance.getId());
+        fireInsurance.setBasicConpensation(Integer.parseInt(basicPrice));
+        fireInsurance.setHousingPrice(Integer.parseInt(housingPrice));
+
+        this.humanDamage = Integer.parseInt(humanDamage);
+        this.buildingDamage = Integer.parseInt(buildingDamage);
+        this.surroundingDamage = Integer.parseInt(surroundingDamage);
+
         fireInsurance.setHumanDamage(Integer.parseInt(humanDamage));
         fireInsurance.setBuildingDamage(Integer.parseInt(buildingDamage));
-        fireInsurance.setHousingPrice(Integer.parseInt(housingPrice));
-        fireInsurance.setBasicConpensation(Integer.parseInt(basicPrice));
+
     }
     public void judgeCarIndemnification(String accidentDegree, String humanDamage, String errorRate, String carPrice, String basicPrice, String isDomestic, Insurance insurance) {
-        carInsurance = (CarInsurance) insurance;
+        carInsurance = (CarInsurance) this.insuranceList.get(insurance.getId());
+        carInsurance.setBasicConpensation(Integer.parseInt(basicPrice));
+        carInsurance.setCarPrice(Integer.parseInt(carPrice));
+
+        this.accidentDegree = Integer.parseInt(accidentDegree);
+        this.humanDamage = Integer.parseInt(humanDamage);
+
         carInsurance.setAccidentDegree(Integer.parseInt(accidentDegree));
         carInsurance.setHumanDamage(Integer.parseInt(humanDamage));
         carInsurance.setErrorRate(Integer.parseInt(errorRate));
-        carInsurance.setCarPrice(Integer.parseInt(carPrice));
-        carInsurance.setBasicConpensation(Integer.parseInt(basicPrice));
+
         if(isDomestic.equals("국내차")){
             carInsurance.setDomestic(true);
         }else{
@@ -67,11 +91,15 @@ public class CompensationManagement extends Staff {
         }
     }
     public void judgeSeaIndemnification(String generalDamage, String revenueDamage, String shipPrice, String basicPrice, Insurance insurance) {
-        seaInsurance = (SeaInsurance) insurance;
+        seaInsurance = (SeaInsurance) this.insuranceList.get(insurance.getId());
+        seaInsurance.setBasicConpensation(Integer.parseInt(basicPrice));
+        seaInsurance.setShipPrice(Integer.parseInt(shipPrice));
+
+        this.generalDamage = Integer.parseInt(generalDamage);
+        this.revenueDamage = Integer.parseInt(revenueDamage);
+
         seaInsurance.setGeneralDamage(Integer.parseInt(generalDamage));
         seaInsurance.setRevenueDamage(Integer.parseInt(revenueDamage));
-        seaInsurance.setShipPrice(Integer.parseInt(shipPrice));
-        seaInsurance.setBasicConpensation(Integer.parseInt(basicPrice));
     }
 
     public Compensation compensation(Contract insuranceContract) {
@@ -102,13 +130,13 @@ public class CompensationManagement extends Staff {
                 totalPrice *= 1.4;
             }
 
-            double buildingDamage = 1 + ((FireInsurance) insuranceContract.getInsurance()).getBuildingDamage() / 100;
-            double humanDamage = 1 + ((FireInsurance) insuranceContract.getInsurance()).getHumanDamage() / 100;
-            double surroundingDamage = 1 + ((FireInsurance) insuranceContract.getInsurance()).getSurroundingDamage() / 100;
+            double compensationHumanDamage = (1 +  this.humanDamage / 100) * ((FireInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_HUMAN_DAMAGE();
+            double compensationBuildingDamage = (1 +  this.buildingDamage / 100) * ((FireInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_BUILDING_DAMAGE();
+            double compensationSurroundingDamage = (1 +  this.surroundingDamage / 100) * ((FireInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_SURROUNGDING_DAMAGE();
 
-            totalPrice *= buildingDamage;
-            totalPrice *= humanDamage;
-            totalPrice *= surroundingDamage;
+            totalPrice += compensationHumanDamage;
+            totalPrice += compensationBuildingDamage;
+            totalPrice += compensationSurroundingDamage;
 
             compensation.setCompensationAmount(totalPrice);
 
@@ -117,7 +145,6 @@ public class CompensationManagement extends Staff {
 
             double totalPrice = 0;
             double basicPrice = insuranceContract.getInsurance().getBasicConpensation();
-
             if(((CarInsurance) insuranceContract.getInsurance()).isDomestic()){
                 totalPrice += basicPrice;
             } else{
@@ -135,17 +162,15 @@ public class CompensationManagement extends Staff {
                 totalPrice *= 1.4;
             }
 
-            double accidentDegree = 1 + ((CarInsurance) insuranceContract.getInsurance()).getAccidentDegree() / 100;
-            double humanDamage = 1 + ((CarInsurance) insuranceContract.getInsurance()).getHumanDamage() / 100;
-            double errorRate = 1 + 1 - ((CarInsurance) insuranceContract.getInsurance()).getErrorRate();
+            double compensationHumanDamage = (1 + this.humanDamage / 100) * ((CarInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_HUMAN_DAMAGE();
+            double compensationAccidentDegree = (1 + this.accidentDegree / 100) * ((CarInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_ACCIDENT_DEGREE();
 
-            totalPrice *= accidentDegree;
-            totalPrice *= humanDamage;
-            totalPrice *= errorRate;
+            totalPrice += compensationHumanDamage;
+            totalPrice += compensationAccidentDegree;
 
             compensation.setCompensationAmount(totalPrice);
 
-        } else{
+        } else if (insuranceContract.getInsurance() instanceof SeaInsurance){
             compensation.setCompensationDate(date);
             double totalPrice = 0;
             double basicPrice = insuranceContract.getInsurance().getBasicConpensation();
@@ -161,11 +186,11 @@ public class CompensationManagement extends Staff {
                 totalPrice += basicPrice * 1.4;
             }
 
-            double generalDamage = 1 + this.seaInsurance.getGeneralDamage()/100;
-            double revenueDamage = 1 + this.seaInsurance.getRevenueDamage()/100;
+            double compensationGeneralDamage = (1 + this.generalDamage/100) * ((SeaInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_GENERAL_DAMAGE();
+            double compensationrevenueDamage = (1 + this.revenueDamage/100) * ((SeaInsurance) insuranceContract.getInsurance()).getMONEY_BASIS_REVENUE_DAMAGE();
 
-            totalPrice *= generalDamage;
-            totalPrice *= revenueDamage;
+            totalPrice += compensationGeneralDamage;
+            totalPrice += compensationrevenueDamage;
 
             compensation.setCompensationAmount(totalPrice);
         }
