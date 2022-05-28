@@ -17,10 +17,12 @@ public class Staff {
   private Date joinDate;
   private String name;
   private String phoneNum;
-  private int salary;
   private String SSN;
   private String password;
   private Department department;
+
+  private int basicSalary;
+  private int totalSalary;
   private int result; //실적
 
   public int getResult() {
@@ -84,14 +86,6 @@ public class Staff {
     this.phoneNum = phoneNum;
   }
 
-  public int getSalary() {
-    return salary;
-  }
-
-  public void setSalary(int salary) {
-    this.salary = salary;
-  }
-
   public String getSSN() {
     return SSN;
   }
@@ -106,12 +100,26 @@ public class Staff {
   }
 
   public void setSSN(String ssn) {
-    // TODO Auto-generated method stub
     this.SSN = ssn;
   }
 
-  public Department getDepartment() {
+  public int getBasicSalary() {
+    return basicSalary;
+  }
 
+  public void setBasicSalary(int basicSalary) {
+    this.basicSalary = basicSalary;
+  }
+
+  public int getTotalSalary() {
+    return totalSalary;
+  }
+
+  public void setTotalSalary(int totalSalary) {
+    this.totalSalary = totalSalary;
+  }
+
+  public Department getDepartment() {
     return department;
   }
 
