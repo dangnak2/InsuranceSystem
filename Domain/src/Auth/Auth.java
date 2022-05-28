@@ -27,7 +27,7 @@ public class Auth {
 				createdStaff.setDepartment(Department.Sales);
 				break;
 			case 3:
-				createdStaff = new CompensationManagement();
+//				createdStaff = new CompensationManagement();
 				createdStaff.setDepartment(Department.CompensationManagement);
 				break;
 		}

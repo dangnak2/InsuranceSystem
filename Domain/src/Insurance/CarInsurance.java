@@ -8,6 +8,17 @@ public class CarInsurance extends Insurance {
   private int errorRate; //과실 비율
   private boolean isDomestic;
 
+  private final int MONEY_BASIS_HUMAN_DAMAGE = 1000000;
+  private final int MONEY_BASIS_ACCIDENT_DEGREE = 1000000;
+
+  public int getMONEY_BASIS_HUMAN_DAMAGE() {
+    return MONEY_BASIS_HUMAN_DAMAGE;
+  }
+
+  public int getMONEY_BASIS_ACCIDENT_DEGREE() {
+    return MONEY_BASIS_ACCIDENT_DEGREE;
+  }
+
   public int getAccidentDegree() {
     return accidentDegree;
   }
