@@ -1,12 +1,11 @@
 import Auth.Auth;
 import Contract.Contract;
 import Contract.ContractListImpl;
+import Control.Design.Design;
 import Insurance.Insurance;
 import Insurance.InsuranceListImpl;
 import Customer.Customer;
 import Customer.CustomerListImpl;
-import Staff.CompensationManagement;
-import Staff.Design;
 import Staff.*;
 import Staff.Staff.Department;
 import Staff.StaffListImpl;
