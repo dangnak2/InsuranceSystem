@@ -4,8 +4,8 @@ public class Indemnification {
 
     public enum AccidentSubjectIndemnification {
         eSubject1("보험 가입자", true),
-        eSubject3("전쟁 및 테러", false),
-        eSubject4("자연 재해", false);
+        eSubject2("전쟁 및 테러", false),
+        eSubject3("자연 재해", false);
 
 
         private final String explanation;
