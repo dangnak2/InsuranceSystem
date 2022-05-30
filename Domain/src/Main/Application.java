@@ -10,11 +10,17 @@ import Control.Sale.CalculatePremium;
 import Control.Sale.Sale;
 import Control.StaffManage.StaffManagement;
 import Customer.CustomerListImpl;
+import DB.DBConnector;
 import Insurance.InsuranceListImpl;
 import Staff.Staff;
 import Staff.*;
 import Auth.*;
 
+import Staff.Staff.Department;
+import java.sql.Connection;
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -32,23 +38,42 @@ public class Application {
         InsuranceListImpl insuranceList = new InsuranceListImpl();
         CustomerListImpl customerList = new CustomerListImpl();
         ContractListImpl contractList = new ContractListImpl();
-
-        CompensationManage compensationManagement = new CompensationManage(contractList, insuranceList, customerList);
-        Design design = new Design(insuranceList);
-        CalculatePremium calculatePremium = new CalculatePreminumImpl();
-        Sale sale = new Sale(insuranceList, customerList, contractList, calculatePremium);
-        StaffManagement staffManagement = new StaffManagement(staffList);
+        DBConnector dbConnector = new DBConnector();
+        Connection connection = dbConnector.getConnection();
 
 
-        for (Indemnification.AccidentSubjectIndemnification accidentSubjectIndemnification : Indemnification.AccidentSubjectIndemnification
-                .values()) {
-            System.out.println(accidentSubjectIndemnification.getExplanation());
-        }
+        staff = new Staff();
 
-        EmailVerify emailVerify = new EmailVerify();
-        ArrayList<String> email = new ArrayList<>();
-        email.add("yoo7969@naver.com");
-        emailVerify.verifyEmail(email);
+        staff.setId(1);
+        staff.setDepartment(Department.Design);
+        staff.setName("cc");
+        staff.setGender(true);
+        staff.setEmail("dd");
+        staff.setPassword("1234");
+        staff.setPhoneNum("0");
+        staff.setBasicSalary(1);
+        staff.setResult(1);
+        staff.setTotalSalary(1);
+
+        StaffListImpl staffList1 = new StaffListImpl();
+        staffList1.add(staff);
+//
+//        CompensationManage compensationManagement = new CompensationManage(contractList, insuranceList, customerList);
+//        Design design = new Design(insuranceList);
+//        CalculatePremium calculatePremium = new CalculatePreminumImpl();
+//        Sale sale = new Sale(insuranceList, customerList, contractList, calculatePremium);
+//        StaffManagement staffManagement = new StaffManagement(staffList);
+//
+//
+//        for (Indemnification.AccidentSubjectIndemnification accidentSubjectIndemnification : Indemnification.AccidentSubjectIndemnification
+//                .values()) {
+//            System.out.println(accidentSubjectIndemnification.getExplanation());
+//        }
+//
+//        EmailVerify emailVerify = new EmailVerify();
+//        ArrayList<String> email = new ArrayList<>();
+//        email.add("yoo7969@naver.com");
+//        emailVerify.verifyEmail(email);
     }
 
 
