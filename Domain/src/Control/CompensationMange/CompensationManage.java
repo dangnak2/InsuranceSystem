@@ -3,7 +3,7 @@ package Control.CompensationMange;
 import Contract.*;
 import Customer.*;
 import Insurance.*;
-import Control.CompensationMange.Indemnification.*
+import Control.CompensationMange.Indemnification.*;
 
 import java.util.ArrayList;
 import java.util.Date;
