@@ -15,12 +15,6 @@ public class DBConnector {
   private Statement stmt;
   private ResultSet rs;
 
-  public DBConnector() {
-    this.con = null;
-    this.stmt = null;
-    this.rs = null;
-  }
-
   public Connection getConnection(){
     // 1.드라이버 로딩
     try {
@@ -40,6 +34,7 @@ public class DBConnector {
       stmt.close();
 
       this.con = con;
+
       return con;
     } catch(SQLException e) {
       System.err.println("con 오류:" + e.getMessage());
@@ -61,10 +56,8 @@ public class DBConnector {
 
   public void add(String query) {
     try {
-      stmt = this.con.createStatement();
-      if(!stmt.execute(query)) {
-        System.out.printf("insert ok!");
-      }
+      stmt = con.createStatement();
+      stmt.executeUpdate(query);
     } catch (SQLException e) {
       e.printStackTrace();
     }
