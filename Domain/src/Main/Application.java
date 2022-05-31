@@ -18,11 +18,15 @@ import Auth.*;
 
 import Staff.Staff.Department;
 import java.sql.Connection;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 public class Application {
 
@@ -38,16 +42,16 @@ public class Application {
         InsuranceListImpl insuranceList = new InsuranceListImpl();
         CustomerListImpl customerList = new CustomerListImpl();
         ContractListImpl contractList = new ContractListImpl();
-        DBConnector dbConnector = new DBConnector();
-        Connection connection = dbConnector.getConnection();
-
 
         staff = new Staff();
 
+
         staff.setId(1);
         staff.setDepartment(Department.Design);
+        staff.setSSN("11213131");
         staff.setName("cc");
         staff.setGender(true);
+        staff.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         staff.setEmail("dd");
         staff.setPassword("1234");
         staff.setPhoneNum("0");
