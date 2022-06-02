@@ -2,27 +2,26 @@ package Main;
 
 import Auth.Auth;
 import Contract.ContractListImpl;
-import Control.CompensationMange.CompensationManage;
-import Control.CompensationMange.Indemnification;
-import Control.Design.Design;
-import Control.Sale.CalculatePreminumImpl;
-import Control.Sale.CalculatePremium;
-import Control.Sale.Sale;
-import Control.StaffManage.StaffManagement;
+import Customer.Customer;
+import Customer.Customer.Job;
 import Customer.CustomerListImpl;
-import DB.DBConnector;
+import Customer.MedicalHistory;
+import Insurance.Insurance;
+import Insurance.CarInsurance;
+import Insurance.CarInsuranceListImpl;
+import Insurance.FireInsurance;
+import Insurance.FireInsuranceListImpl;
+import Insurance.SeaInsurance;
+import Insurance.SeaInsuranceListImpl;
 import Insurance.InsuranceListImpl;
 import Staff.Staff;
 import Staff.*;
-import Auth.*;
 
-import Staff.Staff.Department;
 import java.sql.Connection;
-import java.sql.Date;
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Scanner;
+
 
 public class Application {
 
@@ -33,31 +32,82 @@ public class Application {
         Scanner sc = new Scanner(System.in);
 
         Auth auth = new Auth();
-        Staff staff = null;
+        Insurance insurance = null;
+        Customer customer = null;
         StaffList staffList = new StaffListImpl();
         InsuranceListImpl insuranceList = new InsuranceListImpl();
         CustomerListImpl customerList = new CustomerListImpl();
         ContractListImpl contractList = new ContractListImpl();
-        DBConnector dbConnector = new DBConnector();
-        Connection connection = dbConnector.getConnection();
+
+//        ----------------------------------------------------------------------
+
+        SeaInsurance insurance2 = new SeaInsurance();
+
+        insurance2.setId(1);
+        insurance2.setAuthorization(true);
+        insurance2.setAuthorizationDate(Timestamp.valueOf(LocalDateTime.now()));
+        insurance2.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
+        insurance2.setExplanation("ㅇㅁ암ㅇ");
+        insurance2.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
+        insurance2.setName("dadaddad");
+        insurance2.setType("sea");
+        insurance2.setPremium(313);
+        insurance2.setSeeInsurance_id(1);
+        insurance2.setGeneralDamageBasicMoney(221);
+        insurance2.setRevenueDamageBasicMoney(423423);
+
+        InsuranceListImpl insuranceList1 = new InsuranceListImpl();
+        insuranceList1.getConnection();
+        insuranceList1.add(insurance2);
+
+        SeaInsuranceListImpl seaInsuranceList = new SeaInsuranceListImpl();
+        seaInsuranceList.getConnection();
+//        seaInsuranceList.add(insurance2);
+        seaInsuranceList.delete(insurance2.getId());
 
 
-        staff = new Staff();
+//        insuranceList1.add(insurance);
+//        insuranceList1.get(insurance.getId());
+//        System.out.println(insuranceList1.getSize());
 
-        staff.setId(1);
-        staff.setDepartment(Department.Design);
-        staff.setName("cc");
-        staff.setGender(true);
-        staff.setEmail("dd");
-        staff.setPassword("1234");
-        staff.setPhoneNum("0");
-        staff.setBasicSalary(1);
-        staff.setResult(1);
-        staff.setTotalSalary(1);
-
-        StaffListImpl staffList1 = new StaffListImpl();
-        staffList1.add(staff);
+//        CarInsurance carInsurance = new CarInsurance();
+//        carInsurance.setCarInsurance_id(1);
+//        carInsurance.setId(insurance.getId());
+//        carInsurance.setHumanDamageBasicMoney(221);
+//        carInsurance.setCarDamageBasicMoney(423423);
 //
+//        CarInsuranceListImpl carInsuranceList = new CarInsuranceListImpl();
+//        carInsuranceList.getConnection();
+//        carInsuranceList.add(carInsurance);
+//        carInsuranceList.delete(1);
+
+//        FireInsurance fireInsurance = new FireInsurance();
+//        fireInsurance.setFireInsurance_id(1);
+//        fireInsurance.setId(insurance.getId());
+//        fireInsurance.setHumanDamageBasicMoney(221);
+//        fireInsurance.setSurroundingDamageBasicMoney(423423);
+//        fireInsurance.setBuildingDamageBasicMoney(4242);
+//
+//        FireInsuranceListImpl fireInsuranceList = new FireInsuranceListImpl();
+//        fireInsuranceList.getConnection();
+//        fireInsuranceList.add(fireInsurance);
+//        fireInsuranceList.delete(insurance.getId());
+
+//        SeaInsurance seaInsurance = new SeaInsurance();
+//        seaInsurance.setSeeInsurance_id(1);
+//        seaInsurance.setId(insurance.getId());
+//        seaInsurance.setGeneralDamageBasicMoney(221);
+//        seaInsurance.setRevenueDamageBasicMoney(423423);
+//
+//        SeaInsuranceListImpl seaInsuranceList = new SeaInsuranceListImpl();
+//        seaInsuranceList.getConnection();
+//        seaInsuranceList.add(seaInsurance);
+//        seaInsuranceList.delete(insurance.getId());
+
+
+
+//        ----------------------------------------------------------------------
+
 //        CompensationManage compensationManagement = new CompensationManage(contractList, insuranceList, customerList);
 //        Design design = new Design(insuranceList);
 //        CalculatePremium calculatePremium = new CalculatePreminumImpl();

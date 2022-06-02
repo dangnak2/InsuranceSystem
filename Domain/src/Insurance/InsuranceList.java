@@ -1,6 +1,6 @@
 package Insurance;
 
-import Insurance.Insurance;
+import java.util.ArrayList;
 
 /**
  * @author crossover
@@ -14,7 +14,6 @@ public interface InsuranceList {
 	public boolean delete(int insuranceId);
 
 	public Insurance get(int insuranceId);
-	//public void update();
 
 	public int getSize();
 

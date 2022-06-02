@@ -3,6 +3,8 @@ package Contract;
 
 import Insurance.Insurance;
 
+import java.util.Date;
+
 public class Contract {
 
 	private int contractId;
@@ -22,9 +24,18 @@ public class Contract {
 	private int premiumRate;
 	private Compensation compensation;
 	private Insurance insurance;
+	private Date creadtedDate;
 
 	public Contract(){
 
+	}
+
+	public Date getCreadtedDate() {
+		return creadtedDate;
+	}
+
+	public void setCreadtedDate(Date creadtedDate) {
+		this.creadtedDate = creadtedDate;
 	}
 
 	public int getContractId() {

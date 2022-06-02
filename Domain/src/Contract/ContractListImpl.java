@@ -1,6 +1,8 @@
 package Contract;
 
 
+import DB.DBConnector;
+
 import java.util.ArrayList;
 
 /**
@@ -8,7 +10,7 @@ import java.util.ArrayList;
  * @version 1.0
  * @created 09-5-2022 ???? 4:51:09
  */
-public class ContractListImpl implements ContractList {
+public class ContractListImpl extends DBConnector implements ContractList {
 
 	private ArrayList<Contract> contractList;
 
@@ -24,6 +26,11 @@ public class ContractListImpl implements ContractList {
 	@Override
 	public boolean add(Contract contract) {
 		if (contractList.add(contract)) {
+			String query = "INSERT INTO contract VALUES ("
+					+ contract.getContractId() + ",'" + contract.getCustomerId() + "','" + contract.getSalesId()
+					+ "','" + contract.getInsuranceId() + "'," + contract.getInsurancePrice() + ",'" + contract.getPremiumRate() + "','"
+					+ contract.getCompensation() + "','" + contract.getCreadtedDate() + ");";
+			super.add(query);
 			return true;
 		} else {
 			return false;

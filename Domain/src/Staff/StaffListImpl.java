@@ -3,6 +3,7 @@ package Staff;
 import DB.DBConnector;
 import Insurance.Insurance;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
 public class StaffListImpl extends DBConnector implements StaffList {
@@ -20,10 +21,13 @@ public class StaffListImpl extends DBConnector implements StaffList {
     @Override
     public boolean add(Staff staff) {
         if (this.staffList.add(staff)) {
-            String query = "insert into staff values ('"+staff.getId()+"','"+staff.getEmail()
-                +"','"+staff.getName()+"','"+staff.getSSN()+"','"+staff.isGender()+"','"+staff.getPassword()
-                +"','"+staff.getPhoneNum()+"','"+staff.getJoinDate()+"','"+staff.getDepartment()
-                +"','"+staff.getBasicSalary()+"','"+staff.getTotalSalary()+"','"+staff.getResult()+");";
+            String query = "INSERT INTO staff VALUES ("
+                    +staff.getId()+",'"+staff.getEmail()+"','"+staff.getName()
+                    +"','"+staff.getSSN()+"',"+staff.isGender()+",'"+staff.getPassword()+"','"
+                    +staff.getPhoneNum()+"','"+staff.getJoinDate()+"','"+staff.getDepartment()+"',"
+                    +staff.getBasicSalary()+","+staff.getTotalSalary()+","+staff.getResult()
+                    +");";
+//            String query = "insert into staff values (1, 'dss', 'dsd', '123', true, '123', '1234', '334432', 'dada', 2, 22, 222 );";
             super.add(query);
             return true;
         } else

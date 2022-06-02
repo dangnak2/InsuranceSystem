@@ -1,5 +1,6 @@
 package Staff;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
 public interface StaffList {

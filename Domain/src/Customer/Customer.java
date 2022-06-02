@@ -1,6 +1,7 @@
 package Customer;
 
 import java.util.Date;
+import Customer.MedicalHistory;
 
 public class Customer {
 
@@ -9,7 +10,10 @@ public class Customer {
 	private String address;
 	private String email;
 	private int id;
-	private enum job{};
+	public enum Job {
+		doctor,
+		teacher,
+	};
 	private MedicalHistory medicalHistory;
 	private String name;
 	private String phoneNumber;
@@ -20,6 +24,7 @@ public class Customer {
 	private House house;
 	private Car car;
 	private Ship ship;
+	private Job job;
 
 
 
@@ -27,6 +32,13 @@ public class Customer {
 
 	}
 
+	public Job getJob() {
+		return job;
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
+	}
 
 	public boolean isPay() {
 		return pay;
