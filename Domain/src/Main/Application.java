@@ -52,7 +52,7 @@ public class Application {
         CompensationManage compensationManagement = new CompensationManage(contractList,
                 insuranceList, customerList);
         UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList);
-        Design design = new Design(insuranceList);
+        Design design = new Design(insuranceList, fireInsuranceList, carInsuranceList, seaInsuranceList);
         CalculatePremium calculatePremium = new CalculatePremiumImpl();
         Sale sale = new Sale(insuranceList, customerList, contractList, calculatePremium);
         StaffManagement staffManagement = new StaffManagement(staffList);
@@ -407,21 +407,6 @@ public class Application {
                                                     String answer = sc.nextLine();
                                                     if (answer.equals("1")) {
                                                         Insurance createInsurance = design.design(
-                                                                Integer.parseInt(type), name,
-                                                                explanation, Integer.parseInt(premium),
-                                                                Integer.parseInt(
-                                                                        surroundingDamageBasicMoney),
-                                                                Integer.parseInt(humanDamageBasicMoney),
-                                                                Integer.parseInt(
-                                                                        buildingDamageBasicMoney),
-                                                                Integer.parseInt(carDamageBasicMoney),
-                                                                Integer.parseInt(
-                                                                        generalDamageBasicMoney),
-                                                                Integer.parseInt(
-                                                                        revenueDamageBasicMoney),
-                                                                        fireInsuranceList,
-                                                                        carInsuranceList,
-                                                                        seaInsuranceList);
                                                             Integer.parseInt(type), name,
                                                             explanation, Integer.parseInt(premium),
                                                             Integer.parseInt(
@@ -659,9 +644,8 @@ public class Application {
                                                             System.out.println(
                                                                     "해당 고객은 보험 가입에 제한되는 병력이 없습니다. 인수심사가 통과되었습니다! 보험 가입이 완료되었습니다.");
 
-                                                            underWrite.passUnderwrite(
-                                                                    selectContract);
-                                                                selectContract, staff);
+                                                            underWrite.passUnderwrite(selectContract, staff);
+
                                                             continue viewContract;
 
                                                         } else if (select2.equals("2")) {

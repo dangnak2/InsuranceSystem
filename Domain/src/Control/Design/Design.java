@@ -12,9 +12,15 @@ import java.util.Date;
 public class Design {
 
 	private InsuranceList insuranceList;
+	private FireInsuranceListImpl fireInsuranceList;
+	private CarInsuranceListImpl carInsuranceList;
+	private SeaInsuranceListImpl seaInsuranceList;
 
-	public Design(InsuranceList insuranceList) {
+	public Design(InsuranceList insuranceList, FireInsuranceListImpl fireInsuranceList, CarInsuranceListImpl carInsuranceList, SeaInsuranceListImpl seaInsuranceList) {
 		this.insuranceList = insuranceList;
+		this.fireInsuranceList = fireInsuranceList;
+		this.carInsuranceList = carInsuranceList;
+		this.seaInsuranceList = seaInsuranceList;
 	}
 
 
@@ -42,9 +48,7 @@ public class Design {
 
 
 	public Insurance design(int type, String name, String explanation, int premium, int surroundingDamageBasicMoney, int humanDamageBasicMoney, int buildingDamageBasicMoney
-												, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney
-												, FireInsuranceListImpl fireInsuranceList, CarInsuranceListImpl carInsuranceList, SeaInsuranceListImpl seaInsuranceList){
-			, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney,  Staff staff){
+												, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney, Staff staff){
 		Date date = new Date();
 		Insurance insurance = null;
 		if (type == 1) {
