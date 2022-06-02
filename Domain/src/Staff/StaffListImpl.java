@@ -1,6 +1,5 @@
 package Staff;
 
-import Contract.Contract;
 import DB.DBConnector;
 
 import java.sql.ResultSet;
@@ -58,7 +57,7 @@ public class StaffListImpl extends DBConnector implements StaffList {
             + staff.getPhoneNum() + "','" + staff.getJoinDate() + "','" + staff.getDepartment() + "',"
             + staff.getBasicSalary() + "," + staff.getTotalSalary() + "," + staff.getResult() + ",'" + staff.getPosition() +"'"
             + ");";
-        if(super.create(query)) {
+        if(super.add(query)) {
             this.staffList = getStaffList();
             return true;
         }

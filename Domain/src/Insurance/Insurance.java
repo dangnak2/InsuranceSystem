@@ -1,6 +1,4 @@
 package Insurance;
-
-import Customer.Car;
 import java.util.Date;
 
 public abstract class Insurance {
@@ -10,7 +8,6 @@ public abstract class Insurance {
     Car,
     Sea;
   }
-
 
   private int id;
   private String name;
@@ -26,7 +23,6 @@ public abstract class Insurance {
   public Insurance() {
 
   }
-
 
   public Type getType() {
     return type;
@@ -44,11 +40,11 @@ public abstract class Insurance {
     this.basicConpensation = basicConpensation;
   }
 
-  public Date getAuthorizationDate() {
+  public Date getAuthorizedDate() {
     return authorizationDate;
   }
 
-  public void setAuthorizationDate(Date authorizationDate) {
+  public void setAuthorizedDate(Date authorizationDate) {
     this.authorizationDate = authorizationDate;
   }
 
@@ -108,5 +104,4 @@ public abstract class Insurance {
   public void setAuthorization(boolean authorization) {
     this.authorization = authorization;
   }
-
 }
