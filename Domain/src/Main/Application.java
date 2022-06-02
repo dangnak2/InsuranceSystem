@@ -422,6 +422,18 @@ public class Application {
                                                                         fireInsuranceList,
                                                                         carInsuranceList,
                                                                         seaInsuranceList);
+                                                            Integer.parseInt(type), name,
+                                                            explanation, Integer.parseInt(premium),
+                                                            Integer.parseInt(
+                                                                surroundingDamageBasicMoney),
+                                                            Integer.parseInt(humanDamageBasicMoney),
+                                                            Integer.parseInt(
+                                                                buildingDamageBasicMoney),
+                                                            Integer.parseInt(carDamageBasicMoney),
+                                                            Integer.parseInt(
+                                                                generalDamageBasicMoney),
+                                                            Integer.parseInt(
+                                                                revenueDamageBasicMoney), staff);
                                                         if (createInsurance != null) {
                                                             System.out.println(
                                                                     "보험 생성이 완료되었습니다. 보험 관리 화면에서 인가를 받아야 해당 보험을 이용할 수 있습니다.");
@@ -649,6 +661,7 @@ public class Application {
 
                                                             underWrite.passUnderwrite(
                                                                     selectContract);
+                                                                selectContract, staff);
                                                             continue viewContract;
 
                                                         } else if (select2.equals("2")) {
@@ -1081,6 +1094,236 @@ public class Application {
                                                                         "입력하신 ID의 고객 정보가 없습니다. 다시 입력해 주세요.");
                                                                 continue findCustomer;
                                                             }
+
+                                                            switch (insurance.getType()) {
+                                                                case Car:
+                                                                    if(customer.getCar() == null) {
+                                                                        System.out.println(
+                                                                                "자동차 번호 : ");
+                                                                        String carNum;
+
+                                                                        while (true) {
+                                                                            carNum = sc.nextLine();
+                                                                            if (!carNum.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        System.out.println(
+                                                                                "자동차 연식 : ");
+                                                                        String carYear;
+
+                                                                        while (true) {
+                                                                            carYear = sc.nextLine();
+                                                                            if (!carYear.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        System.out.println(
+                                                                                "자동차 배기량 : ");
+                                                                        String carDisplacement;
+
+                                                                        while (true) {
+                                                                            carDisplacement = sc.nextLine();
+                                                                            if (!carDisplacement.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        System.out.println(
+                                                                                "자동차 가격 : ");
+                                                                        String carPrice;
+
+                                                                        while (true) {
+                                                                            carPrice = sc.nextLine();
+                                                                            if (!carPrice.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+
+                                                                        sale.setCustomerCar(
+                                                                                customer,
+                                                                                Integer.parseInt(
+                                                                                        carNum),
+                                                                                Integer.parseInt(
+                                                                                        carYear),
+                                                                                Integer.parseInt(
+                                                                                        carDisplacement),
+                                                                                Integer.parseInt(
+                                                                                        carPrice));
+                                                                    }
+                                                                    break;
+                                                                case Fire:
+                                                                    if(customer.getHouse() == null) {
+                                                                        System.out.println(
+                                                                                "건물 종류 : 1. 아파트 / 2. 주택 / 3. 오피스텔");
+                                                                        String houseType;
+
+                                                                        while (true) {
+                                                                            houseType = sc.nextLine();
+                                                                            if (!houseType.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+
+                                                                        System.out.println(
+                                                                                "건물 가격 : ");
+                                                                        String housePrice;
+                                                                        while (true) {
+                                                                            housePrice = sc.nextLine();
+                                                                            if (!housePrice.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+
+                                                                        sale.setCustomerHouse(
+                                                                                customer,
+                                                                                Integer.parseInt(
+                                                                                        houseType),
+                                                                                Integer.parseInt(
+                                                                                        housePrice));
+                                                                    }
+                                                                    break;
+                                                                case Sea:
+                                                                    if(customer.getShip() == null) {
+                                                                        System.out.println(
+                                                                                "선박 번호 : ");
+                                                                        String shipNum;
+
+                                                                        while (true) {
+                                                                            shipNum = sc.nextLine();
+                                                                            if (!shipNum.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+
+                                                                        System.out.println(
+                                                                                "선박 연식 : ");
+                                                                        String shipYear;
+
+                                                                        while (true) {
+                                                                            shipYear = sc.nextLine();
+                                                                            if (!shipYear.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        System.out.println(
+                                                                                "선박 가격 : ");
+                                                                        String shipPrice;
+
+                                                                        while (true) {
+                                                                            shipPrice = sc.nextLine();
+                                                                            if (!shipPrice.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        System.out.println(
+                                                                                "선박 종류 : 1. 일반 화물 / 2. 컨테이너선 ");
+                                                                        String shipType;
+
+                                                                        while (true) {
+                                                                            shipType = sc.nextLine();
+                                                                            if (!shipType.matches(
+                                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                                System.out.println(
+                                                                                        "숫자만 입력해 주세요.");
+                                                                                continue;
+                                                                            } else {
+                                                                                break;
+                                                                            }
+                                                                        }
+
+                                                                        sale.setCustomerSea(
+                                                                                customer,
+                                                                                Integer.parseInt(
+                                                                                        shipNum),
+                                                                                Integer.parseInt(
+                                                                                        shipYear),
+                                                                                Integer.parseInt(
+                                                                                        shipPrice),
+                                                                                Integer.parseInt(
+                                                                                        shipType));
+                                                                    }
+                                                                    break;
+                                                            }
+
+                                                            signContract:
+                                                            while (true) {
+                                                                System.out.println(
+                                                                        "청약서에 동의하시고 계약을 진행하시겠습니까?");
+                                                                System.out.println(
+                                                                        "1. 동의하고 계약하기");
+                                                                System.out.println("2. 취소");
+
+                                                                String select3 = sc.nextLine();
+
+                                                                if (select3.equals("1")) {
+                                                                    if (sale.signContract(
+                                                                            insurance.getId(),
+                                                                            customer, staff)) {
+                                                                        System.out.println(
+                                                                                "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
+                                                                        continue manageContract;
+                                                                    } else {
+                                                                        System.out.println(
+                                                                                "예기치 못한 오류로 보험 계액에 실패하였습니다. 계약을 다시 시도해주세요.");
+                                                                        continue findInsurance;
+                                                                    }
+                                                                } else if (select3.equals(
+                                                                        "2")) {
+                                                                    System.out.println(
+                                                                            "계약을 취소하였습니다.");
+                                                                    continue manageContract;
+                                                                } else {
+                                                                    System.out.println(
+                                                                            "목록에 있는 번호를 입력해 주세요.");
+                                                                    continue signContract;
+                                                                }
+                                                            }
+
                                                         } else if (select2.equals("2")) {
                                                             createCustomer:
                                                             while (true) {
@@ -1426,8 +1669,8 @@ public class Application {
 
                                                                     if (select3.equals("1")) {
                                                                         if (sale.signContract(
-                                                                                insurance.getId(),
-                                                                                customer)) {
+                                                                            insurance.getId(),
+                                                                            customer, staff)) {
                                                                             System.out.println(
                                                                                     "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
                                                                             continue manageContract;
@@ -1522,7 +1765,7 @@ public class Application {
 
                                                 for (Staff findStaff : staffs) {
                                                     staffManagement.calculateSalary(
-                                                            findStaff.getId());
+                                                        findStaff.getId(), staff);
                                                     System.out.println(
                                                             "부서 : " + findStaff.getDepartment().name()
                                                                     + " 사원 번호 : " + findStaff.getId()
@@ -1613,8 +1856,9 @@ public class Application {
                                                             }
 
                                                             staffManagement.changePosition(
-                                                                    manageStaff,
-                                                                    Integer.parseInt(position));
+
+                                                                manageStaff,
+                                                                Integer.parseInt(position), staff);
 
                                                             System.out.println(
                                                                     "직책이 변경되었습니다. 직책에 따라 기본 월급이 변경됩니다.");
@@ -1912,13 +2156,14 @@ public class Application {
                                                                                     }
 
                                                                                     compensationManagement.compensation(
-                                                                                            contract.getContractId(),
-                                                                                            Integer.parseInt(
-                                                                                                    humanDamage),
-                                                                                            0, 0,
-                                                                                            Integer.parseInt(
-                                                                                                    carDamage),
-                                                                                            0, 0);
+
+                                                                                        contract.getContractId(),
+                                                                                        Integer.parseInt(
+                                                                                            humanDamage),
+                                                                                        0, 0,
+                                                                                        Integer.parseInt(
+                                                                                            carDamage),
+                                                                                        0, 0, staff);
                                                                                     break calculateCompensation;
                                                                                 }
                                                                                 break;
@@ -2001,12 +2246,12 @@ public class Application {
                                                                                     }
 
                                                                                     compensationManagement.compensation(
-                                                                                            contract.getContractId(),
-                                                                                            0, 0, 0, 0,
-                                                                                            Integer.parseInt(
-                                                                                                    generalDamage),
-                                                                                            Integer.parseInt(
-                                                                                                    revenueDamage));
+                                                                                     contract.getContractId(),
+                                                                                        0, 0, 0, 0,
+                                                                                        Integer.parseInt(
+                                                                                            generalDamage),
+                                                                                        Integer.parseInt(
+                                                                                            revenueDamage), staff);
                                                                                     break calculateCompensation;
                                                                                 }
                                                                                 break;
@@ -2105,14 +2350,15 @@ public class Application {
                                                                                     }
 
                                                                                     compensationManagement.compensation(
-                                                                                            contract.getContractId(),
-                                                                                            Integer.parseInt(
-                                                                                                    humanDamage),
-                                                                                            Integer.parseInt(
-                                                                                                    buildingDamage),
-                                                                                            Integer.parseInt(
-                                                                                                    surroundingDamage),
-                                                                                            0, 0, 0);
+
+                                                                                        contract.getContractId(),
+                                                                                        Integer.parseInt(
+                                                                                            humanDamage),
+                                                                                        Integer.parseInt(
+                                                                                            buildingDamage),
+                                                                                        Integer.parseInt(
+                                                                                            surroundingDamage),
+                                                                                        0, 0, 0, staff);
                                                                                     break calculateCompensation;
                                                                                 }
                                                                             } else {

@@ -2,6 +2,7 @@ package Control.Design;
 
 import Insurance.*;
 import Insurance.Insurance.Type;
+import Staff.Staff;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -43,6 +44,8 @@ public class Design {
 	public Insurance design(int type, String name, String explanation, int premium, int surroundingDamageBasicMoney, int humanDamageBasicMoney, int buildingDamageBasicMoney
 												, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney
 												, FireInsuranceListImpl fireInsuranceList, CarInsuranceListImpl carInsuranceList, SeaInsuranceListImpl seaInsuranceList){
+			, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney,  Staff staff){
+		Date date = new Date();
 		Insurance insurance = null;
 		if (type == 1) {
 			insurance = new FireInsurance();
@@ -87,6 +90,7 @@ public class Design {
 		}
 
 
+		staff.setResult(staff.getResult()+1);
 		return insurance;
 	}
 

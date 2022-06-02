@@ -4,6 +4,7 @@ import Contract.Contract;
 import Contract.*;
 import Customer.*;
 import Insurance.*;
+import Staff.Staff;
 
 import java.util.ArrayList;
 
@@ -80,8 +81,9 @@ public class UnderWrite {
         return customer.getMedicalHistory().getMyDisease().isPass();
     }
 
-    public void passUnderwrite(Contract contract) {
+    public void passUnderwrite(Contract contract, Staff staff) {
         contract.setUnderWrite(true);
+        staff.setResult(staff.getResult()+1);
         this.contractList.update(contract);
     }
 }

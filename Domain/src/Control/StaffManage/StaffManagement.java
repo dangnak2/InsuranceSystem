@@ -134,18 +134,19 @@ public class StaffManagement {
 
     }
 
-    public void changePosition(Staff staff, int position) {
+    public void changePosition(Staff staff, int position, Staff loginStaff) {
         staff.setPosition(Position.values()[position - 1]);
-        this.calculateSalary(staff.getId());
+        this.calculateSalary(staff.getId(), loginStaff);
     }
 
-    public void calculateSalary(int staffId) {
+    public void calculateSalary(int staffId, Staff loginStaff) {
         Staff staff = this.staffList.get(staffId);
 
         int workDate = this.calculateWorkDate(staffId);
         int totalSalary = staff.getBasicSalary() + ((workDate/ 365) * 100000) + (staff.getResult() * 50000);
 
         staff.setTotalSalary(totalSalary);
+        loginStaff.setResult(staff.getResult()+1);
         this.staffList.update(staff);
 
 //        최종 월급 = 기본 월급(basicSalary) + 근무일수(count) / 365 * x + 판매 실적(result) * y
