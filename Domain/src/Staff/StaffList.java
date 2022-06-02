@@ -1,7 +1,5 @@
 package Staff;
 
-import java.util.ArrayList;
-
 public interface StaffList {
 
     public boolean add(Staff staff);
@@ -10,7 +8,7 @@ public interface StaffList {
 
     public Staff get(int staffId);
 
-    public void update(Staff staff);
+    public boolean update(Staff staff);
 
     public int getSize();
 

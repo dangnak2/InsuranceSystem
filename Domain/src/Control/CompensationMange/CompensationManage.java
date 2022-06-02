@@ -68,15 +68,12 @@ public class CompensationManage {
     public void compensation(int contractId, int humanDamage, int buildingDamage, int surroundingDamage, int carDamage, int generalDamage, int revenueDamage) {
 
         Date date = new Date();
-        Compensation compensation = new Compensation();
         Contract selectContract = this.contractList.get(contractId);
         Insurance selectInsurance = this.insuranceList.get(selectContract.getInsuranceId());
         Customer customer = this.customerList.get(selectContract.getCustomerId());
 
         double totalPrice = 0;
         double basicPrice = selectInsurance.getBasicConpensation();
-        compensation.setCompensationDate(date);
-
 
         if(selectInsurance instanceof FireInsurance){
 
@@ -101,7 +98,7 @@ public class CompensationManage {
                 totalPrice *= 1.4;
             }
 
-            compensation.setCompensationAmount(totalPrice);
+            selectContract.setCompensationAmount(totalPrice);
 
         } else if(selectInsurance instanceof CarInsurance){
 
@@ -123,7 +120,7 @@ public class CompensationManage {
             totalPrice += compensationHumanDamage;
             totalPrice += compensationAccidentDegree;
 
-            compensation.setCompensationAmount(totalPrice);
+            selectContract.setCompensationAmount(totalPrice);
 
         } else if (selectInsurance instanceof SeaInsurance){
 
@@ -146,10 +143,8 @@ public class CompensationManage {
                 totalPrice += basicPrice * 1.4;
             }
 
-            compensation.setCompensationAmount(totalPrice);
+            selectContract.setCompensationAmount(totalPrice);
         }
-
-        selectContract.setCompensation(compensation);
 
         this.contractList.update(selectContract);
     }

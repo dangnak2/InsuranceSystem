@@ -1,14 +1,14 @@
 package Insurance;
 
-import Contract.Compensation;
+import Customer.Car;
 import java.util.Date;
 
 public abstract class Insurance {
 
   public enum Type{
+    Fire,
     Car,
-    Sea,
-    Fire;
+    Sea;
   }
 
 

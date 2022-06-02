@@ -2,6 +2,7 @@ package Contract;
 
 
 import Insurance.Insurance;
+import java.util.Date;
 
 public class Contract {
 
@@ -20,7 +21,25 @@ public class Contract {
 	private int insuranceId;
 	private int insurancePrice;
 	private int premiumRate;
-	private Compensation compensation;
+
+	public double getCompensationAmount() {
+		return compensationAmount;
+	}
+
+	public void setCompensationAmount(double compensationAmount) {
+		this.compensationAmount = compensationAmount;
+	}
+
+	public Date getContractDate() {
+		return contractDate;
+	}
+
+	public void setContractDate(Date contractDate) {
+		this.contractDate = contractDate;
+	}
+
+	private double compensationAmount;
+	private Date contractDate;
 	private boolean underWrite;
 
 	public Contract(){
@@ -73,14 +92,6 @@ public class Contract {
 
 	public void setPremiumRate(int premiumRate) {
 		this.premiumRate = premiumRate;
-	}
-
-	public Compensation getCompensation() {
-		return compensation;
-	}
-
-	public void setCompensation(Compensation compensation) {
-		this.compensation = compensation;
 	}
 
 }

@@ -8,7 +8,7 @@ public interface ContractList {
 
 	public Contract get(int contractId);
 
-	public void update( Contract contract);
+	public boolean update( Contract contract);
 
 	public int getSize();
 }
