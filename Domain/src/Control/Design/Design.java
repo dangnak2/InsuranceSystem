@@ -3,6 +3,7 @@ package Control.Design;
 import Customer.Car;
 import Insurance.*;
 import Insurance.Insurance.Type;
+import Staff.Staff;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +41,7 @@ public class Design {
 
 
 	public Insurance design(int type, String name, String explanation, int premium, int surroundingDamageBasicMoney, int humanDamageBasicMoney, int buildingDamageBasicMoney
-			, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney){
+			, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney,  Staff staff){
 		Date date = new Date();
 		Insurance insurance = null;
 		if (type == 1) {
@@ -77,6 +78,7 @@ public class Design {
 
 		insuranceList.add(insurance);
 
+		staff.setResult(staff.getResult()+1);
 		return insurance;
 	}
 

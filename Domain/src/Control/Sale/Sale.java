@@ -8,6 +8,7 @@ import Customer.MedicalHistory.Disease;
 import Customer.Customer.Job;
 import Customer.House.HouseType;
 import Customer.Ship.ShipType;
+import Staff.Staff;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -369,7 +370,7 @@ public class Sale {
     //Main에서 Customer를 새로 만들고 전달하는 식으로
     //고객을 먼저 추가하고 가입을 할지 가입 할 때 저장을 할지 정확하게 정해야 함
     //일단 가입 시 고객을 저장하는 버전
-    public boolean signContract(int insuranceId, Customer customer) {
+    public boolean signContract(int insuranceId, Customer customer, Staff staff) {
         this.customerList.add(customer);
         Contract contract = new Contract();
         contract.setContractId(this.contractList.getSize() + 1);
@@ -379,6 +380,7 @@ public class Sale {
         contract.setInsurancePrice(
                 (int) this.calculatePremium.calculatePremium(customer, this.insuranceList.get(insuranceId).getPremium()));
         contract.setContractDate(Timestamp.valueOf(LocalDateTime.now()));
+        staff.setResult(staff.getResult()+1);
         return this.contractList.add(contract);
     }
 
