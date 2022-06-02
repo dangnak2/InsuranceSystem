@@ -3,9 +3,9 @@ package Customer;
 public interface CarList {
   boolean add(Car car);
 
-  boolean delete(int customerId);
+  boolean delete(int id);
 
-  Car get(int customerId);
+  Car get(int id);
 
   boolean update(Car car);
 

@@ -9,11 +9,22 @@ public class House {
   public enum HouseType {
     apartment,
     housing,
-    officetels;
+    officetels
   }
   private HouseType houseType;
   private int price;
   private int customer_id;
+  private int id;
+
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
 
   public House() {
   }
@@ -38,7 +49,7 @@ public class House {
     return this.customer_id;
   }
 
-  public void setCustomer_id(int customer_id) {
+  public void setCustomerId(int customer_id) {
     this.customer_id = customer_id;
   }
 

@@ -31,6 +31,7 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 				customer.setPhoneNumber(rs.getString("phoneNumber"));
 				customer.setSex(rs.getBoolean("sex"));
 				customer.setSSN(rs.getString("ssn"));
+				customer.setAge(rs.getInt("age"));
 				customer.setPay(rs.getBoolean("pay"));
 				customer.setJoinDate(rs.getDate("joinDate"));
 
@@ -50,7 +51,7 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 		String query = "insert into customer values ("
 				+ customer.getId() + ",'" + customer.getAddress() + "','" + customer.getEmail()
 				+ "','" + customer.getAccount() + "','" + customer.getJob() + "','" + customer.getName() + "','"
-				+ customer.getPhoneNumber() + "', " + customer.isSex() + ",'" + customer.getSSN() + "',"
+				+ customer.getPhoneNumber() + "', " + customer.isSex() + ",'" + customer.getSSN() + "'," + customer.getAge() +", "
 				+ customer.isPay() + ", '" + customer.getJoinDate() + "');";
 		if(super.create(query)){
 			this.customerList = getCustomerList();
@@ -75,8 +76,8 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 				+ customer.getAddress() + "', email = '" + customer.getEmail()
 				+ "', account = '" + customer.getAccount() + "', job = '" + customer.getJob() + "', name = '" + customer.getName()
 				+ "', phoneNumber = '" + customer.getPhoneNumber() + "', sex = " + customer.isSex() + ", ssn = '" + customer.getSSN()
-				+ "', pay = " + customer.isPay() + ", joinDate = '" + customer.getJoinDate()
-				+ "' where customer_id =" + customer.getId();
+				+ "', age = " + customer.getAge() + ", pay = " + customer.isPay() + ", joinDate = '" + customer.getJoinDate()
+				+ "' where customer_id = " + customer.getId();
 		if(super.update(query)){
 			this.customerList = getCustomerList();
 			return true;

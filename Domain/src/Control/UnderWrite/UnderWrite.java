@@ -4,7 +4,7 @@ import Contract.Contract;
 import Contract.*;
 import Customer.*;
 import Insurance.*;
-import Staff.Staff;
+import Staff.*;
 
 import java.util.ArrayList;
 
@@ -13,11 +13,16 @@ public class UnderWrite {
     private ContractList contractList;
     private InsuranceList insuranceList;
     private CustomerList customerList;
+    private StaffList staffList;
+    private MedicalHistoryList medicalHistoryList;
 
-    public UnderWrite(ContractList contractList, InsuranceList insuranceList, CustomerList customerList) {
+
+    public UnderWrite(ContractList contractList, InsuranceList insuranceList, CustomerList customerList, StaffList staffList, MedicalHistoryList medicalHistoryList) {
         this.contractList = contractList;
         this.insuranceList = insuranceList;
         this.customerList = customerList;
+        this.staffList = staffList;
+        this.medicalHistoryList = medicalHistoryList;
     }
 
     public ArrayList<Contract> findCustomerContract(int customerId) {
@@ -78,12 +83,15 @@ public class UnderWrite {
 
 
     public boolean checkDisease(Customer customer) {
-        return customer.getMedicalHistory().getMyDisease().isPass();
+
+        return medicalHistoryList.get(customer.getId()).getMyDisease().isPass();
     }
 
     public void passUnderwrite(Contract contract, Staff staff) {
         contract.setUnderWrite(true);
         staff.setResult(staff.getResult()+1);
+
+        this.staffList.update(staff);
         this.contractList.update(contract);
     }
 }

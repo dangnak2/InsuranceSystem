@@ -32,6 +32,7 @@ public class ContractListImpl extends DBConnector implements ContractList {
         contract.setPremiumRate(rs.getInt("premium_rate"));
         contract.setCompensationAmount(rs.getDouble("compensation_amount"));
         contract.setContractDate(rs.getDate("contracted_date"));
+        contract.setUnderWrite(rs.getBoolean("underwrite"));
 
 
         contractList.add(contract);
@@ -79,11 +80,11 @@ public class ContractListImpl extends DBConnector implements ContractList {
     String query = "update contract set "
         + "customer_id = " + contract.getCustomerId() + ", sales_id = " + contract.getSalesId()
         + ", insurance_id = "
-        + contract.getInsuranceId() + ", insurancePrice = " + contract.getInsurancePrice()
+        + contract.getInsuranceId() + ", insurance_price = " + contract.getInsurancePrice()
         + ", premium_rate = "
         + contract.getPremiumRate() + ", compensation_amount = " + contract.getCompensationAmount()
-        + ", contract_date = " + contract.getContractDate()
-        + " where id = " + contract.getContractId();
+        + ", contracted_date = '" + contract.getContractDate() + "', underwrite = " + contract.isUnderWrite()
+        + " where contract_id = " + contract.getContractId();
     if (super.update(query)) {
       this.contractList = getContractList();
       return true;
@@ -95,7 +96,7 @@ public class ContractListImpl extends DBConnector implements ContractList {
   @Override
   public boolean delete(int contractId) {
 
-    String query = "delete from staff where id=" + contractId;
+    String query = "delete from contract where contract_id = " + contractId;
     if (super.delete(query)) {
       this.contractList = this.getContractList();
       return true;

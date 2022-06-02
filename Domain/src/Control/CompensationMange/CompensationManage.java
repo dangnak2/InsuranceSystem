@@ -40,14 +40,13 @@ public class CompensationManage {
         return customerContractList;
     }
 
-    public Contract getContract(int customerId, int insuranceId) {
+    public Contract getContract(int contractId) {
         if (this.contractList instanceof ContractListImpl) {
             for (Contract contract : ((ContractListImpl)this.contractList).getContractList()) {
-                if (customerId == contract.getCustomerId() && insuranceId == contract.getInsuranceId()) {
-                    return contract;
+                if(contractId == contract.getContractId()) return contract;
                 }
             }
-        }
+
         return null;
     }
 

@@ -59,10 +59,10 @@ public class Application {
 
         CompensationManage compensationManagement = new CompensationManage(contractList,
                 insuranceList, customerList);
-        UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList);
+        UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList, staffList, medicalHistoryList);
         Design design = new Design(insuranceList, fireInsuranceList, carInsuranceList, seaInsuranceList);
         CalculatePremium calculatePremium = new CalculatePremiumImpl();
-        Sale sale = new Sale(insuranceList, customerList, medicalHistoryList, carList, houseList, shipList, contractList, calculatePremium);
+        Sale sale = new Sale(insuranceList, customerList, medicalHistoryList, carList, houseList, shipList, contractList, staffList, calculatePremium);
         StaffManagement staffManagement = new StaffManagement(staffList);
 
         main:
@@ -617,7 +617,7 @@ public class Application {
                                                                             + " 고객 직업 : "
                                                                             + customer.getJob().name()
                                                                             + " 고객 병력 : "
-                                                                            + customer.getMedicalHistory()
+                                                                            + medicalHistoryList.get(customer.getId())
                                                                             .getMyDisease().name());
 
                                                             System.out.println();
@@ -720,8 +720,9 @@ public class Application {
                                                         + customer.getPhoneNumber()
                                                         + " E-mail : " + customer.getEmail()
                                                         + " 가입한 보험 : ");
-                                                for (Insurance insurance : sale.getJoinInsurances(
-                                                        customer.getId())) {
+                                                ArrayList<Insurance> insurances = sale.getJoinInsurances(customer.getId());
+
+                                                for (Insurance insurance : insurances) {
                                                     System.out.print(insurance.getName() + " ");
                                                 }
                                                 System.out.println(
@@ -2019,11 +2020,11 @@ public class Application {
                                                                     .name());
                                                 }
                                                 System.out.println("보상 신청 할 계약 ID를 입력해 주세요.");
-                                                String insuranceId;
+                                                String contractId;
 
                                                 while (true) {
-                                                    insuranceId = sc.nextLine();
-                                                    if (!insuranceId.matches(
+                                                    contractId = sc.nextLine();
+                                                    if (!contractId.matches(
                                                             "[+-]?\\d*(\\.\\d+)?")) {
                                                         System.out.println("숫자만 입력해 주세요.");
                                                         continue;
@@ -2031,9 +2032,8 @@ public class Application {
                                                         break;
                                                     }
                                                 }
-
                                                 Insurance insurance = sale.getInsurance(
-                                                        Integer.parseInt(insuranceId));
+                                                    sale.getContract(Integer.parseInt(contractId)).getInsuranceId());
 
                                                 if (insurance == null) {
                                                     System.out.println(
@@ -2042,8 +2042,7 @@ public class Application {
                                                 }
 
                                                 Contract contract = compensationManagement.getContract(
-                                                        Integer.parseInt(customerId),
-                                                        Integer.parseInt(insuranceId));
+                                                        Integer.parseInt(contractId));
                                                 Customer customer = sale.getCustomer(
                                                         Integer.parseInt(customerId));
 

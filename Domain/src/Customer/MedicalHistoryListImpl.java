@@ -24,7 +24,8 @@ public class MedicalHistoryListImpl extends DBConnector implements MedicalHistor
     try {
       while (rs.next()) {
         MedicalHistory medicalHistory = new MedicalHistory();
-        medicalHistory.setCustomer_id(rs.getInt("cutomer_id"));
+
+        medicalHistory.setCustomerId(rs.getInt("customer_id"));
         medicalHistory.setHistoryYear(rs.getInt("historyYear"));
         medicalHistory.setCureComplete(rs.getBoolean("CureComplete"));
         medicalHistory.setMyDisease(
