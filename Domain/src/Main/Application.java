@@ -1622,7 +1622,7 @@ public class Application {
                                                     while (true) {
                                                         System.out.println(
                                                             "부서를 이동할 사원의 ID를 입력해 주세요.");
-                                                        String staffId = sc.nextLine();
+                                                        String staffId;
 
                                                         while (true) {
                                                             staffId = sc.nextLine();
