@@ -4,12 +4,36 @@ import java.util.Date;
 
 public class Customer {
 
-	//private Accident accident;
+	public enum Job{
+		영업직(70, false),
+		생산직(60, true),
+		사무직(75, false),
+		자영업자(70, true),
+		무직(30, false);
+
+		private int maxAge;
+		private boolean danger;
+
+		Job(int maxAge, boolean danger) {
+			this.maxAge = maxAge;
+			this.danger = danger;
+		}
+
+		public int getMaxAge() {
+			return maxAge;
+		}
+
+		public boolean isDanger() {
+			return danger;
+		}
+	}
+
+	private int id;
+	private int age;
 	private String account;
 	private String address;
 	private String email;
-	private int id;
-	private enum job{};
+	private Job job;
 	private MedicalHistory medicalHistory;
 	private String name;
 	private String phoneNumber;
@@ -27,6 +51,21 @@ public class Customer {
 
 	}
 
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public Job getJob() {
+		return job;
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
+	}
 
 	public boolean isPay() {
 		return pay;

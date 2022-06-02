@@ -1,6 +1,8 @@
 package Insurance;
 
 
+import Contract.Contract;
+
 import java.util.ArrayList;
 
 
@@ -45,7 +47,14 @@ public class InsuranceListImpl implements InsuranceList {
 	}
 
 	@Override
+	public void update(Insurance insurance) {
+		int index = this.insuranceList.indexOf(insurance);
+		this.insuranceList.set(index, insurance);
+	}
+
+	@Override
 	public int getSize() {
 		return this.insuranceList.size();
 	}
+
 }

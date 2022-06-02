@@ -14,7 +14,7 @@ public interface InsuranceList {
 	public boolean delete(int insuranceId);
 
 	public Insurance get(int insuranceId);
-	//public void update();
+	public void update(Insurance insurance);
 
 	public int getSize();
 

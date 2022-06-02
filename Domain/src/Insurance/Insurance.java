@@ -5,6 +5,13 @@ import java.util.Date;
 
 public abstract class Insurance {
 
+  public enum Type{
+    Car,
+    Sea,
+    Fire;
+  }
+
+
   private int id;
   private String name;
   private String explanation;
@@ -14,13 +21,20 @@ public abstract class Insurance {
   private Date authorizationDate;
   private Date createdDate;
   private Date modifiedDate;
+  private Type type;
 
   public Insurance() {
 
   }
 
 
+  public Type getType() {
+    return type;
+  }
 
+  public void setType(Type type) {
+    this.type = type;
+  }
 
   public int getBasicConpensation() {
     return basicConpensation;

@@ -2,12 +2,23 @@ package Customer;
 
 public class House {
 
-  private enum type {
+  public enum HouseType {
     apartment, //아파트
     housing, //주택
-    officetel //오피스텔
+    officetels //오피스텔
   }
+
+
+  private HouseType houseType;
   private int price;
+
+  public HouseType getHouseType() {
+    return houseType;
+  }
+
+  public void setHouseType(HouseType houseType) {
+    this.houseType = houseType;
+  }
 
   public int getPrice() {
     return price;

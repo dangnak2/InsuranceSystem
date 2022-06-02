@@ -47,4 +47,9 @@ public class StaffListImpl implements StaffList{
         int index = this.staffList.indexOf(staff);
         this.staffList.set(index, staff);
     }
+
+    @Override
+    public int getSize() {
+        return this.staffList.size();
+    }
 }

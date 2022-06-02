@@ -1,20 +1,27 @@
 package Customer;
 
-import java.util.Scanner;
-
 public class MedicalHistory {
+	public enum Disease {
+		암(false),
+		결핵(true),
+		수두(true),
+		홍역(true),
+		없음(true);
 
-	MedicalHistory medicalHistory;
-	Scanner sc = new Scanner(System.in);
+		private boolean pass;
+
+		Disease(boolean pass) {
+			this.pass = pass;
+		}
+
+		public boolean isPass() {
+			return pass;
+		}
+	}
 
 	private boolean cureComplete;
-	public enum disease{
-		결핵,
-		수두,
-		홍역;
-	};
 	private int historyYear;
-	private disease MyDisease;
+	private Disease MyDisease;
 	public MedicalHistory(){
 
 	}
@@ -33,10 +40,10 @@ public class MedicalHistory {
 		this.historyYear = historyYear;
 	}
 
-	public disease getMyDisease() {
+	public Disease getMyDisease() {
 		return MyDisease;
 	}
-	public void setMyDisease(disease myDisease) {
+	public void setMyDisease(Disease myDisease) {
 		this.MyDisease = myDisease;
 	}
 
