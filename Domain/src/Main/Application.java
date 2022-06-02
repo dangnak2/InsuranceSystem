@@ -13,15 +13,21 @@ import Control.StaffManage.StaffManagement;
 import Control.UnderWrite.UnderWrite;
 import Customer.Customer;
 import Customer.CustomerListImpl;
-import Insurance.Insurance;
 import Insurance.InsuranceListImpl;
 import Staff.Staff;
 import Staff.*;
 import Auth.*;
 
+import Staff.Staff.Department;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 public class Application {
 
@@ -1716,6 +1722,5 @@ public class Application {
 
             }
 
-        }
-
+        }										
 }

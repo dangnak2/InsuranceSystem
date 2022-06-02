@@ -1,10 +1,11 @@
 package Staff;
 
+import DB.DBConnector;
 import Insurance.Insurance;
 
 import java.util.ArrayList;
 
-public class StaffListImpl implements StaffList{
+public class StaffListImpl extends DBConnector implements StaffList {
 
     ArrayList<Staff> staffList;
 
@@ -19,6 +20,14 @@ public class StaffListImpl implements StaffList{
     @Override
     public boolean add(Staff staff) {
         if (this.staffList.add(staff)) {
+            String query = "INSERT INTO staff VALUES ("
+                +staff.getId()+",'"+staff.getEmail()+"','"+staff.getName()
+                +"','"+staff.getSSN()+"',"+staff.isGender()+",'"+staff.getPassword()+"','"
+                +staff.getPhoneNum()+"','"+staff.getJoinDate()+"','"+staff.getDepartment()+"',"
+                +staff.getBasicSalary()+","+staff.getTotalSalary()+","+staff.getResult()
+                +");";
+            super.getConnection();
+            super.add(query);
             return true;
         } else
             return false;
