@@ -26,17 +26,9 @@ public class Design {
 		if (insurance == null) {
 			return false;
 		}
-		Date date = new Date();
-		if (insuranceList instanceof InsuranceListImpl) {
-			for (Insurance findInsurance : ((InsuranceListImpl) insuranceList).getInsuranceList()) {
-				if (findInsurance == insurance) {
-					insurance.setAuthorization(true);
-					insurance.setAuthorizedDate(date);
-				}
-			}
-		}
-		insuranceList.add(insurance);
-		return true;
+		insurance.setAuthorization(true);
+		insurance.setAuthorizedDate(Timestamp.valueOf(LocalDateTime.now()));
+		return insuranceList.update(insurance);
 	}
 
 

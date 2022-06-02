@@ -1,39 +1,19 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package Customer;
 
 import java.util.Date;
 
 public class Customer {
-
-	public enum Job{
-		영업직(70, false),
-		생산직(60, true),
-		사무직(75, false),
-		자영업자(70, true),
-		무직(30, false);
-
-		private int maxAge;
-		private boolean danger;
-
-		Job(int maxAge, boolean danger) {
-			this.maxAge = maxAge;
-			this.danger = danger;
-		}
-
-		public int getMaxAge() {
-			return maxAge;
-		}
-
-		public boolean isDanger() {
-			return danger;
-		}
-	}
-
 	private int id;
 	private int age;
 	private String account;
 	private String address;
 	private String email;
-	private Job job;
+	private Customer.Job job;
 	private MedicalHistory medicalHistory;
 	private String name;
 	private String phoneNumber;
@@ -45,30 +25,27 @@ public class Customer {
 	private Car car;
 	private Ship ship;
 
-
-
-	public Customer(){
-
+	public Customer() {
 	}
 
 	public int getAge() {
-		return age;
+		return this.age;
 	}
 
 	public void setAge(int age) {
 		this.age = age;
 	}
 
-	public Job getJob() {
-		return job;
+	public Customer.Job getJob() {
+		return this.job;
 	}
 
-	public void setJob(Job job) {
+	public void setJob(Customer.Job job) {
 		this.job = job;
 	}
 
 	public boolean isPay() {
-		return pay;
+		return this.pay;
 	}
 
 	public void setPay(boolean pay) {
@@ -76,7 +53,7 @@ public class Customer {
 	}
 
 	public Date getJoinDate() {
-		return joinDate;
+		return this.joinDate;
 	}
 
 	public void setJoinDate(Date joinDate) {
@@ -84,7 +61,7 @@ public class Customer {
 	}
 
 	public String getAccount() {
-		return account;
+		return this.account;
 	}
 
 	public void setAccount(String account) {
@@ -92,7 +69,7 @@ public class Customer {
 	}
 
 	public String getAddress() {
-		return address;
+		return this.address;
 	}
 
 	public void setAddress(String address) {
@@ -100,7 +77,7 @@ public class Customer {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
@@ -108,7 +85,7 @@ public class Customer {
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {
@@ -116,7 +93,7 @@ public class Customer {
 	}
 
 	public MedicalHistory getMedicalHistory() {
-		return medicalHistory;
+		return this.medicalHistory;
 	}
 
 	public void setMedicalHistory(MedicalHistory medicalHistory) {
@@ -124,7 +101,7 @@ public class Customer {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -132,7 +109,7 @@ public class Customer {
 	}
 
 	public String getPhoneNumber() {
-		return phoneNumber;
+		return this.phoneNumber;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
@@ -140,7 +117,7 @@ public class Customer {
 	}
 
 	public boolean isSex() {
-		return sex;
+		return this.sex;
 	}
 
 	public void setSex(boolean sex) {
@@ -148,16 +125,15 @@ public class Customer {
 	}
 
 	public String getSSN() {
-		return SSN;
+		return this.SSN;
 	}
 
 	public void setSSN(String SSN) {
 		this.SSN = SSN;
 	}
 
-
 	public House getHouse() {
-		return house;
+		return this.house;
 	}
 
 	public void setHouse(House house) {
@@ -165,7 +141,7 @@ public class Customer {
 	}
 
 	public Car getCar() {
-		return car;
+		return this.car;
 	}
 
 	public void setCar(Car car) {
@@ -173,10 +149,34 @@ public class Customer {
 	}
 
 	public Ship getShip() {
-		return ship;
+		return this.ship;
 	}
 
 	public void setShip(Ship ship) {
 		this.ship = ship;
+	}
+
+	public static enum Job {
+		영업직(70, false),
+		생산직(60, true),
+		사무직(75, false),
+		자영업자(70, true),
+		무직(30, false);
+
+		private int maxAge;
+		private boolean danger;
+
+		private Job(int maxAge, boolean danger) {
+			this.maxAge = maxAge;
+			this.danger = danger;
+		}
+
+		public int getMaxAge() {
+			return this.maxAge;
+		}
+
+		public boolean isDanger() {
+			return this.danger;
+		}
 	}
 }

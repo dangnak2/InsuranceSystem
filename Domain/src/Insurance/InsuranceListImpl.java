@@ -37,7 +37,7 @@ public class InsuranceListImpl extends DBConnector implements InsuranceList {
               + insurance.getId() + "," + insurance.isAuthorization() + "," + null
               + ",'" + insurance.getCreatedDate() + "','" + insurance.getExplanation() + "','" + insurance.getModifiedDate() + "','"
               + insurance.getName() + "'," + insurance.getPremium() + ",'" + insurance.getType() + "'" +  ");";
-      super.add(query);
+      super.create(query);
     this.insuranceList = getInsuranceList();
     return true;
   }
@@ -53,10 +53,12 @@ public class InsuranceListImpl extends DBConnector implements InsuranceList {
   @Override
   public boolean update(Insurance insurance) {
     if (insuranceList.contains(insurance)) {
-      String query = "INSERT INTO insurance VALUES ("
-              + insurance.getId() + "," + insurance.isAuthorization() + ",'" + insurance.getAuthorizedDate()
-              + "','" + insurance.getCreatedDate() + "','" + insurance.getExplanation() + "','" + insurance.getModifiedDate() + "','"
-              + insurance.getName() + "'," + insurance.getPremium() + ",'" + insurance.getType() + "'" +  ");";
+      String query = "UPDATE insurance set authorization = "
+              + insurance.isAuthorization() + ", authorizedDate = '" + insurance.getAuthorizedDate()
+              + "', createdDate = '" + insurance.getCreatedDate() + "', explanation = '" + insurance.getExplanation()
+              + "', modifiedDate = '" + insurance.getModifiedDate() + "', name = '"
+              + insurance.getName() + "', premium = " + insurance.getPremium() + ", type = '" + insurance.getType()
+          + "' where id = " + insurance.getId();
       super.update(query);
       this.insuranceList = getInsuranceList();
       return true;

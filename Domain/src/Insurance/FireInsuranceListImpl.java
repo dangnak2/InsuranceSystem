@@ -40,7 +40,7 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
       String query = "INSERT INTO fireInsurance VALUES ("
               + fireInsurance.getFireInsurance_id() + "," + fireInsurance.getSurroundingDamageBasicMoney()
               + "," + fireInsurance.getHumanDamageBasicMoney() + "," + fireInsurance.getBuildingDamageBasicMoney() + ");";
-      super.add(query);
+      super.create(query);
       this.fireInsuranceList = this.getFireInsuranceList();
       return true;
   }

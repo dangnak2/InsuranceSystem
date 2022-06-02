@@ -1,17 +1,44 @@
+
 package Customer;
 
 public class Car {
-  private enum type {
-    Domestic, //국내
-    Overseas //해외
-  }
   private int carNum;
   private int year;
-  private int displacement; //배기량
+  private int displacement;
   private int price;
+  private int customerId;
+
+  public enum Type {
+    Domestic,
+    Overseas;
+
+  }
+
+
+  private Type type;
+
+  public Car() {
+  }
+
+
+  public Type getType() {
+    return type;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
+  }
+
+  public int getCustomerId() {
+    return this.customerId;
+  }
+
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
   public int getCarNum() {
-    return carNum;
+    return this.carNum;
   }
 
   public void setCarNum(int carNum) {
@@ -19,7 +46,7 @@ public class Car {
   }
 
   public int getYear() {
-    return year;
+    return this.year;
   }
 
   public void setYear(int year) {
@@ -27,7 +54,7 @@ public class Car {
   }
 
   public int getDisplacement() {
-    return displacement;
+    return this.displacement;
   }
 
   public void setDisplacement(int displacement) {
@@ -35,7 +62,7 @@ public class Car {
   }
 
   public int getPrice() {
-    return price;
+    return this.price;
   }
 
   public void setPrice(int price) {

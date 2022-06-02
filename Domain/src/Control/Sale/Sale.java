@@ -9,6 +9,7 @@ import Customer.Customer.Job;
 import Customer.House.HouseType;
 import Customer.Ship.ShipType;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import javax.mail.*;
@@ -24,13 +25,22 @@ public class Sale {
     private InsuranceList insuranceList;
     private CustomerList customerList;
     private ContractList contractList;
+    private MedicalHistoryList medicalHistoryList;
+    private CarList carList;
+    private HouseList houseList;
+    private ShipList shipList;
     private CalculatePremium calculatePremium;
     private int count;
 
-    public Sale(InsuranceList insuranceList, CustomerList customerList, ContractList contractList, CalculatePremium calculatePremium) {
+    public Sale(InsuranceList insuranceList, CustomerList customerList, MedicalHistoryList medicalHistoryList,
+    CarList carList, HouseList houseList, ShipList shipList, ContractList contractList, CalculatePremium calculatePremium) {
         this.insuranceList = insuranceList;
         this.customerList = customerList;
         this.contractList = contractList;
+        this.medicalHistoryList = medicalHistoryList;
+        this.carList = carList;
+        this.houseList = houseList;
+        this.shipList = shipList;
         this.calculatePremium = calculatePremium;
     }
 
@@ -304,9 +314,7 @@ public class Sale {
         customer.setPhoneNumber(customerPhoneNum);
         customer.setEmail(customerEmail);
         customer.setAccount(customerAccount);
-
-        Date date = new Date();
-        customer.setJoinDate(date);
+        customer.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
 
         if (customerSex == 1) {
             customer.setSex(true);
@@ -327,10 +335,17 @@ public class Sale {
             } else {
                 medicalHistory.setCureComplete(false);
             }
+        } else{
+            this.customerList.add(customer);
+            return customer;
         }
         customer.setMedicalHistory(medicalHistory);
 
+
+
         this.customerList.add(customer);
+        this.medicalHistoryList.add(medicalHistory);
+
         return customer;
     }
 
@@ -342,7 +357,7 @@ public class Sale {
         car.setPrice(price);
 
         customer.setCar(car);
-        this.customerList.update(customer);
+        this.carList.add(car);
     }
 
     public void setCustomerHouse(Customer customer, int houseType, int housePrice) {
@@ -351,7 +366,7 @@ public class Sale {
         house.setPrice(housePrice);
 
         customer.setHouse(house);
-        this.customerList.update(customer);
+        this.houseList.add(house);
     }
 
     public void setCustomerSea(Customer customer, int shipNum, int year, int price, int shipType) {
@@ -362,7 +377,7 @@ public class Sale {
         ship.setShipType(ShipType.values()[shipType - 1]);
 
         customer.setShip(ship);
-        this.customerList.update(customer);
+        this.shipList.add(ship);
     }
 
     //보험 계약 체결
