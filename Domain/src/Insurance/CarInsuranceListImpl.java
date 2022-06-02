@@ -39,7 +39,7 @@ public class CarInsuranceListImpl extends DBConnector implements CarInsuranceLis
       String query = "INSERT INTO carInsurance VALUES ("
               + carInsurance.getCarInsurance_id() + "," + carInsurance.getHumanDamageBasicMoney()
               + "," + carInsurance.getCarDamageBasicMoney() + ");";
-      super.add(query);
+      super.create(query);
       this.carInsuranceList = this.getCarInsuranceList();
       return true;
 

@@ -57,7 +57,7 @@ public class StaffListImpl extends DBConnector implements StaffList {
             + staff.getPhoneNum() + "','" + staff.getJoinDate() + "','" + staff.getDepartment() + "',"
             + staff.getBasicSalary() + "," + staff.getTotalSalary() + "," + staff.getResult() + ",'" + staff.getPosition() +"'"
             + ");";
-        if(super.add(query)) {
+        if(super.create(query)) {
             this.staffList = getStaffList();
             return true;
         }

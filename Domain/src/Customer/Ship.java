@@ -1,17 +1,26 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package Customer;
 
 public class Ship {
-  public enum ShipType{
-    General, // 일반 화물
-    Container // 컨테이너선
-  }
   private int shipNum;
   private int year;
   private int price;
+  public enum ShipType {
+    General,
+    Container;
+  }
   private ShipType shipType;
+  private int customer_id;
+
+  public Ship() {
+  }
 
   public int getShipNum() {
-    return shipNum;
+    return this.shipNum;
   }
 
   public void setShipNum(int shipNum) {
@@ -19,7 +28,7 @@ public class Ship {
   }
 
   public int getYear() {
-    return year;
+    return this.year;
   }
 
   public void setYear(int year) {
@@ -27,7 +36,7 @@ public class Ship {
   }
 
   public int getPrice() {
-    return price;
+    return this.price;
   }
 
   public void setPrice(int price) {
@@ -35,10 +44,20 @@ public class Ship {
   }
 
   public ShipType getShipType() {
-    return shipType;
+    return this.shipType;
   }
 
-  public void setShipType(ShipType shipType) {
+  public void setShipType(Ship.ShipType shipType) {
     this.shipType = shipType;
   }
+
+  public int getCustomer_id() {
+    return this.customer_id;
+  }
+
+  public void setCustomer_id(int customer_id) {
+    this.customer_id = customer_id;
+  }
+
+
 }

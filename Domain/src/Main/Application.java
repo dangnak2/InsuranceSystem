@@ -12,6 +12,10 @@ import Control.StaffManage.StaffManagement;
 import Control.UnderWrite.UnderWrite;
 import Customer.Customer;
 import Customer.CustomerListImpl;
+import Customer.MedicalHistoryListImpl;
+import Customer.CarListImpl;
+import Customer.HouseListImpl;
+import Customer.ShipListImpl;
 import Insurance.Insurance;
 import Insurance.InsuranceListImpl;
 import Insurance.FireInsurance;
@@ -44,6 +48,10 @@ public class Application {
         CarInsuranceListImpl carInsuranceList = new CarInsuranceListImpl();
         SeaInsuranceListImpl seaInsuranceList = new SeaInsuranceListImpl();
         CustomerListImpl customerList = new CustomerListImpl();
+        MedicalHistoryListImpl medicalHistoryList = new MedicalHistoryListImpl();
+        CarListImpl carList = new CarListImpl();
+        HouseListImpl houseList = new HouseListImpl();
+        ShipListImpl shipList = new ShipListImpl();
         ContractListImpl contractList = new ContractListImpl();
         MyAuthentication emailVerify = new MyAuthentication();
 
@@ -54,7 +62,7 @@ public class Application {
         UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList);
         Design design = new Design(insuranceList, fireInsuranceList, carInsuranceList, seaInsuranceList);
         CalculatePremium calculatePremium = new CalculatePremiumImpl();
-        Sale sale = new Sale(insuranceList, customerList, contractList, calculatePremium);
+        Sale sale = new Sale(insuranceList, customerList, medicalHistoryList, carList, houseList, shipList, contractList, calculatePremium);
         StaffManagement staffManagement = new StaffManagement(staffList);
 
         main:

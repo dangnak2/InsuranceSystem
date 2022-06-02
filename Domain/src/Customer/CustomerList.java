@@ -1,21 +1,18 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package Customer;
 
-
-
-/**
- * @author crossover
- * @version 1.0
- * @created 09-5-2022 ���� 4:51:10
- */
 public interface CustomerList {
+	boolean add(Customer customer);
 
+	boolean delete(int customerId);
 
-	public boolean add(Customer policyholder);
+	Customer get(int customerId);
 
-	public boolean delete(int policyholderId);
+	boolean update(Customer customer);
 
-	public Customer get(int policyholderId);
-	public void update(Customer customer);
-
-	public int getSize();
+	int getSize();
 }

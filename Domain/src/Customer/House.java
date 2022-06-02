@@ -1,33 +1,46 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package Customer;
 
 public class House {
-
   public enum HouseType {
-    apartment, //아파트
-    housing, //주택
-    officetels //오피스텔
+    apartment,
+    housing,
+    officetels;
   }
-
-
   private HouseType houseType;
   private int price;
+  private int customer_id;
 
-  public HouseType getHouseType() {
-    return houseType;
+  public House() {
   }
 
-  public void setHouseType(HouseType houseType) {
+  public House.HouseType getHouseType() {
+    return this.houseType;
+  }
+
+  public void setHouseType(House.HouseType houseType) {
     this.houseType = houseType;
   }
 
   public int getPrice() {
-    return price;
+    return this.price;
   }
 
   public void setPrice(int price) {
     this.price = price;
   }
 
+  public int getCustomer_id() {
+    return this.customer_id;
+  }
+
+  public void setCustomer_id(int customer_id) {
+    this.customer_id = customer_id;
+  }
 
 
 }
