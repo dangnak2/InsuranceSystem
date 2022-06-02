@@ -12,11 +12,11 @@ import java.util.Date;
 public class Design {
 
 	private InsuranceList insuranceList;
-	private FireInsuranceListImpl fireInsuranceList;
-	private CarInsuranceListImpl carInsuranceList;
-	private SeaInsuranceListImpl seaInsuranceList;
+	private FireInsuranceList fireInsuranceList;
+	private CarInsuranceList carInsuranceList;
+	private SeaInsuranceList seaInsuranceList;
 
-	public Design(InsuranceList insuranceList, FireInsuranceListImpl fireInsuranceList, CarInsuranceListImpl carInsuranceList, SeaInsuranceListImpl seaInsuranceList) {
+	public Design(InsuranceList insuranceList, FireInsuranceList fireInsuranceList, CarInsuranceList carInsuranceList, SeaInsuranceList seaInsuranceList) {
 		this.insuranceList = insuranceList;
 		this.fireInsuranceList = fireInsuranceList;
 		this.carInsuranceList = carInsuranceList;
