@@ -8,9 +8,9 @@ import Customer.MedicalHistory.Disease;
 import Customer.Customer.Job;
 import Customer.House.HouseType;
 import Customer.Ship.ShipType;
+import Staff.StaffList;
 import Staff.Staff;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import javax.mail.*;
@@ -26,6 +26,7 @@ public class Sale {
     private InsuranceList insuranceList;
     private CustomerList customerList;
     private ContractList contractList;
+    private StaffList staffList;
     private MedicalHistoryList medicalHistoryList;
     private CarList carList;
     private HouseList houseList;
@@ -34,10 +35,11 @@ public class Sale {
     private int count;
 
     public Sale(InsuranceList insuranceList, CustomerList customerList, MedicalHistoryList medicalHistoryList,
-    CarList carList, HouseList houseList, ShipList shipList, ContractList contractList, CalculatePremium calculatePremium) {
+    CarList carList, HouseList houseList, ShipList shipList, ContractList contractList, StaffList staffList, CalculatePremium calculatePremium) {
         this.insuranceList = insuranceList;
         this.customerList = customerList;
         this.contractList = contractList;
+        this.staffList = staffList;
         this.medicalHistoryList = medicalHistoryList;
         this.carList = carList;
         this.houseList = houseList;
@@ -94,7 +96,7 @@ public class Sale {
         if (this.contractList instanceof ContractListImpl) {
             for (Contract contract : ((ContractListImpl) this.contractList).getContractList()) {
                 if (contract.getCustomerId() == customerId) {
-                    joinInsurance.add(this.insuranceList.get(contract.getInsuranceId()));
+                    joinInsurance.add(this.getInsurance(contract.getInsuranceId()));
                 }
             }
         }
@@ -328,6 +330,8 @@ public class Sale {
 
 
         MedicalHistory medicalHistory = new MedicalHistory();
+
+        medicalHistory.setCustomerId(customer.getId());
         medicalHistory.setMyDisease(Disease.values()[customerDisease - 1]);
         if (customerDisease != 5) {
             medicalHistory.setHistoryYear(customerHistoryYear);
@@ -336,13 +340,9 @@ public class Sale {
             } else {
                 medicalHistory.setCureComplete(false);
             }
-        } else{
-            this.customerList.add(customer);
-            return customer;
         }
+
         customer.setMedicalHistory(medicalHistory);
-
-
 
         this.customerList.add(customer);
         this.medicalHistoryList.add(medicalHistory);
@@ -352,6 +352,7 @@ public class Sale {
 
     public void setCustomerCar(Customer customer, int carNum, int year, int displacement, int price) {
         Car car = new Car();
+        car.setCustomerId(customer.getId());
         car.setCarNum(carNum);
         car.setYear(year);
         car.setDisplacement(displacement);
@@ -363,15 +364,18 @@ public class Sale {
 
     public void setCustomerHouse(Customer customer, int houseType, int housePrice) {
         House house = new House();
+        house.setCustomerId(customer.getId());
         house.setHouseType(HouseType.values()[houseType - 1]);
         house.setPrice(housePrice);
 
         customer.setHouse(house);
+
         this.houseList.add(house);
     }
 
     public void setCustomerSea(Customer customer, int shipNum, int year, int price, int shipType) {
         Ship ship = new Ship();
+        ship.setCustomerId(customer.getId());
         ship.setShipNum(shipNum);
         ship.setYear(year);
         ship.setPrice(price);
@@ -386,9 +390,9 @@ public class Sale {
     //고객을 먼저 추가하고 가입을 할지 가입 할 때 저장을 할지 정확하게 정해야 함
     //일단 가입 시 고객을 저장하는 버전
     public boolean signContract(int insuranceId, Customer customer, Staff staff) {
-        this.customerList.add(customer);
         Contract contract = new Contract();
         contract.setContractId(this.contractList.getSize() + 1);
+        contract.setSalesId(staff.getId());
         contract.setCustomerId(customer.getId());
         contract.setInsuranceId(insuranceId);
         contract.setPremiumRate(this.insuranceList.get(insuranceId).getPremium());
@@ -396,6 +400,9 @@ public class Sale {
                 (int) this.calculatePremium.calculatePremium(customer, this.insuranceList.get(insuranceId).getPremium()));
         contract.setContractDate(Timestamp.valueOf(LocalDateTime.now()));
         staff.setResult(staff.getResult()+1);
+
+        this.staffList.update(staff);
+
         return this.contractList.add(contract);
     }
 

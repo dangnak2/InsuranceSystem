@@ -27,6 +27,7 @@ public class CarListImpl extends DBConnector implements CarList {
     try {
       while(rs.next()) {
         Car car = new Car();
+        car.setId(rs.getInt("id"));
         car.setCustomerId(rs.getInt("customer_id"));
         car.setType(Car.Type.valueOf(rs.getString("type")));
         car.setCarNum(rs.getInt("carNum"));
@@ -44,7 +45,7 @@ public class CarListImpl extends DBConnector implements CarList {
   }
 
   public boolean add(Car car) {
-    String query = "insert into car values ("
+    String query = "insert into car values (" + car.getId() + ","
         + car.getCustomerId() + ",'" + car.getType()+"',"+ car.getCarNum() +"," + car.getYear() + ",'"
         + car.getDisplacement() + ",'" + car.getPrice() + ");";
     if(super.create(query)){
@@ -54,9 +55,9 @@ public class CarListImpl extends DBConnector implements CarList {
       return false;
   }
   @Override
-  public Car get(int customer_Id) {
+  public Car get(int id) {
     for (Car car : carList) {
-      if (car.getCustomerId() == customer_Id) {
+      if (car.getId() == id) {
         return car;
       }
     }
@@ -65,10 +66,11 @@ public class CarListImpl extends DBConnector implements CarList {
 
   @Override
   public boolean update(Car car) {
-    String query = "update car set type = '" + car.getType() + "', carNum = "
+    String query = "update car set customer id = " + car.getCustomerId()
+        + ", type = '" + car.getType() + "', carNum = "
         + car.getCarNum() + "', year = " + car.getYear()
         + ", displacement = " + car.getDisplacement() + ", price = " + car.getPrice()
-        + " where customer_id =" + car.getCustomerId();
+        + " where id =" + car.getId();
     if(super.update(query)){
       this.carList = getCarlist();
       return true;
@@ -83,9 +85,9 @@ public class CarListImpl extends DBConnector implements CarList {
 
 
   @Override
-  public boolean delete(int customer_id) {
+  public boolean delete(int id) {
 
-    String query = "delete from car where customer_id=" + customer_id;
+    String query = "delete from car where id=" + id;
     super.delete(query);
 
     this.carList = this.getCarlist();

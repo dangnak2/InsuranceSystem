@@ -23,7 +23,8 @@ public class ShipListImpl extends DBConnector implements ShipList {
     try {
       while (rs.next()) {
         Ship ship = new Ship();
-        ship.setCustomer_id(rs.getInt("customer_id"));
+        ship.setId(rs.getInt("id"));
+        ship.setCustomerId(rs.getInt("customer_id"));
         ship.setShipNum(rs.getInt("shipNum"));
         ship.setYear(rs.getInt("year"));
         ship.setPrice(rs.getInt("price"));
@@ -45,7 +46,7 @@ public class ShipListImpl extends DBConnector implements ShipList {
 
   @Override
   public boolean add(Ship ship) {
-    String query = "insert into ship values ("
+    String query = "insert into ship values (" + ship.getId() + ","
         + ship.getCustomer_id() + "," + ship.getShipNum() + "," + ship.getYear()
         + "," + ship.getPrice() + ",'" + ship.getShipType() + "');";
     if(super.create(query)){
@@ -56,9 +57,9 @@ public class ShipListImpl extends DBConnector implements ShipList {
   }
 
   @Override
-  public Ship get(int customer_Id) {
+  public Ship get(int id) {
     for (Ship ship : shipList) {
-      if (ship.getCustomer_id() == customer_Id) {
+      if (ship.getId() == id) {
         return ship;
       }
     }
@@ -67,10 +68,10 @@ public class ShipListImpl extends DBConnector implements ShipList {
 
   @Override
   public boolean update(Ship ship) {
-    String query = "update ship set shipNum = "
+    String query = "update ship set customer_id = " + ship.getCustomer_id() + ", shipNum = "
         + ship.getShipNum() + ", year = " + ship.getYear()
         + ", price = " + ship.getPrice() + ", shipType = '" + ship.getShipType()
-        + "' where customer_id = " + ship.getCustomer_id();
+        + "' where id = " + ship.getId();
     if(super.update(query)){
       this.shipList = getShipList();
       return true;
@@ -85,9 +86,9 @@ public class ShipListImpl extends DBConnector implements ShipList {
 
 
   @Override
-  public boolean delete(int customer_id) {
+  public boolean delete(int id) {
 
-    String query = "delete from ship where customer_id=" + customer_id;
+    String query = "delete from ship where id=" + id;
     if(super.delete(query)) {
       this.shipList = this.getShipList();
       return true;
