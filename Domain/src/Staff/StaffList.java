@@ -12,5 +12,7 @@ public interface StaffList {
 
     public void update(Staff staff);
 
+    public int getSize();
+
 
 }

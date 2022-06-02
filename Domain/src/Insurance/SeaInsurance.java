@@ -2,9 +2,12 @@ package Insurance;
 
 public class SeaInsurance extends Insurance {
 
-
   private int generalDamageBasicMoney; //제반 손해 정도
   private int revenueDamageBasicMoney; //수익 손해 정도
+
+  public SeaInsurance() {
+    this.setType(Type.Sea);
+  }
 
   public int getGeneralDamageBasicMoney() {
     return generalDamageBasicMoney;

@@ -7,7 +7,7 @@ package Customer;
  * @version 1.0
  * @created 09-5-2022 ���� 4:51:10
  */
-public interface CutomerList {
+public interface CustomerList {
 
 
 	public boolean add(Customer policyholder);
@@ -15,7 +15,7 @@ public interface CutomerList {
 	public boolean delete(int policyholderId);
 
 	public Customer get(int policyholderId);
-	//public void update();
+	public void update(Customer customer);
 
 	public int getSize();
 }

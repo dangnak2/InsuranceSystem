@@ -21,10 +21,18 @@ public class Contract {
 	private int insurancePrice;
 	private int premiumRate;
 	private Compensation compensation;
-	private Insurance insurance;
+	private boolean underWrite;
 
 	public Contract(){
 
+	}
+
+	public boolean isUnderWrite() {
+		return underWrite;
+	}
+
+	public void setUnderWrite(boolean underWrite) {
+		this.underWrite = underWrite;
 	}
 
 	public int getContractId() {
@@ -75,11 +83,4 @@ public class Contract {
 		this.compensation = compensation;
 	}
 
-	public Insurance getInsurance() {
-		return insurance;
-	}
-
-	public void setInsurance(Insurance insurance) {
-		this.insurance = insurance;
-	}
 }

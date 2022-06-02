@@ -13,25 +13,25 @@ public class CompensationManage {
 
     private ContractList contractList;
     private InsuranceList insuranceList;
-    private CutomerList customerList;
+    private CustomerList customerList;
 
 
-    public CompensationManage(ContractList contractList, InsuranceList insuranceList, CutomerList cutomerList) {
+    public CompensationManage(ContractList contractList, InsuranceList insuranceList, CustomerList customerList) {
         this.contractList = contractList;
         this.insuranceList = insuranceList;
-        this.customerList = cutomerList;
+        this.customerList = customerList;
     }
 
 
     //고객 id만 가지고 계약된 보험을 찾아야함 -> name 받을 필요 없음
     //ArrayList로 넘기는건 맞는데 DB 사용 시 ContractListImpl은 DB가 되므로 ArrayList로 넘겨줘야함
     //id는 헷갈리니깐 어떤 것의 id인지 앞에 써주는거 부탁할게용
-    public ArrayList<Contract> findInsuranceContracts(String customerId) {
+    public ArrayList<Contract> findInsuranceContracts(int customerId) {
         ArrayList<Contract> customerContractList = new ArrayList<>();
 
         if (this.contractList instanceof ContractListImpl) {
             for (Contract contract : ((ContractListImpl)this.contractList).getContractList()) {
-                if (customerId.equals(contract.getCustomerId())) {
+                if (customerId == contract.getCustomerId() && contract.isUnderWrite()) {
                     customerContractList.add(contract);
                 }
             }
@@ -39,18 +39,30 @@ public class CompensationManage {
         return customerContractList;
     }
 
-    public boolean judgeSubjectIndemnification(AccidentSubjectIndemnification accidentSubjectIndemnification) {
-        return accidentSubjectIndemnification.isJudgment();
+    public Contract getContract(int customerId, int insuranceId) {
+        if (this.contractList instanceof ContractListImpl) {
+            for (Contract contract : ((ContractListImpl)this.contractList).getContractList()) {
+                if (customerId == contract.getCustomerId() && insuranceId == contract.getInsuranceId()) {
+                    return contract;
+                }
+            }
+        }
+        return null;
     }
 
-    public boolean judgeFireIndemnification(FireAccidentCauseIndemnification fireAccidentCauseIndemnification) {
-        return fireAccidentCauseIndemnification.isJudgment();
+    public boolean judgeSubjectIndemnification(int accidentSubjectIndemnification) {
+        return AccidentSubjectIndemnification.values()[accidentSubjectIndemnification-1].isJudgment();
     }
-    public boolean judgeCarIndemnification(CarAccidentCauseIndemnification carAccidentCauseIndemnification) {
-        return carAccidentCauseIndemnification.isJudgment();
+
+    public boolean judgeFireIndemnification(int fireAccidentCauseIndemnification) {
+        return FireAccidentCauseIndemnification.values()[fireAccidentCauseIndemnification-1].isJudgment();
     }
-    public boolean judgeSeaIndemnification(SeaAccidentCauseIndemnification seaAccidentCauseIndemnification) {
-        return seaAccidentCauseIndemnification.isJudgment();
+    public boolean judgeCarIndemnification(int carAccidentCauseIndemnification) {
+        return CarAccidentCauseIndemnification.values()[carAccidentCauseIndemnification-1].isJudgment();
+
+    }
+    public boolean judgeSeaIndemnification(int seaAccidentCauseIndemnification) {
+        return SeaAccidentCauseIndemnification.values()[seaAccidentCauseIndemnification-1].isJudgment();
     }
 
     public void compensation(int contractId, int humanDamage, int buildingDamage, int surroundingDamage, int carDamage, int generalDamage, int revenueDamage) {

@@ -7,9 +7,30 @@ public class Staff {
 
   public enum Department {
     Design,
+    Underwriting,
     Sales,
+    Human,
     CompensationManagement
   }
+
+  public enum Position {
+    Staff(1500000), //사원
+    Supervisor(2000000),
+    AssistantManager(2500000),
+    Manager(3000000),
+    DeputyGeneralManager(3500000),
+    GeneralManager(4000000);
+
+    private int salary;
+    Position(int salary) {
+      this.salary = salary;
+    }
+
+    public int getSalary() {
+      return salary;
+    }
+  }
+
 
   private String email;
   private boolean gender;
@@ -20,10 +41,19 @@ public class Staff {
   private String SSN;
   private String password;
   private Department department;
+  private Position position;
 
   private int basicSalary;
   private int totalSalary;
   private int result; //실적
+
+
+  public Staff() {
+    if (this.position != null) {
+      this.basicSalary = this.position.getSalary();
+    }
+  }
+
 
   public int getResult() {
     return result;
@@ -33,6 +63,14 @@ public class Staff {
     this.result = result;
   }
 
+  public Position getPosition() {
+    return position;
+  }
+
+  public void setPosition(Position position) {
+    this.position = position;
+    this.setBasicSalary(position.getSalary());
+  }
 
   public void setDepartment(Department department) {
     this.department = department;
@@ -108,7 +146,9 @@ public class Staff {
   }
 
   public void setBasicSalary(int basicSalary) {
-    this.basicSalary = basicSalary;
+    if (this.position != null) {
+      this.basicSalary = this.position.getSalary();
+    }
   }
 
   public int getTotalSalary() {

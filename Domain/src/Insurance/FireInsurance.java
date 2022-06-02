@@ -1,11 +1,13 @@
 package Insurance;
 
 public class FireInsurance extends Insurance{
-
-
   private int surroundingDamageBasicMoney;
   private int humanDamageBasicMoney;
   private int buildingDamageBasicMoney;
+
+  public FireInsurance() {
+    this.setType(Type.Fire);
+  }
 
   public int getSurroundingDamageBasicMoney() {
     return surroundingDamageBasicMoney;

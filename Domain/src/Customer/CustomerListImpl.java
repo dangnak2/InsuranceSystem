@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @version 1.0
  * @created 09-5-2022 ���� 4:51:10
  */
-public class CustomerListImpl implements CutomerList {//impl이 저장소
+public class CustomerListImpl implements CustomerList {//impl이 저장소
 
 	private ArrayList<Customer> customerList;
 
@@ -45,6 +45,13 @@ public class CustomerListImpl implements CutomerList {//impl이 저장소
 		}
 		return null;
 	}
+	@Override
+	public void update(Customer customer) {
+		int index = this.customerList.indexOf(customer);
+		this.customerList.set(index, customer);
+	}
+
+
 
 	@Override
 	public int getSize() {

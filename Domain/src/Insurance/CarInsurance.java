@@ -6,6 +6,8 @@ public class CarInsurance extends Insurance {
   private int carDamageBasicMoney;
 
   public CarInsurance() {
+    this.setType(Type.Car);
+
   }
 
   public int getHumanDamageBasicMoney() {

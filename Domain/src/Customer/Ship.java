@@ -1,13 +1,14 @@
 package Customer;
 
 public class Ship {
-  private enum type{
+  public enum ShipType{
     General, // 일반 화물
     Container // 컨테이너선
   }
   private int shipNum;
   private int year;
   private int price;
+  private ShipType shipType;
 
   public int getShipNum() {
     return shipNum;
@@ -31,5 +32,13 @@ public class Ship {
 
   public void setPrice(int price) {
     this.price = price;
+  }
+
+  public ShipType getShipType() {
+    return shipType;
+  }
+
+  public void setShipType(ShipType shipType) {
+    this.shipType = shipType;
   }
 }
