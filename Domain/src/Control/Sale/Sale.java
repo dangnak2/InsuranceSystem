@@ -9,6 +9,8 @@ import Customer.Customer.Job;
 import Customer.House.HouseType;
 import Customer.Ship.ShipType;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -376,7 +378,7 @@ public class Sale {
         contract.setPremiumRate(this.insuranceList.get(insuranceId).getPremium());
         contract.setInsurancePrice(
                 (int) this.calculatePremium.calculatePremium(customer, this.insuranceList.get(insuranceId).getPremium()));
-
+        contract.setContractDate(Timestamp.valueOf(LocalDateTime.now()));
         return this.contractList.add(contract);
     }
 

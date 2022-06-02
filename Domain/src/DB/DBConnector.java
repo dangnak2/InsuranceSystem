@@ -54,13 +54,58 @@ public class DBConnector {
     }
   }
 
-  public void add(String query) {
+  public boolean create(String query) {
     try {
       stmt = con.createStatement();
       stmt.executeUpdate(query);
+
+      stmt.close();
+      return true;
     } catch (SQLException e) {
       e.printStackTrace();
     }
 
+    return false;
+
   }
+
+  public ResultSet retreive(String query) {
+    try {
+      stmt = con.createStatement();
+      rs = stmt.executeQuery(query);
+
+      return rs;
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public boolean update(String query){
+    try {
+      stmt = con.createStatement();
+      stmt.executeUpdate(query);
+
+      stmt.close();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  public boolean delete(String query){
+    try {
+      stmt = con.createStatement();
+      stmt.executeUpdate(query);
+
+      stmt.close();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
 }

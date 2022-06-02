@@ -4,6 +4,8 @@ import Staff.*;
 import Staff.Staff.Department;
 import Staff.Staff.Position;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,7 +64,7 @@ public class StaffManagement {
         }
         createdStaff.setEmail(staffEmail);
         createdStaff.setPhoneNum(staffPhone);
-        createdStaff.setJoinDate(date);
+        createdStaff.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         String[] staffBirth = createdStaff.getSSN().split("-");
 
         createdStaff.setId(this.staffList.getSize() + 1);
