@@ -1631,8 +1631,9 @@ public class Application {
                                                 } else if (select2.equals("3")) {
                                                     changeDepartment:
                                                     while (true) {
-                                                        System.out.println(
-                                                                "부서를 이동할 사원의 ID를 입력해 주세요.");
+                                                        System.out.println("부서를 이동할 사원의 ID를 입력해 주세요.");
+
+
                                                         String staffId;
 
                                                         while (true) {
