@@ -2,10 +2,10 @@ package Contract;
 
 
 import DB.DBConnector;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ContractListImpl extends DBConnector implements ContractList {
 
@@ -54,7 +54,7 @@ public class ContractListImpl extends DBConnector implements ContractList {
         + contract.getPremiumRate() + ","
         + contract.getCompensationAmount() + ",'" + contract.getContractDate()
         + "');";
-    if (super.create(query)) {
+    if (super.add(query)) {
       this.contractList = getContractList();
       return true;
     } else {
@@ -76,14 +76,14 @@ public class ContractListImpl extends DBConnector implements ContractList {
 
   @Override
   public boolean update(Contract contract) {
-    String query = "update staff set "
+    String query = "update contract set "
         + "customer_id = " + contract.getCustomerId() + ", sales_id = " + contract.getSalesId()
         + ", insurance_id = "
         + contract.getInsuranceId() + ", insurancePrice = " + contract.getInsurancePrice()
         + ", premium_rate = "
         + contract.getPremiumRate() + ", compensation_amount = " + contract.getCompensationAmount()
         + ", contract_date = " + contract.getContractDate()
-        + " where id =" + contract.getContractId();
+        + " where id = " + contract.getContractId();
     if (super.update(query)) {
       this.contractList = getContractList();
       return true;

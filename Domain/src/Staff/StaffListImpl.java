@@ -1,6 +1,5 @@
 package Staff;
 
-import Contract.Contract;
 import DB.DBConnector;
 
 import java.sql.ResultSet;
@@ -58,7 +57,7 @@ public class StaffListImpl extends DBConnector implements StaffList {
             + staff.getPhoneNum() + "','" + staff.getJoinDate() + "','" + staff.getDepartment() + "',"
             + staff.getBasicSalary() + "," + staff.getTotalSalary() + "," + staff.getResult() + ",'" + staff.getPosition() +"'"
             + ");";
-        if(super.create(query)) {
+        if(super.add(query)) {
             this.staffList = getStaffList();
             return true;
         }
@@ -78,11 +77,10 @@ public class StaffListImpl extends DBConnector implements StaffList {
     @Override
     public boolean update(Staff staff) {
         String query = "update staff set email = '"
-            + staff.getEmail() + "', name = '" + staff.getName()
-            + "', SSN = '" + staff.getSSN() + "', gender = " + staff.isGender() + ", password = '" + staff.getPassword()
-            + "', phoneNum = '" + staff.getPhoneNum() + "', joinDate = '" + staff.getJoinDate() + "', department = '" + staff.getDepartment()
-            + "', basicSalary = " + staff.getBasicSalary() + ", totalSalary = " + staff.getTotalSalary() + ", result = " + staff.getResult()
-            + ", '" + staff.getPosition() + "'" + " where id ="+staff.getId();
+            + staff.getEmail() + "', name = '" + staff.getName() + "', SSN = '" + staff.getSSN() + "', gender = " + staff.isGender()
+            + ", password = '" + staff.getPassword() + "', phoneNum = '" + staff.getPhoneNum() + "', joinDate = '" + staff.getJoinDate()
+            + "', department = '" + staff.getDepartment() + "', basicSalary = " + staff.getBasicSalary() + ", totalSalary = " + staff.getTotalSalary()
+            + ", result = " + staff.getResult() + ", position = '" + staff.getPosition() + "'" + " where id = "+staff.getId();
 
         if(super.update(query)){
             this.staffList = getStaffList();
