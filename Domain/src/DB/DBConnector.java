@@ -30,12 +30,9 @@ public class DBConnector {
         try {
             this.con = DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?serverTimezone=UTC&useSSL=false", user_name, password);
             this.stmt = this.con.createStatement();
-            System.out.println("정상적으로 연결되었습니다.");
 
             this.stmt.executeUpdate("use insurance_system");
-//            this.stmt.close();
 
-//            this.con = con;
             return con;
         } catch (SQLException e) {
             System.err.println("con 오류:" + e.getMessage());
@@ -59,7 +56,6 @@ public class DBConnector {
         try {
             stmt = con.createStatement();
             if (!stmt.execute(query)) {
-            System.out.printf("insert ok!");
             return true;
             }
         } catch (SQLException e) {
@@ -72,7 +68,6 @@ public class DBConnector {
         try {
             stmt = con.createStatement();
             if (!stmt.execute(query)) {
-                System.out.println("delete ok!");
                 return true;
             }
         } catch (SQLException e) {

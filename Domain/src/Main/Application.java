@@ -18,11 +18,8 @@ import Customer.HouseListImpl;
 import Customer.ShipListImpl;
 import Insurance.Insurance;
 import Insurance.InsuranceListImpl;
-import Insurance.FireInsurance;
 import Insurance.FireInsuranceListImpl;
-import Insurance.CarInsurance;
 import Insurance.CarInsuranceListImpl;
-import Insurance.SeaInsurance;
 import Insurance.SeaInsuranceListImpl;
 import Staff.Staff;
 import Staff.*;
@@ -34,8 +31,6 @@ import java.util.Scanner;
 public class Application {
 
     public static void main(String[] args) {
-
-        System.out.println("test code2");
 
         Scanner sc = new Scanner(System.in);
 
@@ -102,7 +97,7 @@ public class Application {
                                 + "님 환영합니다!");
                         break login;
                     } else {
-                        System.out.println("등록된 정보가 없습니다. 다시 시도해주시거나 회원 가입 후 진행 해주세요");
+                        System.out.println("등록된 정보가 없습니다. 다시 시도해주시거나 회원 가입 후 진행해주세요");
                         continue login;
                     }
                 } else if (Integer.parseInt(select1) == 2) {
@@ -657,7 +652,7 @@ public class Application {
                                                             continue viewContract;
 
                                                         } else if (select2.equals("2")) {
-                                                            System.out.println("인수 삼사를 취소하였습니다.");
+                                                            System.out.println("인수 심사를 취소하였습니다.");
                                                             continue viewContract;
                                                         } else {
 
@@ -960,7 +955,7 @@ public class Application {
                                                             cancelContract:
                                                             while (true) {
                                                                 System.out.println(
-                                                                        "계약 해지 할 계약 ID를 입력 해주세요.");
+                                                                        "계약 해지 할 계약 ID를 입력해 주세요.");
                                                                 String contractId;
 
                                                                 while (true) {
@@ -1302,7 +1297,7 @@ public class Application {
                                                                         continue manageContract;
                                                                     } else {
                                                                         System.out.println(
-                                                                                "예기치 못한 오류로 보험 계액에 실패하였습니다. 계약을 다시 시도해주세요.");
+                                                                                "예기치 못한 오류로 보험 계약에 실패하였습니다. 계약을 다시 시도해주세요.");
                                                                         continue findInsurance;
                                                                     }
                                                                 } else if (select3.equals(
@@ -1669,7 +1664,7 @@ public class Application {
                                                                             continue manageContract;
                                                                         } else {
                                                                             System.out.println(
-                                                                                    "예기치 못한 오류로 보험 계액에 실패하였습니다. 계약을 다시 시도해주세요.");
+                                                                                    "예기치 못한 오류로 보험 계약에 실패하였습니다. 계약을 다시 시도해주세요.");
                                                                             continue findInsurance;
                                                                         }
                                                                     } else if (select3.equals(
@@ -1912,7 +1907,7 @@ public class Application {
                                                             continue findStaff;
                                                         } else {
                                                             System.out.println(
-                                                                    "예기치 못한 오류로인해 부서 이동에 실패하였습니다. 다시 시도해주세요.");
+                                                                    "예기치 못한 오류로 인해 부서 이동에 실패하였습니다. 다시 시도해주세요.");
                                                             continue changeDepartment;
                                                         }
                                                     }
@@ -1935,7 +1930,7 @@ public class Application {
                                                         }
 
                                                         System.out.println(
-                                                                "정말로 해고사히겠습니까? 해당 사원의 정보가 시스템에서 삭제됩니다.");
+                                                                "정말로 해고하시겠습니까? 해당 사원의 정보가 시스템에서 삭제됩니다.");
                                                         System.out.println("1. 예");
                                                         System.out.println("2. 아니요");
                                                         String select3 = sc.nextLine();
