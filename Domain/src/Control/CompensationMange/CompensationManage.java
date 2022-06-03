@@ -4,7 +4,7 @@ import Contract.*;
 import Customer.*;
 import Insurance.*;
 import Control.CompensationMange.Indemnification.*;
-import Staff.Staff;
+import Staff.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,12 +15,23 @@ public class CompensationManage {
     private ContractList contractList;
     private InsuranceList insuranceList;
     private CustomerList customerList;
+    private StaffList staffList;
+    private FireInsuranceList fireInsuranceList;
+    private CarInsuranceList carInsuranceList;
+    private SeaInsuranceList seaInsuranceList;
 
 
-    public CompensationManage(ContractList contractList, InsuranceList insuranceList, CustomerList customerList) {
+
+    public CompensationManage(ContractList contractList, InsuranceList insuranceList,
+        CustomerList customerList, StaffList staffList, FireInsuranceList fireInsuranceList,
+        CarInsuranceList carInsuranceList, SeaInsuranceList seaInsuranceList) {
         this.contractList = contractList;
         this.insuranceList = insuranceList;
         this.customerList = customerList;
+        this.staffList = staffList;
+        this.fireInsuranceList = fireInsuranceList;
+        this.carInsuranceList = carInsuranceList;
+        this.seaInsuranceList = seaInsuranceList;
     }
 
 
@@ -66,7 +77,6 @@ public class CompensationManage {
     }
 
     public void compensation(int contractId, int humanDamage, int buildingDamage, int surroundingDamage, int carDamage, int generalDamage, int revenueDamage, Staff staff) {
-        Date date = new Date();
         Contract selectContract = this.contractList.get(contractId);
         Insurance selectInsurance = this.insuranceList.get(selectContract.getInsuranceId());
         Customer customer = this.customerList.get(selectContract.getCustomerId());
@@ -76,10 +86,12 @@ public class CompensationManage {
 
         if (selectInsurance instanceof FireInsurance) {
 
+            FireInsurance fireInsurance = this.fireInsuranceList.get(selectInsurance.getId());
 
-            double compensationHumanDamage = (1 + humanDamage / 100) * ((FireInsurance) selectInsurance).getHumanDamageBasicMoney();
-            double compensationBuildingDamage = (1 + buildingDamage / 100) * ((FireInsurance) selectInsurance).getBuildingDamageBasicMoney();
-            double compensationSurroundingDamage = (1 + surroundingDamage / 100) * ((FireInsurance) selectInsurance).getSurroundingDamageBasicMoney();
+
+            double compensationHumanDamage = (1 + humanDamage / 100) * fireInsurance.getHumanDamageBasicMoney();
+            double compensationBuildingDamage = (1 + buildingDamage / 100) * fireInsurance.getBuildingDamageBasicMoney();
+            double compensationSurroundingDamage = (1 + surroundingDamage / 100) * fireInsurance.getSurroundingDamageBasicMoney();
 
             totalPrice += compensationHumanDamage;
             totalPrice += compensationBuildingDamage;
@@ -101,9 +113,11 @@ public class CompensationManage {
 
         } else if (selectInsurance instanceof CarInsurance) {
 
+            CarInsurance carInsurance = this.carInsuranceList.get(selectInsurance.getId());
 
-            double compensationHumanDamage = (1 + humanDamage / 100) * ((CarInsurance) selectInsurance).getHumanDamageBasicMoney();
-            double compensationAccidentDegree = (1 + carDamage / 100) * ((CarInsurance) selectInsurance).getCarDamageBasicMoney();
+
+            double compensationHumanDamage = (1 + humanDamage / 100) * carInsurance.getHumanDamageBasicMoney();
+            double compensationAccidentDegree = (1 + carDamage / 100) * carInsurance.getCarDamageBasicMoney();
 
             if (customer.getCar().getPrice() > 0 &&
                     customer.getCar().getPrice() <= 30000000) {
@@ -123,9 +137,10 @@ public class CompensationManage {
 
         } else if (selectInsurance instanceof SeaInsurance) {
 
+            SeaInsurance seaInsurance = this.seaInsuranceList.get(selectInsurance.getId());
 
-            double compensationGeneralDamage = (1 + generalDamage / 100) * ((SeaInsurance) selectInsurance).getGeneralDamageBasicMoney();
-            double compensationRevenueDamage = (1 + revenueDamage / 100) * ((SeaInsurance) selectInsurance).getRevenueDamageBasicMoney();
+            double compensationGeneralDamage = (1 + generalDamage / 100) * seaInsurance.getGeneralDamageBasicMoney();
+            double compensationRevenueDamage = (1 + revenueDamage / 100) * seaInsurance.getRevenueDamageBasicMoney();
 
 
             totalPrice += compensationGeneralDamage;
@@ -146,6 +161,8 @@ public class CompensationManage {
         }
 
         staff.setResult(staff.getResult()+1);
+
+        this.staffList.update(staff);
         this.contractList.update(selectContract);
     }
 }

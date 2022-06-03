@@ -53,7 +53,7 @@ public class Application {
         Date date = new Date();
 
         CompensationManage compensationManagement = new CompensationManage(contractList,
-                insuranceList, customerList);
+                insuranceList, customerList, staffList, fireInsuranceList, carInsuranceList, seaInsuranceList);
         UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList, staffList, medicalHistoryList);
         Design design = new Design(insuranceList, fireInsuranceList, carInsuranceList, seaInsuranceList);
         CalculatePremium calculatePremium = new CalculatePremiumImpl();

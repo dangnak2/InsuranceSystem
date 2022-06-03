@@ -13,11 +13,14 @@ public class CarInsuranceListImpl extends DBConnector implements CarInsuranceLis
   public CarInsuranceListImpl() {
     this.getConnection();
     this.carInsuranceList = new ArrayList<>();
+    this.carInsuranceList = getCarInsuranceList();
   }
 
   public ArrayList<CarInsurance> getCarInsuranceList() {
+
     String query = "select * from carInsurance;";
     ResultSet rs = super.retreive(query);
+    ArrayList<CarInsurance> cars = new ArrayList<CarInsurance>();
     try {
       while (rs.next()) {
         CarInsurance carInsurance = new CarInsurance();
@@ -26,12 +29,12 @@ public class CarInsuranceListImpl extends DBConnector implements CarInsuranceLis
         carInsurance.setHumanDamageBasicMoney(rs.getInt("humanDamageBasicMoney"));
         carInsurance.setCarDamageBasicMoney(rs.getInt("carDamageBasicMoney"));
 
-        this.carInsuranceList.add(carInsurance);
+        cars.add(carInsurance);
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return carInsuranceList;
+    return cars;
   }
 
   @Override
@@ -39,18 +42,22 @@ public class CarInsuranceListImpl extends DBConnector implements CarInsuranceLis
       String query = "INSERT INTO carInsurance VALUES ("
               + carInsurance.getCarInsurance_id() + "," + carInsurance.getHumanDamageBasicMoney()
               + "," + carInsurance.getCarDamageBasicMoney() + ");";
-      super.create(query);
-      this.carInsuranceList = this.getCarInsuranceList();
-      return true;
+      if(super.create(query)) {
+        this.carInsuranceList = this.getCarInsuranceList();
+        return true;
+      }
+    return false;
 
   }
 
   @Override
   public boolean delete(int insuranceId) {
       String query = "DELETE FROM carInsurance WHERE carInsurance_id =  " + insuranceId + ";";
-      super.delete(query);
-      this.carInsuranceList = this.getCarInsuranceList();
-      return true;
+      if(super.delete(query)) {
+        this.carInsuranceList = this.getCarInsuranceList();
+        return true;
+      }
+    return false;
   }
 
   @Override
@@ -79,6 +86,6 @@ public class CarInsuranceListImpl extends DBConnector implements CarInsuranceLis
 
   @Override
   public int getSize() {
-    return 0;
+    return this.carInsuranceList.size();
   }
 }
