@@ -18,6 +18,7 @@ import Customer.HouseListImpl;
 import Customer.ShipListImpl;
 import Insurance.Insurance;
 import Insurance.InsuranceListImpl;
+import Insurance.*;
 import Insurance.FireInsuranceListImpl;
 import Insurance.CarInsuranceListImpl;
 import Insurance.SeaInsuranceListImpl;
@@ -39,9 +40,9 @@ public class Application {
         StaffList staffList = new StaffListImpl();
         Auth auth = new Auth(staffList);
         InsuranceListImpl insuranceList = new InsuranceListImpl();
-        FireInsuranceListImpl fireInsuranceList = new FireInsuranceListImpl();
-        CarInsuranceListImpl carInsuranceList = new CarInsuranceListImpl();
-        SeaInsuranceListImpl seaInsuranceList = new SeaInsuranceListImpl();
+        FireInsuranceList fireInsuranceList = new FireInsuranceListImpl();
+        CarInsuranceList carInsuranceList = new CarInsuranceListImpl();
+        SeaInsuranceList seaInsuranceList = new SeaInsuranceListImpl();
         CustomerListImpl customerList = new CustomerListImpl();
         MedicalHistoryListImpl medicalHistoryList = new MedicalHistoryListImpl();
         CarListImpl carList = new CarListImpl();
@@ -552,6 +553,8 @@ public class Application {
 
                                     viewContract:
                                     while (true) {
+                                        contracts = underWrite.findCustomerContract(
+                                                Integer.parseInt(customerId));
                                         System.out.println(customer.getName() + "님의 인수 심사 현황");
                                         for (Contract contract : contracts) {
                                             Insurance insurance = underWrite.getInsurance(
@@ -1844,7 +1847,6 @@ public class Application {
                                                             }
 
                                                             staffManagement.changePosition(
-
                                                                 manageStaff,
                                                                 Integer.parseInt(position), staff);
 
@@ -1938,6 +1940,7 @@ public class Application {
                                                             staffManagement.fireStaff(
                                                                     Integer.parseInt(staffId));
                                                             System.out.println("사원이 해고되었습니다.");
+                                                            continue manageStaff;
                                                         } else if (select3.equals("2")) {
                                                             System.out.println("해고를 취소하였습니다.");
                                                             continue findStaff;
@@ -1955,7 +1958,7 @@ public class Application {
                                                 }
                                             } else {
                                                 System.out.println(
-                                                        "죄송합니다. 사원 정보를 제대로 불러올 수 업습니다. 잠시 후 다시 시도해주세요.");
+                                                        "죄송합니다. 사원 정보를 제대로 불러올 수 없습니다. 잠시 후 다시 시도해주세요.");
                                                 continue manageStaff;
                                             }
                                         }

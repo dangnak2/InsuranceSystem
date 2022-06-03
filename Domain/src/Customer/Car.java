@@ -10,6 +10,12 @@ public class Car {
   private int id;
 
 
+
+
+  public Car() {
+  }
+
+
   public int getId() {
     return id;
   }
@@ -17,29 +23,6 @@ public class Car {
   public void setId(int id) {
     this.id = id;
   }
-
-
-  public enum Type {
-    Domestic,
-    Overseas
-
-  }
-
-
-  private Type type;
-
-  public Car() {
-  }
-
-
-  public Type getType() {
-    return type;
-  }
-
-  public void setType(Type type) {
-    this.type = type;
-  }
-
   public int getCustomerId() {
     return this.customerId;
   }
