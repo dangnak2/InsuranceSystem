@@ -13,11 +13,13 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
   public SeaInsuranceListImpl() {
     this.getConnection();
     this.seaInsuranceList = new ArrayList<>();
+    this.seaInsuranceList = getSeaInsuranceList();
   }
 
   public ArrayList<SeaInsurance> getSeaInsuranceList() {
     String query = "select * from seaInsurance;";
     ResultSet rs = super.retreive(query);
+    ArrayList<SeaInsurance> seas = new ArrayList<SeaInsurance>();
     try {
       while (rs.next()) {
         SeaInsurance seaInsurance = new SeaInsurance();
@@ -26,12 +28,12 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
         seaInsurance.setGeneralDamageBasicMoney(rs.getInt("generalDamageBasicMoney"));
         seaInsurance.setRevenueDamageBasicMoney(rs.getInt("revenueDamageBasicMoney"));
 
-        this.seaInsuranceList.add(seaInsurance);
+        seas.add(seaInsurance);
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return seaInsuranceList;
+    return seas;
   }
 
   @Override
@@ -39,17 +41,21 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
       String query = "INSERT INTO seaInsurance VALUES ("
               + seaInsurance.getSeeInsurance_id() + ","
               + seaInsurance.getGeneralDamageBasicMoney() + "," + seaInsurance.getRevenueDamageBasicMoney() + ");";
-//      super.add(query);
-      this.seaInsuranceList = this.getSeaInsuranceList();
-      return true;
+      if(super.create(query)) {
+        this.seaInsuranceList = this.getSeaInsuranceList();
+        return true;
+      }
+    return false;
   }
 
   @Override
   public boolean delete(int insuranceId) {
       String query = "DELETE FROM seaInsurance WHERE seaInsurance_id =  " + insuranceId + ";";
-      super.delete(query);
-      this.seaInsuranceList = this.getSeaInsuranceList();
-      return true;
+      if(super.delete(query)) {
+        this.seaInsuranceList = this.getSeaInsuranceList();
+        return true;
+      }
+    return false;
   }
 
   @Override
@@ -79,6 +85,6 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
 
   @Override
   public int getSize() {
-    return 0;
+    return this.seaInsuranceList.size();
   }
 }

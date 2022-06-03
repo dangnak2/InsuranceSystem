@@ -13,11 +13,13 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
   public FireInsuranceListImpl() {
     this.getConnection();
     this.fireInsuranceList = new ArrayList<>();
+    this.fireInsuranceList = getFireInsuranceList();
   }
 
   public ArrayList<FireInsurance> getFireInsuranceList(){
     String query = "select * from fireInsurance;";
     ResultSet rs = super.retreive(query);
+    ArrayList<FireInsurance> fires = new ArrayList<FireInsurance>();
     try {
       while (rs.next()) {
         FireInsurance fireInsurance = new FireInsurance();
@@ -27,12 +29,12 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
         fireInsurance.setSurroundingDamageBasicMoney(rs.getInt("surroundingDamageBasicMoney"));
         fireInsurance.setBuildingDamageBasicMoney(rs.getInt("buildingDamageBasicMoney"));
 
-        this.fireInsuranceList.add(fireInsurance);
+        fires.add(fireInsurance);
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return fireInsuranceList;
+    return fires;
   }
 
   @Override
@@ -40,17 +42,21 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
       String query = "INSERT INTO fireInsurance VALUES ("
               + fireInsurance.getFireInsurance_id() + "," + fireInsurance.getSurroundingDamageBasicMoney()
               + "," + fireInsurance.getHumanDamageBasicMoney() + "," + fireInsurance.getBuildingDamageBasicMoney() + ");";
-      super.create(query);
-      this.fireInsuranceList = this.getFireInsuranceList();
-      return true;
+      if(super.create(query)) {
+        this.fireInsuranceList = this.getFireInsuranceList();
+        return true;
+      }
+      return false;
   }
 
   @Override
   public boolean delete(int insuranceId) {
       String query = "DELETE FROM fireInsurance WHERE fireInsurance_id =  " + insuranceId + ";";
-      super.delete(query);
-      this.fireInsuranceList = getFireInsuranceList();
-      return true;
+      if(super.delete(query)) {
+        this.fireInsuranceList = getFireInsuranceList();
+        return true;
+      }
+    return false;
   }
 
   @Override
@@ -80,6 +86,6 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
 
   @Override
   public int getSize() {
-    return 0;
+    return this.fireInsuranceList.size();
   }
 }

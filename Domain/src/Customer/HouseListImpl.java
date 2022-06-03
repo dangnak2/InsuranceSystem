@@ -86,6 +86,7 @@ public class HouseListImpl extends DBConnector implements HouseList {
       this.houseList = this.getHouseList();
       return true;
     }
+
     return false;
   }
 }
