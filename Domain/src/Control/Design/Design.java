@@ -24,9 +24,6 @@ public class Design {
 	}
 
 
-	public void approve(){
-
-	}
 
 	public boolean authorize(int insuranceId) {
 		Insurance insurance = this.insuranceList.get(insuranceId);
@@ -88,10 +85,6 @@ public class Design {
 
 		staff.setResult(staff.getResult()+1);
 		return insurance;
-	}
-
-	public void manage() {
-
 	}
 
 	public ArrayList<Insurance> getInsuranceList() {
