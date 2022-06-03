@@ -136,6 +136,7 @@ public class StaffManagement {
 
     public void changePosition(Staff staff, int position, Staff loginStaff) {
         staff.setPosition(Position.values()[position - 1]);
+        this.staffList.update(staff);
         this.calculateSalary(staff.getId(), loginStaff);
     }
 
@@ -148,6 +149,7 @@ public class StaffManagement {
         staff.setTotalSalary(totalSalary);
         loginStaff.setResult(staff.getResult()+1);
         this.staffList.update(staff);
+        this.staffList.update(loginStaff);
 
 //        최종 월급 = 기본 월급(basicSalary) + 근무일수(count) / 365 * x + 판매 실적(result) * y
 

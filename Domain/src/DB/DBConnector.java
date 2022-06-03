@@ -6,7 +6,7 @@ public class DBConnector {
     private String server = "localhost"; // MySQL 서버 주소
     private String database = "insurance_system"; // MySQL DATABASE 이름
     private String user_name = "root"; //  MySQL 서버 아이디
-    private String password = "yeol!060913"; // MySQL 서버 비밀번호
+    private String password = "2360asAS!@"; // MySQL 서버 비밀번호
     private Connection con;
     private Statement stmt;
     private ResultSet rs;
@@ -56,7 +56,7 @@ public class DBConnector {
         try {
             stmt = con.createStatement();
             if (!stmt.execute(query)) {
-            return true;
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
