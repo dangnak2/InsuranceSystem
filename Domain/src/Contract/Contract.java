@@ -47,7 +47,7 @@ public class Contract {
 	}
 
 	public boolean isUnderWrite() {
-		return underWrite;
+		return this.underWrite;
 	}
 
 	public void setUnderWrite(boolean underWrite) {

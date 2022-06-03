@@ -7,10 +7,21 @@ public class Car {
   private int displacement;
   private int price;
   private int customerId;
+  private int id;
+
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
 
   public enum Type {
     Domestic,
-    Overseas;
+    Overseas
 
   }
 

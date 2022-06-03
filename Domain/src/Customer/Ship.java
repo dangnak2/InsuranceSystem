@@ -15,6 +15,17 @@ public class Ship {
   }
   private ShipType shipType;
   private int customer_id;
+  private int id;
+
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
 
   public Ship() {
   }
@@ -55,7 +66,7 @@ public class Ship {
     return this.customer_id;
   }
 
-  public void setCustomer_id(int customer_id) {
+  public void setCustomerId(int customer_id) {
     this.customer_id = customer_id;
   }
 

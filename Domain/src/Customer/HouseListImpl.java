@@ -9,7 +9,6 @@ import DB.DBConnector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class HouseListImpl extends DBConnector implements HouseList {
   ArrayList<House> houseList;
@@ -27,7 +26,8 @@ public class HouseListImpl extends DBConnector implements HouseList {
     try {
       while(rs.next()) {
         House house = new House();
-        house.setCustomer_id(rs.getInt("customer_id"));
+        house.setId(rs.getInt("id"));
+        house.setCustomerId(rs.getInt("customer_id"));
         house.setPrice(rs.getInt("price"));
         house.setHouseType(House.HouseType.valueOf(rs.getString("houseType")));
         this.houseList.add(house);
@@ -40,7 +40,7 @@ public class HouseListImpl extends DBConnector implements HouseList {
   }
 
   public boolean add(House house) {
-    String query = "insert into house values ("
+    String query = "insert into house values (" + house.getId() + ","
         + house.getCustomer_id() + "," + house.getPrice() +",'"+ house.getHouseType() +"');";
 
     if(super.create(query)) {
@@ -50,9 +50,9 @@ public class HouseListImpl extends DBConnector implements HouseList {
     return false;
   }
   @Override
-  public House get(int customer_Id) {
+  public House get(int id) {
     for (House house : houseList) {
-      if (house.getCustomer_id() == customer_Id) {
+      if (house.getId() == id) {
         return house;
       }
     }
@@ -63,7 +63,7 @@ public class HouseListImpl extends DBConnector implements HouseList {
   public boolean update(House house) {
     String query = "update house set customer_id = "
         + house.getCustomer_id() +", price = " + house.getPrice()
-        + " , houseType = '" + house.getHouseType() + "';";
+        + " , houseType = '" + house.getHouseType() + "' where id = " + house.getId();
     if(super.update(query)){
       this.houseList = getHouseList();
       return true;
@@ -78,9 +78,9 @@ public class HouseListImpl extends DBConnector implements HouseList {
 
 
   @Override
-  public boolean delete(int customer_id) {
+  public boolean delete(int id) {
 
-    String query = "delete from house where customer_id=" + customer_id;
+    String query = "delete from house where id=" + id;
 
     if(super.delete(query)) {
       this.houseList = this.getHouseList();
