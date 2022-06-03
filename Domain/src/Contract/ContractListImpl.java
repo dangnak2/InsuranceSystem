@@ -54,7 +54,7 @@ public class ContractListImpl extends DBConnector implements ContractList {
         + contract.getInsuranceId() + "," + contract.getInsurancePrice() + ","
         + contract.getPremiumRate() + ","
         + contract.getCompensationAmount() + ",'" + contract.getContractDate()
-        + "');";
+        + "', false);";
     if (super.create(query)) {
       this.contractList = getContractList();
       return true;
