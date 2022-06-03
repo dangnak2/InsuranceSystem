@@ -55,6 +55,7 @@ public class ContractListImpl extends DBConnector implements ContractList {
         + contract.getPremiumRate() + ","
         + contract.getCompensationAmount() + ",'" + contract.getContractDate()
         + "'," +false+");";
+
     if (super.create(query)) {
       this.contractList = getContractList();
       return true;
