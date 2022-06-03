@@ -14,6 +14,7 @@ public class InsuranceListImpl extends DBConnector implements InsuranceList {
   public InsuranceListImpl() {
     this.getConnection();
     this.insuranceList = new ArrayList<>();
+    this.insuranceList = getInsuranceList();
   }
 
   public ArrayList<Insurance> getInsuranceList() {

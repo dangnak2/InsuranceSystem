@@ -1,6 +1,6 @@
 package Insurance;
 
-interface SeaInsuranceList {
+public interface SeaInsuranceList {
   public boolean add(SeaInsurance insurance);
 
   public boolean delete(int insuranceId);

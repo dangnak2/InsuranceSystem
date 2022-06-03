@@ -29,7 +29,6 @@ public class CarListImpl extends DBConnector implements CarList {
         Car car = new Car();
         car.setId(rs.getInt("id"));
         car.setCustomerId(rs.getInt("customer_id"));
-        car.setType(Car.Type.valueOf(rs.getString("type")));
         car.setCarNum(rs.getInt("carNum"));
         car.setYear(rs.getInt("year"));
         car.setDisplacement(rs.getInt("Displacement"));
@@ -46,8 +45,8 @@ public class CarListImpl extends DBConnector implements CarList {
 
   public boolean add(Car car) {
     String query = "insert into car values (" + car.getId() + ","
-        + car.getCustomerId() + ",'" + car.getType()+"',"+ car.getCarNum() +"," + car.getYear() + ",'"
-        + car.getDisplacement() + ",'" + car.getPrice() + ");";
+        + car.getCustomerId() + ","+ car.getCarNum() +"," + car.getYear() + ","
+        + car.getDisplacement() + "," + car.getPrice() + ");";
     if(super.create(query)){
       this.carList = getCarlist();
       return true;
@@ -67,7 +66,7 @@ public class CarListImpl extends DBConnector implements CarList {
   @Override
   public boolean update(Car car) {
     String query = "update car set customer id = " + car.getCustomerId()
-        + ", type = '" + car.getType() + "', carNum = "
+        + ", carNum = "
         + car.getCarNum() + "', year = " + car.getYear()
         + ", displacement = " + car.getDisplacement() + ", price = " + car.getPrice()
         + " where id =" + car.getId();
