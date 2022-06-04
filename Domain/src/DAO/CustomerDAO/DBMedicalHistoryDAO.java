@@ -1,16 +1,17 @@
-package Domain.Customer;
+package DAO.CustomerDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Customer.MedicalHistory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class MedicalHistoryListImpl extends DBConnector implements MedicalHistoryList {
+public class DBMedicalHistoryDAO extends DBConnectorDAO implements MedicalHistoryDAO {
 
   ArrayList<MedicalHistory> medicalHistoryList;
 
-  public MedicalHistoryListImpl() {
+  public DBMedicalHistoryDAO() {
     this.medicalHistoryList = new ArrayList<>();
     super.getConnection();
     this.medicalHistoryList = this.getMedicalHistoryList();
@@ -18,7 +19,7 @@ public class MedicalHistoryListImpl extends DBConnector implements MedicalHistor
 
   public ArrayList<MedicalHistory> getMedicalHistoryList() {
     String query = "select * from medicalhistory;";
-    ResultSet rs = super.retreive(query);
+    ResultSet rs = super.retrieve(query);
     ArrayList<MedicalHistory> medicalHistories = new ArrayList<MedicalHistory>();
 
     try {

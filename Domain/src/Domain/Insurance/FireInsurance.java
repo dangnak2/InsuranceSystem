@@ -3,17 +3,17 @@ package Domain.Insurance;
 public class FireInsurance extends Insurance{
 
 
-  private int fireInsurance_id;
+  private int fireInsuranceId;
   private int surroundingDamageBasicMoney;
   private int humanDamageBasicMoney;
   private int buildingDamageBasicMoney;
 
-  public int getFireInsurance_id() {
-    return fireInsurance_id;
+  public int getFireInsuranceId() {
+    return fireInsuranceId;
   }
 
-  public void setFireInsurance_id(int fireInsurance_id) {
-    this.fireInsurance_id = fireInsurance_id;
+  public void setFireInsuranceId(int fireInsuranceId) {
+    this.fireInsuranceId = fireInsuranceId;
   }
 
   public int getSurroundingDamageBasicMoney() {

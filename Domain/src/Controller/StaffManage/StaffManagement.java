@@ -1,8 +1,10 @@
 package Controller.StaffManage;
 
+import DAO.StaffDAO.StaffDAOImpl;
 import Domain.Staff.*;
 import Domain.Staff.Staff.Department;
 import Domain.Staff.Staff.Position;
+import DAO.StaffDAO.StaffDAO;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -11,26 +13,26 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class StaffManagement {
-    private StaffList staffList;
+    private StaffDAO staffRepository;
 
-    public StaffManagement(StaffList staffList) {
-        this.staffList = staffList;
+    public StaffManagement(StaffDAO staffRepository) {
+        this.staffRepository = staffRepository;
     }
 
 
 
     public ArrayList<Staff> getTotalStaff() {
         ArrayList<Staff> totalStaffList = new ArrayList<>();
-        if (this.staffList instanceof StaffListImpl) {
-            totalStaffList = ((StaffListImpl) this.staffList).getStaffList();
+        if (this.staffRepository instanceof StaffDAOImpl) {
+            totalStaffList = ((StaffDAOImpl) this.staffRepository).getStaffList();
         }
         return totalStaffList;
     }
 
     public ArrayList<Staff> getDepartmentStaff(int department) {
         ArrayList<Staff> departmentStaffList = new ArrayList<>();
-        if (this.staffList instanceof StaffListImpl) {
-            for (Staff staff : ((StaffListImpl) this.staffList).getStaffList()) {
+        if (this.staffRepository instanceof StaffDAOImpl) {
+            for (Staff staff : ((StaffDAOImpl) this.staffRepository).getStaffList()) {
                 if (Department.values()[department-1] == staff.getDepartment()) {
                     departmentStaffList.add(staff);
                 }
@@ -67,22 +69,22 @@ public class StaffManagement {
         createdStaff.setJoinDate(Timestamp.valueOf(LocalDateTime.now()));
         String[] staffBirth = createdStaff.getSSN().split("-");
 
-        createdStaff.setId(this.staffList.getSize() + 1);
-        if (this.staffList.get(staffId) != null) {
+        createdStaff.setId(this.staffRepository.getSize() + 1);
+        if (this.staffRepository.get(staffId) != null) {
             return null;
         }
         createdStaff.setId(staffId);
         createdStaff.setPassword(staffPw);
 
-        staffList.add(createdStaff);
+        staffRepository.add(createdStaff);
 
 
         return createdStaff;
     }
 
     public Staff getStaff(int staffId) {
-        if (this.staffList instanceof StaffListImpl) {
-            for (Staff staff : ((StaffListImpl) this.staffList).getStaffList()) {
+        if (this.staffRepository instanceof StaffDAOImpl) {
+            for (Staff staff : ((StaffDAOImpl) this.staffRepository).getStaffList()) {
                 if (staffId == staff.getId()) {
                     return staff;
                 }
@@ -92,17 +94,17 @@ public class StaffManagement {
     }
 
     public boolean updateDepartment(int staffId, int department) {
-        Staff staff = this.staffList.get(staffId);
+        Staff staff = this.staffRepository.get(staffId);
         if (staff == null) {
             return false;
         }
         staff.setDepartment(Department.values()[department-1]);
-        this.staffList.update(staff);
+        this.staffRepository.update(staff);
         return true;
     }
 
     public void fireStaff(int staffId) {
-        this.staffList.delete(staffId);
+        this.staffRepository.delete(staffId);
     }
 
     //회원 가입할 때 사원번호를 발급 해야할지 여기서 발급을 해야되는지 고민해봐야함
@@ -113,7 +115,7 @@ public class StaffManagement {
     }
 
     public int calculateWorkDate(int staffId) {
-        Staff staff = this.staffList.get(staffId);
+        Staff staff = this.staffRepository.get(staffId);
 
         Date today = new Date();
         Calendar calendarToday = Calendar.getInstance();
@@ -136,20 +138,20 @@ public class StaffManagement {
 
     public void changePosition(Staff staff, int position, Staff loginStaff) {
         staff.setPosition(Position.values()[position - 1]);
-        this.staffList.update(staff);
+        this.staffRepository.update(staff);
         this.calculateSalary(staff.getId(), loginStaff);
     }
 
     public void calculateSalary(int staffId, Staff loginStaff) {
-        Staff staff = this.staffList.get(staffId);
+        Staff staff = this.staffRepository.get(staffId);
 
         int workDate = this.calculateWorkDate(staffId);
         int totalSalary = staff.getBasicSalary() + ((workDate/ 365) * 100000) + (staff.getResult() * 50000);
 
         staff.setTotalSalary(totalSalary);
         loginStaff.setResult(staff.getResult()+1);
-        this.staffList.update(staff);
-        this.staffList.update(loginStaff);
+        this.staffRepository.update(staff);
+        this.staffRepository.update(loginStaff);
 
 //        최종 월급 = 기본 월급(basicSalary) + 근무일수(count) / 365 * x + 판매 실적(result) * y
 

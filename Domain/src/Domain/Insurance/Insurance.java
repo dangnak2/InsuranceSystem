@@ -13,7 +13,6 @@ public abstract class Insurance {
   private String name;
   private String explanation;
   private int premium;
-  private int basicConpensation;
   public boolean authorization;
   private Date authorizationDate;
   private Date createdDate;
@@ -30,14 +29,6 @@ public abstract class Insurance {
 
   public void setType(Type type) {
     this.type = type;
-  }
-
-  public int getBasicConpensation() {
-    return basicConpensation;
-  }
-
-  public void setBasicConpensation(int basicConpensation) {
-    this.basicConpensation = basicConpensation;
   }
 
   public Date getAuthorizedDate() {

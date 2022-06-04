@@ -1,9 +1,11 @@
 
-package Domain.Customer;
+package DAO.CustomerDAO;
+
+import Domain.Customer.House;
 
 import java.util.ArrayList;
 
-public interface HouseList {
+public interface HouseDAO {
   boolean add(House house);
 
   boolean delete(int id);

@@ -1,34 +1,38 @@
 package Controller.UnderWrite;
 
 import Domain.Contract.Contract;
-import Domain.Contract.*;
 import Domain.Customer.*;
 import Domain.Insurance.*;
 import Domain.Staff.*;
+import DAO.ContractDAO.ContractDAO;
+import DAO.CustomerDAO.CustomerDAO;
+import DAO.CustomerDAO.MedicalHistoryDAO;
+import DAO.InsuranceDAO.InsuranceDAO;
+import DAO.StaffDAO.StaffDAO;
 
 import java.util.ArrayList;
 
 public class UnderWrite {
 
-    private ContractList contractList;
-    private InsuranceList insuranceList;
-    private CustomerList customerList;
-    private StaffList staffList;
-    private MedicalHistoryList medicalHistoryList;
+    private ContractDAO contractDAO;
+    private InsuranceDAO insuranceList;
+    private CustomerDAO customerList;
+    private StaffDAO staffRepository;
+    private MedicalHistoryDAO medicalHistoryList;
 
 
-    public UnderWrite(ContractList contractList, InsuranceList insuranceList, CustomerList customerList, StaffList staffList, MedicalHistoryList medicalHistoryList) {
-        this.contractList = contractList;
+    public UnderWrite(ContractDAO contractDAO, InsuranceDAO insuranceList, CustomerDAO customerList, StaffDAO staffRepository, MedicalHistoryDAO medicalHistoryList) {
+        this.contractDAO = contractDAO;
         this.insuranceList = insuranceList;
         this.customerList = customerList;
-        this.staffList = staffList;
+        this.staffRepository = staffRepository;
         this.medicalHistoryList = medicalHistoryList;
     }
 
     public ArrayList<Contract> findCustomerContract(int customerId) {
         ArrayList<Contract> customerContractList = new ArrayList<>();
 
-            for (Contract contract : this.contractList.getContractList()) {
+            for (Contract contract : this.contractDAO.getContractList()) {
                 if (customerId == contract.getCustomerId()) {
                     customerContractList.add(contract);
                 }
@@ -56,7 +60,7 @@ public class UnderWrite {
     }
 
     public Contract getContract(int contractId) {
-            for (Contract contract : this.contractList.getContractList()) {
+            for (Contract contract : this.contractDAO.getContractList()) {
                 if (contractId == contract.getContractId()) {
                     return contract;
                 }
@@ -87,7 +91,7 @@ public class UnderWrite {
         contract.setUnderWrite(true);
         staff.setResult(staff.getResult()+1);
 
-        this.staffList.update(staff);
-        this.contractList.update(contract);
+        this.staffRepository.update(staff);
+        this.contractDAO.update(contract);
     }
 }

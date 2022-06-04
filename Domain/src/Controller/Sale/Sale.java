@@ -1,6 +1,5 @@
 package Controller.Sale;
 
-import Authorizate.MyAuthentication;
 import Domain.Contract.*;
 import Domain.Customer.*;
 import Domain.Insurance.*;
@@ -8,13 +7,15 @@ import Domain.Customer.MedicalHistory.Disease;
 import Domain.Customer.Customer.Job;
 import Domain.Customer.House.HouseType;
 import Domain.Customer.Ship.ShipType;
-import Domain.Staff.StaffList;
 import Domain.Staff.Staff;
+import DAO.ContractDAO.ContractDAO;
+import DAO.CustomerDAO.*;
+import DAO.InsuranceDAO.InsuranceDAO;
+import DAO.StaffDAO.StaffDAO;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import javax.mail.*;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
@@ -23,34 +24,33 @@ import java.util.Date;
 import java.util.Properties;
 
 public class Sale {
-    private InsuranceList insuranceList;
-    private CustomerList customerList;
-    private ContractList contractList;
-    private StaffList staffList;
-    private MedicalHistoryList medicalHistoryList;
-    private CarList carList;
-    private HouseList houseList;
-    private ShipList shipList;
+    private InsuranceDAO insuranceDAO;
+    private CustomerDAO customerDAO;
+    private ContractDAO contractDAO;
+    private StaffDAO staffDAO;
+    private MedicalHistoryDAO medicalHistoryDAO;
+    private CarDAO carDAO;
+    private HouseDAO houseDAO;
+    private ShipDAO shipDAO;
     private CalculatePremium calculatePremium;
-    private int count;
 
-    public Sale(InsuranceList insuranceList, CustomerList customerList, MedicalHistoryList medicalHistoryList,
-    CarList carList, HouseList houseList, ShipList shipList, ContractList contractList, StaffList staffList, CalculatePremium calculatePremium) {
-        this.insuranceList = insuranceList;
-        this.customerList = customerList;
-        this.contractList = contractList;
-        this.staffList = staffList;
-        this.medicalHistoryList = medicalHistoryList;
-        this.carList = carList;
-        this.houseList = houseList;
-        this.shipList = shipList;
+    public Sale(InsuranceDAO insuranceDAO, CustomerDAO customerDAO, MedicalHistoryDAO medicalHistoryDAO,
+                CarDAO carDAO, HouseDAO houseDAO, ShipDAO shipDAO, ContractDAO contractDAO, StaffDAO staffDAO, CalculatePremium calculatePremium) {
+        this.insuranceDAO = insuranceDAO;
+        this.customerDAO = customerDAO;
+        this.contractDAO = contractDAO;
+        this.staffDAO = staffDAO;
+        this.medicalHistoryDAO = medicalHistoryDAO;
+        this.carDAO = carDAO;
+        this.houseDAO = houseDAO;
+        this.shipDAO = shipDAO;
         this.calculatePremium = calculatePremium;
     }
 
 
     //총 고객 수 구하기
     public int totalCustomerCount() {
-        return this.customerList.getSize();
+        return this.customerDAO.getSize();
     }
 
     //이번 달 가입한 고객 수 구하기
@@ -61,13 +61,13 @@ public class Sale {
         calendarToday.setTime(date);
 
         Calendar customerJoinDate = Calendar.getInstance();
-            for (Customer customer : customerList.getCustomerList()) {
-                customerJoinDate.setTime(customer.getJoinDate());
-                if (calendarToday.get(Calendar.YEAR) == customerJoinDate.get(Calendar.YEAR)
-                        && calendarToday.get(Calendar.MONTH) == customerJoinDate.get(Calendar.MONTH)) {
-                    count++;
-                }
+        for (Customer customer : customerDAO.getCustomerList()) {
+            customerJoinDate.setTime(customer.getJoinDate());
+            if (calendarToday.get(Calendar.YEAR) == customerJoinDate.get(Calendar.YEAR)
+                    && calendarToday.get(Calendar.MONTH) == customerJoinDate.get(Calendar.MONTH)) {
+                count++;
             }
+        }
 
         return count;
     }
@@ -75,34 +75,39 @@ public class Sale {
     //미납한 고객 수 구하기
     public int unpaidCustomerCount() {
         int count = 0;
-        for (Customer customer : customerList.getCustomerList()) {
-                if (!customer.isPay()) {
+        boolean addCustomer = false;
+        for (Customer customer : this.customerDAO.getCustomerList()) {
+            addCustomer = false;
+            for (Contract contract : this.contractDAO.getContractList()) {
+                if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !customer.isPay() && !addCustomer) {
                     count++;
+                    addCustomer = true;
                 }
             }
+        }
         return count;
     }
 
     //고객List 전달
     public ArrayList<Customer> getTotalCustomer() {
-        return this.customerList.getCustomerList();
+        return this.customerDAO.getCustomerList();
     }
 
     public ArrayList<Insurance> getJoinInsurances(int customerId) {
         ArrayList<Insurance> joinInsurance = new ArrayList<>();
 
-        for (Contract contract : this.contractList.getContractList()) {
-                if (contract.getCustomerId() == customerId) {
-                    joinInsurance.add(this.getInsurance(contract.getInsuranceId()));
-                }
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getCustomerId() == customerId) {
+                joinInsurance.add(this.getInsurance(contract.getInsuranceId()));
             }
+        }
 
         return joinInsurance;
     }
 
     //고객 정보 수정하기
     public boolean updateCustomer(int customerId, String address, String phoneNum, String email) {
-        Customer customer = this.customerList.get(customerId);
+        Customer customer = this.customerDAO.get(customerId);
         if (customer == null) {
             return false;
         }
@@ -110,7 +115,7 @@ public class Sale {
         customer.setPhoneNumber(phoneNum);
         customer.setEmail(email);
 
-        this.customerList.update(customer);
+        this.customerDAO.update(customer);
         return true;
 
 //		customer.getMedicalHistory().setMyDisease();
@@ -120,11 +125,11 @@ public class Sale {
 
     //고객 정보 삭제하기
     public boolean deleteCustomer(int customerId) {
-        return this.customerList.delete(customerId);
+        return this.customerDAO.delete(customerId);
     }
 
     public String getCustomerName(int customerId) {
-        Customer customer = this.customerList.get(customerId);
+        Customer customer = this.customerDAO.get(customerId);
         if (customer == null) {
             return null;
         } else {
@@ -133,7 +138,7 @@ public class Sale {
     }
 
     public Customer getCustomer(int customerId) {
-        Customer customer = this.customerList.get(customerId);
+        Customer customer = this.customerDAO.get(customerId);
         if (customer == null) {
             return null;
         } else {
@@ -143,39 +148,38 @@ public class Sale {
 
     //미납한 고객 구하기
     public ArrayList<Customer> getUnpaidCustomer() {
+        boolean addCustomer = false;
         ArrayList<Customer> unpaidCustomerList = new ArrayList<>();
-            for (Customer customer :  this.customerList.getCustomerList()) {
-                if (!customer.isPay()) {
+        for (Customer customer : this.customerDAO.getCustomerList()) {
+            addCustomer = false;
+            for (Contract contract : this.contractDAO.getContractList()) {
+                if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !customer.isPay() && !addCustomer) {
                     unpaidCustomerList.add(customer);
+                    addCustomer = true;
                 }
             }
+        }
         return unpaidCustomerList;
     }
 
 
     //미납한 고객 돈 받기
     public boolean payCustomer(ArrayList<Customer> unpaidCustomerList) {
-        ArrayList<String> emailList = new ArrayList<>();
-        for (Customer customer : unpaidCustomerList) {
-            emailList.add(customer.getEmail());
-        }
-        if (emailList.isEmpty()) {
-            return false;
-        }
 
-        if (verifyEmail(emailList)) {
+        if (verifyEmail(unpaidCustomerList)) {
             for (Customer customer : unpaidCustomerList) {
                 customer.setPay(true);
+                this.customerDAO.update(customer);
             }
+
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean verifyEmail(ArrayList<String> emails) {
+    private boolean verifyEmail(ArrayList<Customer> unpaidCustomerList) {
         boolean result = false;
-        count = 0;
 
         Properties p = System.getProperties();
         p.put("mail.smtp.starttls.enable", "true");
@@ -189,35 +193,27 @@ public class Sale {
 
         // Compose the message
         try {
-
             message.setSentDate(new Date());
             InternetAddress from = new InternetAddress();
 
             from = new InternetAddress("Foreigners<hakgooyeol@naver.com>");
             message.setFrom(from);
 
-            InternetAddress[] addresses = new InternetAddress[emails.size()];
+            for (Customer customer : unpaidCustomerList) {
+                for (Contract contract : this.contractDAO.getContractList()) {
+                    if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite()) {
+                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(customer.getEmail()));
+                        message.setSubject("[전과자들]"+this.insuranceDAO.get(contract.getInsuranceId()).getName()+" 보험 보험료 체납 안내", "UTF-8");
+                        message.setText("안녕하세요 전과자들입니다.\n" +
+                                "고객님이 가입하신 "+this.insuranceDAO.get(contract.getInsuranceId()).getName()+
+                                " 보험의 보험료 "+ contract.getInsurancePrice() +" 원이 정상적으로 입금되지 않았습니다.\n" +
+                                "확인 후 입금 부탁드립니다.\n" +
+                                "갑사합니다.", "UTF-8");
+                        Transport.send(message);
 
-            emails.forEach(email -> {
-                try {
-                    addresses[count] = new InternetAddress(email);
-                    count = count + 1;
-                } catch (AddressException e) {
-                    e.printStackTrace();
+                    }
                 }
-            });
-
-            message.addRecipients(Message.RecipientType.TO, addresses);
-
-            // Subject
-            message.setSubject("[전과자들] 보험료 체납 안내", "UTF-8");
-
-            // Text
-            message.setText("안녕하세요 전과자들입니다. 고객님의 보험료가 정상적으로 입금되지 않았습니다. 돈 내놔", "UTF-8");
-
-            // send the message
-            Transport.send(message);
-
+            }
             result = true;
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -226,40 +222,50 @@ public class Sale {
     }
 
     //보험 리스트 전달
-    public ArrayList<Insurance> getInsuranceList() {
-        return this.insuranceList.getInsuranceList();
+    public ArrayList<Insurance> getInsuranceDAO() {
+        return this.insuranceDAO.getInsuranceList();
     }
 
 
     //보험 이름 찾기
     public String getInsuranceName(int insuranceId) {
-            for (Insurance insurance : this.insuranceList.getInsuranceList()) {
-                if (insurance.getId() == insuranceId) {
-                    return insurance.getName();
-                }
+        for (Insurance insurance : this.insuranceDAO.getInsuranceList()) {
+            if (insurance.getId() == insuranceId) {
+                return insurance.getName();
             }
+        }
 
         return null;
     }
 
     public Insurance getInsurance(int insuranceId) {
-        for (Insurance insurance : this.insuranceList.getInsuranceList()) {
-                if (insurance.getId() == insuranceId) {
-                    return insurance;
-                }
+        for (Insurance insurance : this.insuranceDAO.getInsuranceList()) {
+            if (insurance.getId() == insuranceId) {
+                return insurance;
             }
+        }
         return null;
+    }
+
+    public int getUnPaidAmount(int customerId) {
+        int amount = 0;
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getCustomerId() == customerId && contract.isUnderWrite() && !customerDAO.get(customerId).isPay()) {
+                amount += contract.getInsurancePrice();
+            }
+        }
+        return amount;
     }
 
 
     //보험마다 계약한 고객 수 구하기
     public int countContractCustomer(int insuranceId) {
         int count = 0;
-        for (Contract contract : this.contractList.getContractList()) {
-                if (contract.getInsuranceId() == insuranceId && contract.isUnderWrite()) {
-                    count++;
-                }
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getInsuranceId() == insuranceId && contract.isUnderWrite()) {
+                count++;
             }
+        }
 
         return count;
     }
@@ -268,10 +274,10 @@ public class Sale {
     //가입자 id, 보험 id 입력했을 경우로 유스케이스 수정
     public ArrayList<Contract> findContract(int customerId) {
         ArrayList<Contract> findContracts = new ArrayList<>();
-        for (Contract contract : this.contractList.getContractList()) {
-                if (contract.getCustomerId() == customerId) {
-                    findContracts.add(contract);
-                }
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getCustomerId() == customerId) {
+                findContracts.add(contract);
+            }
 
         }
         return findContracts;
@@ -279,10 +285,10 @@ public class Sale {
 
     //계약 전달
     public Contract getContract(int contractId) {
-        for (Contract contract : this.contractList.getContractList()) {
-                if (contract.getContractId() == contractId) {
-                    return contract;
-                }
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getContractId() == contractId) {
+                return contract;
+            }
 
         }
         return null;
@@ -290,13 +296,13 @@ public class Sale {
 
     //보험 계약 해지
     public boolean cancelContract(int contractId) {
-        return this.contractList.delete(contractId);
+        return this.contractDAO.delete(contractId);
     }
 
     public Customer joinCustomer(String customerName, String customerSSN, String customerAddress, String customerPhoneNum, String customerEmail, String customerAccount, int customerAge, int customerSex, int customerJob, int customerDisease, int customerHistoryYear, int customerCureComplete) {
 
         Customer customer = new Customer();
-        customer.setId(this.customerList.getSize() + 1);
+        customer.setId(setCustomerId());
         customer.setName(customerName);
         customer.setSSN(customerSSN);
         customer.setAddress(customerAddress);
@@ -330,10 +336,21 @@ public class Sale {
 
         customer.setMedicalHistory(medicalHistory);
 
-        this.customerList.add(customer);
-        this.medicalHistoryList.add(medicalHistory);
+        this.customerDAO.add(customer);
+        this.medicalHistoryDAO.add(medicalHistory);
 
         return customer;
+    }
+
+    public int setCustomerId() {
+        int customerId = 1;
+        while (true) {
+            if (customerDAO.get(customerId) == null) {
+                return customerId;
+            } else {
+                customerId++;
+            }
+        }
     }
 
     public void setCustomerCar(Customer customer, int carNum, int year, int displacement, int price) {
@@ -345,7 +362,7 @@ public class Sale {
         car.setPrice(price);
 
         customer.setCar(car);
-        this.carList.add(car);
+        this.carDAO.add(car);
     }
 
     public void setCustomerHouse(Customer customer, int houseType, int housePrice) {
@@ -356,7 +373,7 @@ public class Sale {
 
         customer.setHouse(house);
 
-        this.houseList.add(house);
+        this.houseDAO.add(house);
     }
 
     public void setCustomerSea(Customer customer, int shipNum, int year, int price, int shipType) {
@@ -368,7 +385,7 @@ public class Sale {
         ship.setShipType(ShipType.values()[shipType - 1]);
 
         customer.setShip(ship);
-        this.shipList.add(ship);
+        this.shipDAO.add(ship);
     }
 
     //보험 계약 체결
@@ -377,19 +394,31 @@ public class Sale {
     //일단 가입 시 고객을 저장하는 버전
     public boolean signContract(int insuranceId, Customer customer, Staff staff) {
         Contract contract = new Contract();
-        contract.setContractId(this.contractList.getSize() + 1);
+        contract.setContractId(setContractId());
         contract.setSalesId(staff.getId());
         contract.setCustomerId(customer.getId());
         contract.setInsuranceId(insuranceId);
-        contract.setPremiumRate(this.insuranceList.get(insuranceId).getPremium());
+        contract.setPremiumRate(this.insuranceDAO.get(insuranceId).getPremium());
         contract.setInsurancePrice(
-                (int) this.calculatePremium.calculatePremium(customer, this.insuranceList.get(insuranceId).getPremium()));
+                (int) this.calculatePremium.calculatePremium(customer, this.insuranceDAO.get(insuranceId).getPremium()));
         contract.setContractDate(Timestamp.valueOf(LocalDateTime.now()));
-        staff.setResult(staff.getResult()+1);
+        customer.setPay(false);
+        staff.setResult(staff.getResult() + 1);
 
-        this.staffList.update(staff);
+        this.staffDAO.update(staff);
+        this.customerDAO.update(customer);
+        return this.contractDAO.add(contract);
+    }
 
-        return this.contractList.add(contract);
+    public int setContractId() {
+        int contractId = 1;
+        while (true) {
+            if (contractDAO.get(contractId) == null) {
+                return contractId;
+            } else {
+                contractId++;
+            }
+        }
     }
 
 

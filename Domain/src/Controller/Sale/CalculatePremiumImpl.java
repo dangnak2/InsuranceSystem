@@ -10,15 +10,15 @@ public class CalculatePremiumImpl implements CalculatePremium {
     }
 
     @Override
-    public double calculatePremium(Customer customer, int premiumRate) {
+    public double calculatePremium(Customer customer, int premium) {
         int age = customer.getAge();
 
         if (customer.isSex()){
             //남자일 경우
-            return Math.round((1/age * 90) * premiumRate);
+            return (age / 5) * premium;
 
         }
 
-        return Math.round((1/age * 80) * premiumRate);
+        return (age / 3) * premium;
     }
 }

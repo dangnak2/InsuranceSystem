@@ -1,17 +1,18 @@
-package Domain.Contract;
+package DAO.ContractDAO;
 
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Contract.Contract;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ContractListImpl extends DBConnector implements ContractList {
+public class DBContractDAO extends DBConnectorDAO implements ContractDAO {
 
   private ArrayList<Contract> contractList;
 
-  public ContractListImpl() {
+  public DBContractDAO() {
     this.contractList = new ArrayList<>();
     super.getConnection();
     this.contractList = this.getContractList();
@@ -20,7 +21,7 @@ public class ContractListImpl extends DBConnector implements ContractList {
   @Override
   public ArrayList<Contract> getContractList() {
     String query = "select * from contract;";
-    ResultSet rs = super.retreive(query);
+    ResultSet rs = super.retrieve(query);
     ArrayList<Contract> contractList = new ArrayList<Contract>();
     try {
       while (rs.next()) {

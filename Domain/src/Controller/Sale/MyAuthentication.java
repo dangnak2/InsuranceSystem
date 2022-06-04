@@ -1,4 +1,4 @@
-package Authorizate;
+package Controller.Sale;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

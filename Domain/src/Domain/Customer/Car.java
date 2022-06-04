@@ -7,7 +7,6 @@ public class Car {
   private int displacement;
   private int price;
   private int customerId;
-  private int id;
 
 
 
@@ -15,14 +14,7 @@ public class Car {
   public Car() {
   }
 
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
+  
   public int getCustomerId() {
     return this.customerId;
   }

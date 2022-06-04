@@ -1,32 +1,32 @@
-package Domain.Insurance;
+package DAO.InsuranceDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Insurance.SeaInsurance;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceList {
+public class DBSeaInsuranceDAO extends DBConnectorDAO implements SeaInsuranceDAO {
 
-  private ArrayList<SeaInsurance> seaInsuranceList;
 
-  public SeaInsuranceListImpl() {
+  public DBSeaInsuranceDAO() {
     this.getConnection();
-    this.seaInsuranceList = new ArrayList<>();
   }
 
   public ArrayList<SeaInsurance> getSeaInsuranceList() {
+    ArrayList<SeaInsurance> seaInsuranceList = new ArrayList<>();
     String query = "select * from seaInsurance;";
-    ResultSet rs = super.retreive(query);
+    ResultSet rs = super.retrieve(query);
     try {
       while (rs.next()) {
         SeaInsurance seaInsurance = new SeaInsurance();
 
-        seaInsurance.setSeeInsurance_id(rs.getInt("seaInsurance_id"));
+        seaInsurance.setSeaInsuranceId(rs.getInt("seaInsurance_id"));
         seaInsurance.setGeneralDamageBasicMoney(rs.getInt("generalDamageBasicMoney"));
         seaInsurance.setRevenueDamageBasicMoney(rs.getInt("revenueDamageBasicMoney"));
 
-        this.seaInsuranceList.add(seaInsurance);
+        seaInsuranceList.add(seaInsurance);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -37,25 +37,32 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
   @Override
   public boolean add(SeaInsurance seaInsurance) {
       String query = "INSERT INTO seaInsurance VALUES ("
-              + seaInsurance.getSeeInsurance_id() + ","
+              + seaInsurance.getSeaInsuranceId() + ","
               + seaInsurance.getGeneralDamageBasicMoney() + "," + seaInsurance.getRevenueDamageBasicMoney() + ");";
-//      super.add(query);
-      this.seaInsuranceList = this.getSeaInsuranceList();
+
+    if (super.create(query)) {
       return true;
+    } else {
+      return false;
+    }
+
   }
 
   @Override
   public boolean delete(int insuranceId) {
       String query = "DELETE FROM seaInsurance WHERE seaInsurance_id =  " + insuranceId + ";";
-      super.delete(query);
-      this.seaInsuranceList = this.getSeaInsuranceList();
+    if (super.delete(query)) {
       return true;
+    } else {
+      return false;
+    }
+
   }
 
   @Override
   public SeaInsurance get(int insuranceId) {
-    for(SeaInsurance seaInsurance : seaInsuranceList){
-      if(insuranceId == seaInsurance.getId()){
+    for(SeaInsurance seaInsurance : getSeaInsuranceList()){
+      if(insuranceId == seaInsurance.getSeaInsuranceId()){
         return seaInsurance;
       }
     }
@@ -64,12 +71,10 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
 
   @Override
   public boolean update(SeaInsurance seaInsurance) {
-    if (seaInsuranceList.contains(seaInsurance)) {
       String query = "UPDATE carInsurance SET ("
-              + seaInsurance.getSeeInsurance_id() + "," + seaInsurance.getGeneralDamageBasicMoney()
-              + "," + seaInsurance.getRevenueDamageBasicMoney() + ")" + "WHERE carInsurance_id = " + seaInsurance.getSeeInsurance_id();
-      super.update(query);
-      this.seaInsuranceList = this.getSeaInsuranceList();
+              + seaInsurance.getSeaInsuranceId() + "," + seaInsurance.getGeneralDamageBasicMoney()
+              + "," + seaInsurance.getRevenueDamageBasicMoney() + ")" + "WHERE seaInsurance_id = " + seaInsurance.getSeaInsuranceId();
+      if(super.update(query)){
       return true;
     } else {
       return false;
@@ -79,6 +84,7 @@ public class SeaInsuranceListImpl extends DBConnector implements SeaInsuranceLis
 
   @Override
   public int getSize() {
-    return 0;
+    return getSeaInsuranceList().size();
   }
+
 }

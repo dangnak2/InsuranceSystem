@@ -1,30 +1,27 @@
 package Main;
 
-import Domain.Contract.Contract;
-import Domain.Contract.ContractListImpl;
+import Controller.Authorizate.Auth;
 import Controller.CompensationMange.CompensationManage;
-import Controller.CompensationMange.Indemnification.*;
+import Controller.CompensationMange.Indemnification.AccidentSubjectIndemnification;
+import Controller.CompensationMange.Indemnification.CarAccidentCauseIndemnification;
+import Controller.CompensationMange.Indemnification.FireAccidentCauseIndemnification;
+import Controller.CompensationMange.Indemnification.SeaAccidentCauseIndemnification;
 import Controller.Design.Design;
-import Controller.Sale.CalculatePremiumImpl;
 import Controller.Sale.CalculatePremium;
+import Controller.Sale.CalculatePremiumImpl;
 import Controller.Sale.Sale;
 import Controller.StaffManage.StaffManagement;
 import Controller.UnderWrite.UnderWrite;
+import DAO.ContractDAO.DBContractDAO;
+import DAO.CustomerDAO.*;
+import DAO.InsuranceDAO.*;
+import DAO.StaffDAO.StaffDAO;
+import DAO.StaffDAO.StaffDAOImpl;
+import Domain.Contract.Contract;
 import Domain.Customer.Customer;
-import Domain.Customer.CustomerListImpl;
-import Domain.Customer.MedicalHistoryListImpl;
-import Domain.Customer.CarListImpl;
-import Domain.Customer.HouseListImpl;
-import Domain.Customer.ShipListImpl;
 import Domain.Insurance.Insurance;
-import Domain.Insurance.InsuranceListImpl;
-import Domain.Insurance.*;
-import Domain.Insurance.FireInsuranceListImpl;
-import Domain.Insurance.CarInsuranceListImpl;
-import Domain.Insurance.SeaInsuranceListImpl;
 import Domain.Staff.Staff;
-import Domain.Staff.*;
-import Authorizate.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -37,29 +34,32 @@ public class Application {
 
         Staff staff = null;
 
-        StaffList staffList = new StaffListImpl();
-        Auth auth = new Auth(staffList);
-        InsuranceListImpl insuranceList = new InsuranceListImpl();
-        FireInsuranceList fireInsuranceList = new FireInsuranceListImpl();
-        CarInsuranceList carInsuranceList = new CarInsuranceListImpl();
-        SeaInsuranceList seaInsuranceList = new SeaInsuranceListImpl();
-        CustomerListImpl customerList = new CustomerListImpl();
-        MedicalHistoryListImpl medicalHistoryList = new MedicalHistoryListImpl();
-        CarListImpl carList = new CarListImpl();
-        HouseListImpl houseList = new HouseListImpl();
-        ShipListImpl shipList = new ShipListImpl();
-        ContractListImpl contractList = new ContractListImpl();
-        MyAuthentication emailVerify = new MyAuthentication();
+        StaffDAO staffDAO = new StaffDAOImpl();
+        Auth auth = new Auth(staffDAO);
+
+        FireInsuranceDAO fireInsuranceDAO = new DBFireInsuranceDAO();
+        CarInsuranceDAO carInsuranceDAO = new DBCarInsuranceDAO();
+        SeaInsuranceDAO seaInsuranceDAO = new DBSeaInsuranceDAO();
+
+        DBInsuranceDAO insuranceDAO = new DBInsuranceDAO(carInsuranceDAO, fireInsuranceDAO, seaInsuranceDAO);
+
+        DBMedicalHistoryDAO medicalHistoryDAO = new DBMedicalHistoryDAO();
+        DBCarDAO carDAO = new DBCarDAO();
+        DBHouseDAO houseDAO = new DBHouseDAO();
+        DBShipDAO shipDAO = new DBShipDAO();
+
+        DBCustomerDAO customerDAO = new DBCustomerDAO(medicalHistoryDAO, carDAO, houseDAO, shipDAO);
+
+        DBContractDAO contractDAO = new DBContractDAO();
 
         Date date = new Date();
 
-        CompensationManage compensationManagement = new CompensationManage(contractList,
-                insuranceList, customerList);
-        UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList, staffList, medicalHistoryList);
-        Design design = new Design(insuranceList, fireInsuranceList, carInsuranceList, seaInsuranceList);
+        CompensationManage compensationManagement = new CompensationManage(contractDAO, insuranceDAO, customerDAO, staffDAO);
+        UnderWrite underWrite = new UnderWrite(contractDAO, insuranceDAO, customerDAO, staffDAO, medicalHistoryDAO);
+        Design design = new Design(insuranceDAO, fireInsuranceDAO, carInsuranceDAO, seaInsuranceDAO, staffDAO);
         CalculatePremium calculatePremium = new CalculatePremiumImpl();
-        Sale sale = new Sale(insuranceList, customerList, medicalHistoryList, carList, houseList, shipList, contractList, staffList, calculatePremium);
-        StaffManagement staffManagement = new StaffManagement(staffList);
+        Sale sale = new Sale(insuranceDAO, customerDAO, medicalHistoryDAO, carDAO, houseDAO, shipDAO, contractDAO, staffDAO, calculatePremium);
+        StaffManagement staffManagement = new StaffManagement(staffDAO);
 
         main:
         while (true) {
@@ -162,7 +162,6 @@ public class Application {
                                 break;
                             }
                         }
-
                         System.out.println("Email : ");
                         String email = sc.nextLine();
                         System.out.println("Phone : ");
@@ -215,7 +214,7 @@ public class Application {
                                     if (select2.equals("1")) {
                                         selectDesign:
                                         while (true) {
-                                            ArrayList<Insurance> insurances = design.getInsuranceList();
+                                            ArrayList<Insurance> insurances = design.getInsuranceDAO();
                                             for (Insurance insurance : insurances) {
 
                                                 System.out.println(
@@ -228,7 +227,8 @@ public class Application {
 
                                             System.out.println("1. 새로 만들기");
                                             System.out.println("2. 인가 받기");
-                                            System.out.println("3. 뒤로가기");
+                                            System.out.println("3. 보험 삭제");
+                                            System.out.println("4. 뒤로가기");
 
                                             String select3 = sc.nextLine();
 
@@ -329,7 +329,7 @@ public class Application {
                                                                     + " 1. 예 2. 아니요 ");
                                                             break;
                                                         case "2":
-                                                            System.out.println("주변 피해 기본 보상금 : ");
+                                                            System.out.println("자동차 피해 기본 보상금 : ");
 
                                                             while (true) {
                                                                 carDamageBasicMoney = sc.nextLine();
@@ -411,18 +411,18 @@ public class Application {
                                                     String answer = sc.nextLine();
                                                     if (answer.equals("1")) {
                                                         Insurance createInsurance = design.design(
-                                                            Integer.parseInt(type), name,
-                                                            explanation, Integer.parseInt(premium),
-                                                            Integer.parseInt(
-                                                                surroundingDamageBasicMoney),
-                                                            Integer.parseInt(humanDamageBasicMoney),
-                                                            Integer.parseInt(
-                                                                buildingDamageBasicMoney),
-                                                            Integer.parseInt(carDamageBasicMoney),
-                                                            Integer.parseInt(
-                                                                generalDamageBasicMoney),
-                                                            Integer.parseInt(
-                                                                revenueDamageBasicMoney), staff);
+                                                                Integer.parseInt(type), name,
+                                                                explanation, Integer.parseInt(premium),
+                                                                Integer.parseInt(
+                                                                        surroundingDamageBasicMoney),
+                                                                Integer.parseInt(humanDamageBasicMoney),
+                                                                Integer.parseInt(
+                                                                        buildingDamageBasicMoney),
+                                                                Integer.parseInt(carDamageBasicMoney),
+                                                                Integer.parseInt(
+                                                                        generalDamageBasicMoney),
+                                                                Integer.parseInt(
+                                                                        revenueDamageBasicMoney), staff);
                                                         if (createInsurance != null) {
                                                             System.out.println(
                                                                     "보험 생성이 완료되었습니다. 보험 관리 화면에서 인가를 받아야 해당 보험을 이용할 수 있습니다.");
@@ -492,6 +492,32 @@ public class Application {
                                                     }
                                                 }
                                             } else if (select3.equals("3")) {
+                                                deleteInsurance:
+                                                while (true) {
+                                                    System.out.println("삭제 할 보험의 ID를 입력해 주세요.");
+
+                                                    String insuranceId;
+
+                                                    while (true) {
+                                                        insuranceId = sc.nextLine();
+                                                        if (!insuranceId.matches("[+-]?\\d*(\\.\\d+)?")) {
+                                                            System.out.println("숫자만 입력해 주세요.");
+                                                            continue;
+                                                        } else {
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    if (design.deleteInsurance(Integer.parseInt(insuranceId))) {
+                                                        System.out.println("해당 보험을 성공적으로 삭제 완료하였습니다.");
+                                                        continue selectDesign;
+                                                    } else {
+                                                        System.out.println("오류로 인해 보험 삭제를 실패하였습니다. 다시 시도해 주세요.");
+                                                        continue deleteInsurance;
+                                                    }
+
+                                                }
+                                            } else if (select3.equals("4")) {
                                                 continue design;
                                             } else {
                                                 System.out.println("목록에 있는 번호를 입력해 주세요.");
@@ -512,8 +538,6 @@ public class Application {
                                 staff = null;
                                 continue main;
                         }
-
-                        break;
 
                     case Underwriting:
                         System.out.println("1. 인수 심사 관리");
@@ -615,8 +639,7 @@ public class Application {
                                                                             + " 고객 직업 : "
                                                                             + customer.getJob().name()
                                                                             + " 고객 병력 : "
-                                                                            + medicalHistoryList.get(customer.getId())
-                                                                            .getMyDisease().name());
+                                                                            + customer.getMedicalHistory().getMyDisease().name());
 
                                                             System.out.println();
                                                             if (underWrite.checkDangerJob(
@@ -685,8 +708,8 @@ public class Application {
                         }
 
                     case Sales:
-                        System.out.println("1. 보험가입자 관리");
-                        System.out.println("2. 보험 계약관리");
+                        System.out.println("1. 고객 관리");
+                        System.out.println("2. 보험 계약 관리");
                         System.out.println("q. 로그아웃");
                         select = sc.nextLine();
 
@@ -694,14 +717,14 @@ public class Application {
                             case "1":
                                 manageCustomer:
                                 while (true) {
-                                    System.out.println("총 보험 가입자 수 : " + sale.totalCustomerCount());
+                                    System.out.println("총 고객 수 : " + sale.totalCustomerCount());
                                     System.out.println(
-                                            "이 달에 가입한 보험 가입자 수 : " + sale.thisMonthCustomerCount());
+                                            "이 달에 가입한 고객 수 : " + sale.thisMonthCustomerCount());
                                     System.out.println(
-                                            "보험료 미납한 보험 가입자의 수 : " + sale.unpaidCustomerCount());
+                                            "보험료 미납한 고객의 수 : " + sale.unpaidCustomerCount());
 
                                     System.out.println();
-                                    System.out.println("1. 보험 가입자 정보 상세보기");
+                                    System.out.println("1. 고객 정보 상세보기");
                                     System.out.println("2. 돌아가기");
 
                                     String select1 = sc.nextLine();
@@ -709,6 +732,10 @@ public class Application {
                                         detailCustomer:
                                         while (true) {
                                             ArrayList<Customer> customers = sale.getTotalCustomer();
+                                            if (customers.isEmpty()) {
+                                                System.out.println("보험사에 가입한 고객이 없습니다.");
+                                                continue selectWork;
+                                            }
                                             for (Customer customer : customers) {
 
                                                 System.out.print(customer.getId() + ". " + " 이름 : "
@@ -800,10 +827,11 @@ public class Application {
                                                             continue detailCustomer;
                                                         } else {
                                                             System.out.println(
-                                                                    "정보 수정에 실패하였습니다. 다시 시도해 주세요.");
+                                                                    "삭제를 실패하였습니다. 다시 시도해 주세요.");
                                                             continue;
                                                         }
                                                     } else if (select3.equals("2")) {
+                                                        System.out.println("삭제를 취소하였습니다.");
                                                         continue detailCustomer;
                                                     } else {
                                                         System.out.println("목록에 있는 번호를 입력해 주세요.");
@@ -815,6 +843,10 @@ public class Application {
                                                 claimPay:
                                                 while (true) {
                                                     ArrayList<Customer> unpaidCustomers = sale.getUnpaidCustomer();
+                                                    if (unpaidCustomers.isEmpty()) {
+                                                        System.out.println("보험료 미납입 고객이 없습니다.");
+                                                        continue detailCustomer;
+                                                    }
                                                     for (Customer customer : unpaidCustomers) {
                                                         System.out.print(
                                                                 customer.getId() + ". " + " 이름 : "
@@ -824,11 +856,11 @@ public class Application {
                                                                         + " 전화번호 : "
                                                                         + customer.getPhoneNumber()
                                                                         + " E-mail : " + customer.getEmail()
+                                                                        + " 미납된 보험료 : " + sale.getUnPaidAmount(customer.getId())
                                                                         + " 가입한 보험 : ");
-                                                        for (Insurance insurance : sale.getJoinInsurances(
-                                                                customer.getId())) {
-                                                            System.out.print(
-                                                                    insurance.getName() + " ");
+
+                                                        for (Insurance insurance : sale.getJoinInsurances(customer.getId())) {
+                                                            System.out.print(insurance.getName() + " ");
                                                         }
                                                         System.out.println();
                                                     }
@@ -840,7 +872,13 @@ public class Application {
                                                     if (select3.equals("1")) {
                                                         sendEmail:
                                                         while (true) {
-                                                            System.out.println("체납된 보험 가입자 "
+
+                                                            if (sale.unpaidCustomerCount() == 0) {
+                                                                System.out.println("시스템 오류로 인해 미납입자의 수를 불러오지 못하였습니다. 다시 시도해주세요.");
+                                                                continue claimPay;
+                                                            }
+
+                                                            System.out.println("체납된 고객 "
                                                                     + sale.unpaidCustomerCount()
                                                                     + "명에게 청구서를 보내시겠습니까?");
 
@@ -862,6 +900,7 @@ public class Application {
                                                                     continue sendEmail;
                                                                 }
                                                             } else if (select4.equals("2")) {
+                                                                System.out.println("청구서 전송을 취소하였습니다.");
                                                                 continue detailCustomer;
                                                             } else {
                                                                 System.out.println(
@@ -895,8 +934,8 @@ public class Application {
                             case "2":
                                 manageContract:
                                 while (true) {
-                                    if (sale.getInsuranceList() != null) {
-                                        for (Insurance insurance : sale.getInsuranceList()) {
+                                    if (sale.getInsuranceDAO() != null) {
+                                        for (Insurance insurance : sale.getInsuranceDAO()) {
                                             if (insurance.isAuthorization()) {
                                                 System.out.println(insurance.getId() + ". 이름 : "
                                                         + insurance.getName() + " 종류 : "
@@ -914,7 +953,7 @@ public class Application {
                                         if (select1.equals("1")) {
                                             findContract:
                                             while (true) {
-                                                System.out.println("검색하실 계약의 보험 가입자 ID를 입력해 주세요.");
+                                                System.out.println("검색하실 계약의 고객 ID를 입력해 주세요.");
                                                 String customerId;
 
                                                 while (true) {
@@ -958,7 +997,7 @@ public class Application {
                                                             cancelContract:
                                                             while (true) {
                                                                 System.out.println(
-                                                                        "계약 해지 할 계약 ID를 입력해 주세요.");
+                                                                        "해지 할 계약 ID를 입력해 주세요.");
                                                                 String contractId;
 
                                                                 while (true) {
@@ -995,15 +1034,15 @@ public class Application {
                                                                                     date + ", "
                                                                                             + sale.getInsuranceName(
                                                                                             contract.getInsuranceId())
-                                                                                            + "보험 계약해지가 완료되었습니다.");
+                                                                                            + "계약 해지가 완료되었습니다.");
                                                                             continue selectCancelContract;
                                                                         } else {
                                                                             System.out.println(
                                                                                     "시스템 오류로 계약 해지가 진행 되지 않았습니다. 잠시 후 다시 시도해 주세요.");
                                                                             continue cancelContract;
                                                                         }
-                                                                    } else if (select3.equals(
-                                                                            "2")) {
+                                                                    } else if (select3.equals("2")) {
+                                                                        System.out.println("계약 해지를 취소하였습니다.");
                                                                         continue selectCancelContract;
                                                                     } else {
                                                                         System.out.println(
@@ -1012,7 +1051,7 @@ public class Application {
                                                                     }
                                                                 } else {
                                                                     System.out.println(
-                                                                            "오류로 인하여 보험 가입자 및 보험의 정보를 불러오지 못했습니다. 다시 시도해 주세요.");
+                                                                            "오류로 인하여 고객 및 보험의 정보를 불러오지 못했습니다. 다시 시도해 주세요.");
                                                                     continue cancelContract;
                                                                 }
                                                             }
@@ -1026,7 +1065,7 @@ public class Application {
                                                     }
                                                 } else {
                                                     System.out.println(
-                                                            "해당 정보의 보험 가입자를 조회할 수 없습니다. 다시 시도해 주세요.");
+                                                            "해당 정보의 고객을 조회할 수 없습니다. 다시 시도해 주세요.");
                                                     continue manageContract;
                                                 }
                                             }
@@ -1081,31 +1120,27 @@ public class Application {
                                                                     Integer.parseInt(customerId));
 
                                                             if (customer == null) {
-                                                                System.out.println(
-                                                                        "입력하신 ID의 고객 정보가 없습니다. 다시 입력해 주세요.");
+                                                                System.out.println("입력하신 ID의 고객 정보가 없습니다. 다시 입력해 주세요.");
                                                                 continue findCustomer;
                                                             }
 
                                                             switch (insurance.getType()) {
                                                                 case Car:
-                                                                    if(customer.getCar() == null) {
-                                                                        System.out.println(
-                                                                                "자동차 번호 : ");
+                                                                    if (customer.getCar() == null) {
+                                                                        System.out.println("자동차 번호 : ");
                                                                         String carNum;
 
                                                                         while (true) {
                                                                             carNum = sc.nextLine();
                                                                             if (!carNum.matches(
                                                                                     "[+-]?\\d*(\\.\\d+)?")) {
-                                                                                System.out.println(
-                                                                                        "숫자만 입력해 주세요.");
+                                                                                System.out.println("숫자만 입력해 주세요.");
                                                                                 continue;
                                                                             } else {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        System.out.println(
-                                                                                "자동차 연식 : ");
+                                                                        System.out.println("자동차 연식 : ");
                                                                         String carYear;
 
                                                                         while (true) {
@@ -1119,23 +1154,20 @@ public class Application {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        System.out.println(
-                                                                                "자동차 배기량 : ");
+                                                                        System.out.println("자동차 배기량 : ");
                                                                         String carDisplacement;
 
                                                                         while (true) {
                                                                             carDisplacement = sc.nextLine();
                                                                             if (!carDisplacement.matches(
                                                                                     "[+-]?\\d*(\\.\\d+)?")) {
-                                                                                System.out.println(
-                                                                                        "숫자만 입력해 주세요.");
+                                                                                System.out.println("숫자만 입력해 주세요.");
                                                                                 continue;
                                                                             } else {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        System.out.println(
-                                                                                "자동차 가격 : ");
+                                                                        System.out.println("자동차 가격 : ");
                                                                         String carPrice;
 
                                                                         while (true) {
@@ -1163,7 +1195,7 @@ public class Application {
                                                                     }
                                                                     break;
                                                                 case Fire:
-                                                                    if(customer.getHouse() == null) {
+                                                                    if (customer.getHouse() == null) {
                                                                         System.out.println(
                                                                                 "건물 종류 : 1. 아파트 / 2. 주택 / 3. 오피스텔");
                                                                         String houseType;
@@ -1204,7 +1236,7 @@ public class Application {
                                                                     }
                                                                     break;
                                                                 case Sea:
-                                                                    if(customer.getShip() == null) {
+                                                                    if (customer.getShip() == null) {
                                                                         System.out.println(
                                                                                 "선박 번호 : ");
                                                                         String shipNum;
@@ -1660,8 +1692,8 @@ public class Application {
 
                                                                     if (select3.equals("1")) {
                                                                         if (sale.signContract(
-                                                                            insurance.getId(),
-                                                                            customer, staff)) {
+                                                                                insurance.getId(),
+                                                                                customer, staff)) {
                                                                             System.out.println(
                                                                                     "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
                                                                             continue manageContract;
@@ -1756,7 +1788,7 @@ public class Application {
 
                                                 for (Staff findStaff : staffs) {
                                                     staffManagement.calculateSalary(
-                                                        findStaff.getId(), staff);
+                                                            findStaff.getId(), staff);
                                                     System.out.println(
                                                             "부서 : " + findStaff.getDepartment().name()
                                                                     + " 사원 번호 : " + findStaff.getId()
@@ -1847,8 +1879,8 @@ public class Application {
                                                             }
 
                                                             staffManagement.changePosition(
-                                                                manageStaff,
-                                                                Integer.parseInt(position), staff);
+                                                                    manageStaff,
+                                                                    Integer.parseInt(position), staff);
 
                                                             System.out.println(
                                                                     "직책이 변경되었습니다. 직책에 따라 기본 월급이 변경됩니다.");
@@ -1991,7 +2023,7 @@ public class Application {
                                     if (select1.equals("1")) {
                                         findContract:
                                         while (true) {
-                                            System.out.println("보험 가입자 ID : ");
+                                            System.out.println("고객 ID : ");
                                             String customerId;
 
                                             while (true) {
@@ -2031,7 +2063,7 @@ public class Application {
                                                     }
                                                 }
                                                 Insurance insurance = sale.getInsurance(
-                                                    sale.getContract(Integer.parseInt(contractId)).getInsuranceId());
+                                                        sale.getContract(Integer.parseInt(contractId)).getInsuranceId());
 
                                                 if (insurance == null) {
                                                     System.out.println(
@@ -2146,13 +2178,13 @@ public class Application {
 
                                                                                     compensationManagement.compensation(
 
-                                                                                        contract.getContractId(),
-                                                                                        Integer.parseInt(
-                                                                                            humanDamage),
-                                                                                        0, 0,
-                                                                                        Integer.parseInt(
-                                                                                            carDamage),
-                                                                                        0, 0, staff);
+                                                                                            contract.getContractId(),
+                                                                                            Integer.parseInt(
+                                                                                                    humanDamage),
+                                                                                            0, 0,
+                                                                                            Integer.parseInt(
+                                                                                                    carDamage),
+                                                                                            0, 0, staff);
                                                                                     break calculateCompensation;
                                                                                 }
                                                                                 break;
@@ -2235,12 +2267,12 @@ public class Application {
                                                                                     }
 
                                                                                     compensationManagement.compensation(
-                                                                                     contract.getContractId(),
-                                                                                        0, 0, 0, 0,
-                                                                                        Integer.parseInt(
-                                                                                            generalDamage),
-                                                                                        Integer.parseInt(
-                                                                                            revenueDamage), staff);
+                                                                                            contract.getContractId(),
+                                                                                            0, 0, 0, 0,
+                                                                                            Integer.parseInt(
+                                                                                                    generalDamage),
+                                                                                            Integer.parseInt(
+                                                                                                    revenueDamage), staff);
                                                                                     break calculateCompensation;
                                                                                 }
                                                                                 break;
@@ -2340,14 +2372,14 @@ public class Application {
 
                                                                                     compensationManagement.compensation(
 
-                                                                                        contract.getContractId(),
-                                                                                        Integer.parseInt(
-                                                                                            humanDamage),
-                                                                                        Integer.parseInt(
-                                                                                            buildingDamage),
-                                                                                        Integer.parseInt(
-                                                                                            surroundingDamage),
-                                                                                        0, 0, 0, staff);
+                                                                                            contract.getContractId(),
+                                                                                            Integer.parseInt(
+                                                                                                    humanDamage),
+                                                                                            Integer.parseInt(
+                                                                                                    buildingDamage),
+                                                                                            Integer.parseInt(
+                                                                                                    surroundingDamage),
+                                                                                            0, 0, 0, staff);
                                                                                     break calculateCompensation;
                                                                                 }
                                                                             } else {
@@ -2366,10 +2398,12 @@ public class Application {
                                                                             continue judgementIndemnification;
                                                                         }
                                                                 }
+
+                                                                Contract updateContract = compensationManagement.getContract(contract.getContractId());
                                                                 System.out.println(
                                                                         customer.getName()
                                                                                 + "님의 총 보상 금액은 "
-                                                                                + contract.getCompensationAmount()
+                                                                                + updateContract.getCompensationAmount()
                                                                                 + "원 입니다.");
                                                                 continue compensationManage;
                                                             }
@@ -2404,7 +2438,6 @@ public class Application {
                                 staff = null;
                                 continue main;
                             default:
-                                continue;
                         }
 
 

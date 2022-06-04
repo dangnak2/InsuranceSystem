@@ -13,18 +13,7 @@ public class House {
   }
   private HouseType houseType;
   private int price;
-  private int customer_id;
-  private int id;
-
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
+  private int customerId;
 
   public House() {
   }
@@ -45,12 +34,12 @@ public class House {
     this.price = price;
   }
 
-  public int getCustomer_id() {
-    return this.customer_id;
+  public int getCustomerId() {
+    return this.customerId;
   }
 
   public void setCustomerId(int customer_id) {
-    this.customer_id = customer_id;
+    this.customerId = customer_id;
   }
 
 

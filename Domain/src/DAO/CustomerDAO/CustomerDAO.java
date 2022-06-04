@@ -3,11 +3,13 @@
 // (powered by FernFlower decompiler)
 //
 
-package Domain.Customer;
+package DAO.CustomerDAO;
+
+import Domain.Customer.Customer;
 
 import java.util.ArrayList;
 
-public interface CustomerList {
+public interface CustomerDAO {
 	boolean add(Customer customer);
 
 	boolean delete(int customerId);

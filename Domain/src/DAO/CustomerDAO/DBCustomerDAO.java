@@ -1,23 +1,34 @@
 
-package Domain.Customer;
+package DAO.CustomerDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Customer.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CustomerListImpl extends DBConnector implements CustomerList {
-	ArrayList<Customer> customerList;
+public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 
-	public CustomerListImpl() {
-		customerList = new ArrayList<Customer>();
+	private MedicalHistoryDAO medicalHistoryDAO;
+	private CarDAO carDAO;
+	private HouseDAO houseDAO;
+	private ShipDAO shipDAO;
+
+
+	public DBCustomerDAO(MedicalHistoryDAO medicalHistoryDAO, CarDAO carDAO, HouseDAO houseDAO, ShipDAO shipDAO) {
+		this.medicalHistoryDAO = medicalHistoryDAO;
+		this.carDAO = carDAO;
+		this.houseDAO = houseDAO;
+		this.shipDAO = shipDAO;
+
 		super.getConnection();
-		this.customerList = this.getCustomerList();
+
 	}
 
 	public ArrayList<Customer> getCustomerList() {
 		String query = "select * from customer;";
-		ResultSet rs = super.retreive(query);
+		ResultSet rs = super.retrieve(query);
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		try {
 			while(rs.next()) {
@@ -35,6 +46,22 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 				customer.setPay(rs.getBoolean("pay"));
 				customer.setJoinDate(rs.getDate("joinDate"));
 
+				MedicalHistory medicalHistory = medicalHistoryDAO.get(customer.getId());
+				if (medicalHistory != null) {
+					customer.setMedicalHistory(medicalHistory);
+				}
+				Car car = carDAO.get(customer.getId());
+				if (car != null) {
+					customer.setCar(car);
+				}
+				House house = houseDAO.get(customer.getId());
+				if (house != null) {
+					customer.setHouse(house);
+				}
+				Ship ship = shipDAO.get(customer.getId());
+				if (ship != null) {
+					customer.setShip(ship);
+				}
 
 				customers.add(customer);
 			}
@@ -54,7 +81,6 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 				+ customer.getPhoneNumber() + "', " + customer.isSex() + ",'" + customer.getSSN() + "'," + customer.getAge() +", "
 				+ customer.isPay() + ", '" + customer.getJoinDate() + "');";
 		if(super.create(query)){
-			this.customerList = getCustomerList();
 			return true;
 		}
 		return false;
@@ -62,7 +88,7 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 
 	@Override
 	public Customer get(int customerId) {
-		for (Customer customer : customerList) {
+		for (Customer customer : getCustomerList()) {
 			if (customer.getId() == customerId) {
 				return customer;
 			}
@@ -79,7 +105,6 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 				+ "', age = " + customer.getAge() + ", pay = " + customer.isPay() + ", joinDate = '" + customer.getJoinDate()
 				+ "' where customer_id = " + customer.getId();
 		if(super.update(query)){
-			this.customerList = getCustomerList();
 			return true;
 		}
 		return false;
@@ -87,7 +112,7 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 
 	@Override
 	public int getSize() {
-		return this.customerList.size();
+		return getCustomerList().size();
 	}
 
 
@@ -98,7 +123,6 @@ public class CustomerListImpl extends DBConnector implements CustomerList {
 
 
 		if(super.delete(query)){
-			this.customerList = this.getCustomerList();
 			return true;
 		}
 

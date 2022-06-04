@@ -1,8 +1,10 @@
-package Domain.Customer;
+package DAO.CustomerDAO;
+
+import Domain.Customer.Car;
 
 import java.util.ArrayList;
 
-public interface CarList {
+public interface CarDAO {
   boolean add(Car car);
 
   boolean delete(int id);

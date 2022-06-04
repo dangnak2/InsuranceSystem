@@ -1,9 +1,11 @@
 
-package Domain.Customer;
+package DAO.CustomerDAO;
+
+import Domain.Customer.Ship;
 
 import java.util.ArrayList;
 
-public interface ShipList {
+public interface ShipDAO {
   boolean add(Ship ship);
 
   boolean delete(int id);

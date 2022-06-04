@@ -1,19 +1,20 @@
-package Authorizate;
+package Controller.Authorizate;
 
 import Domain.Staff.*;
+import DAO.StaffDAO.StaffDAO;
 
 
 public class Auth {
 
-    private StaffList staffList;
+    private StaffDAO staffRepository;
 
-    public Auth(StaffList staffList) {
-        this.staffList = staffList;
+    public Auth(StaffDAO staffDAO) {
+        this.staffRepository = staffDAO;
     }
 
 
     public Staff login(int staffId, String staffPw) {
-        Staff loginStaff = staffList.get(staffId);
+        Staff loginStaff = staffRepository.get(staffId);
         if (loginStaff != null) {
             if (staffPw.equals(loginStaff.getPassword())) {
                 return loginStaff;

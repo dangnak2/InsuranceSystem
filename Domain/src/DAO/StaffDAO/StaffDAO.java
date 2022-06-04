@@ -1,8 +1,10 @@
-package Domain.Staff;
+package DAO.StaffDAO;
+
+import Domain.Staff.Staff;
 
 import java.util.ArrayList;
 
-public interface StaffList {
+public interface StaffDAO {
 
     public boolean add(Staff staff);
 

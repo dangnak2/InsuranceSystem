@@ -1,8 +1,8 @@
-package DAO;
+package DAO.DBConnector;
 
 import java.sql.*;
 
-public class DBConnector {
+public class DBConnectorDAO {
     private String server = "localhost"; // MySQL 서버 주소
     private String database = "insurance_system"; // MySQL DATABASE 이름
     private String user_name = "root"; //  MySQL 서버 아이디
@@ -11,7 +11,7 @@ public class DBConnector {
     private Statement stmt;
     private ResultSet rs;
 
-    public DBConnector() {
+    public DBConnectorDAO() {
         this.con = null;
         this.stmt = null;
         this.rs = null;
@@ -76,7 +76,7 @@ public class DBConnector {
         return false;
     }
 
-    public ResultSet retreive(String query) {
+    public ResultSet retrieve(String query) {
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(query);

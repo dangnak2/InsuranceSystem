@@ -1,4 +1,6 @@
-package Domain.Insurance;
+package DAO.InsuranceDAO;
+
+import Domain.Insurance.Insurance;
 
 import java.util.ArrayList;
 
@@ -7,7 +9,7 @@ import java.util.ArrayList;
  * @version 1.0
  * @created 09-5-2022 ���� 4:51:09
  */
-public interface InsuranceList {
+public interface InsuranceDAO {
 
 	public boolean add(Insurance insurance);
 

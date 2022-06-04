@@ -1,33 +1,34 @@
-package Domain.Insurance;
+package DAO.InsuranceDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Insurance.FireInsurance;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class FireInsuranceListImpl extends DBConnector implements FireInsuranceList {
+public class DBFireInsuranceDAO extends DBConnectorDAO implements FireInsuranceDAO {
 
-  private ArrayList<FireInsurance> fireInsuranceList;
 
-  public FireInsuranceListImpl() {
+
+  public DBFireInsuranceDAO() {
     this.getConnection();
-    this.fireInsuranceList = new ArrayList<>();
   }
 
   public ArrayList<FireInsurance> getFireInsuranceList(){
+    ArrayList<FireInsurance> fireInsuranceList = new ArrayList<>();
     String query = "select * from fireInsurance;";
-    ResultSet rs = super.retreive(query);
+    ResultSet rs = super.retrieve(query);
     try {
       while (rs.next()) {
         FireInsurance fireInsurance = new FireInsurance();
 
-        fireInsurance.setFireInsurance_id(rs.getInt("fireInsurance_id"));
+        fireInsurance.setFireInsuranceId(rs.getInt("fireInsurance_id"));
         fireInsurance.setHumanDamageBasicMoney(rs.getInt("humanDamageBasicMoney"));
         fireInsurance.setSurroundingDamageBasicMoney(rs.getInt("surroundingDamageBasicMoney"));
         fireInsurance.setBuildingDamageBasicMoney(rs.getInt("buildingDamageBasicMoney"));
 
-        this.fireInsuranceList.add(fireInsurance);
+        fireInsuranceList.add(fireInsurance);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -38,30 +39,33 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
   @Override
   public boolean add(FireInsurance fireInsurance) {
       String query = "INSERT INTO fireInsurance VALUES ("
-              + fireInsurance.getFireInsurance_id() + "," + fireInsurance.getSurroundingDamageBasicMoney()
+              + fireInsurance.getFireInsuranceId() + "," + fireInsurance.getSurroundingDamageBasicMoney()
               + "," + fireInsurance.getHumanDamageBasicMoney() + "," + fireInsurance.getBuildingDamageBasicMoney() + ");";
-      super.create(query);
-      this.fireInsuranceList = this.getFireInsuranceList();
+    if (super.create(query)) {
       return true;
+    } else {
+      return false;
+    }
+
   }
 
   @Override
   public boolean delete(int insuranceId) {
       String query = "DELETE FROM fireInsurance WHERE fireInsurance_id =  " + insuranceId + ";";
-      super.delete(query);
-      this.fireInsuranceList = getFireInsuranceList();
+    if (super.delete(query)) {
       return true;
+    } else {
+      return false;
+    }
   }
 
   @Override
   public boolean update(FireInsurance fireInsurance) {
-    if (fireInsuranceList.contains(fireInsurance)) {
       String query = "UPDATE fireInsurance SET ("
-              + fireInsurance.getFireInsurance_id() + "," + fireInsurance.getSurroundingDamageBasicMoney()
+              + fireInsurance.getFireInsuranceId() + "," + fireInsurance.getSurroundingDamageBasicMoney()
               + "," + fireInsurance.getHumanDamageBasicMoney() + "," + fireInsurance.getBuildingDamageBasicMoney()
-              + ")" + "WHERE fireInsurance_id = " + fireInsurance.getFireInsurance_id();
-      super.update(query);
-      this.fireInsuranceList = this.getFireInsuranceList();
+              + ")" + "WHERE fireInsurance_id = " + fireInsurance.getFireInsuranceId();
+     if(super.update(query)){
       return true;
     } else {
       return false;
@@ -70,8 +74,8 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
 
   @Override
   public FireInsurance get(int insuranceId) {
-    for(FireInsurance fireInsurance : fireInsuranceList){
-      if(insuranceId == fireInsurance.getId()){
+    for(FireInsurance fireInsurance : getFireInsuranceList()){
+      if(insuranceId == fireInsurance.getFireInsuranceId()){
         return fireInsurance;
       }
     }
@@ -80,6 +84,6 @@ public class FireInsuranceListImpl extends DBConnector implements FireInsuranceL
 
   @Override
   public int getSize() {
-    return 0;
+    return getFireInsuranceList().size();
   }
 }

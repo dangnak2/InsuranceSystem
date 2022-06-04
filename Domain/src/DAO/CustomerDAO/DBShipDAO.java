@@ -1,16 +1,17 @@
-package Domain.Customer;
+package DAO.CustomerDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Customer.Ship;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ShipListImpl extends DBConnector implements ShipList {
+public class DBShipDAO extends DBConnectorDAO implements ShipDAO {
 
-  ArrayList<Ship> shipList;
+  private ArrayList<Ship> shipList;
 
-  public ShipListImpl() {
+  public DBShipDAO() {
     this.shipList = new ArrayList<>();
     super.getConnection();
     this.shipList = this.getShipList();
@@ -18,12 +19,11 @@ public class ShipListImpl extends DBConnector implements ShipList {
 
   public ArrayList<Ship> getShipList() {
     String query = "select * from ship;";
-    ResultSet rs = super.retreive(query);
+    ResultSet rs = super.retrieve(query);
     ArrayList<Ship> ships = new ArrayList<Ship>();
     try {
       while (rs.next()) {
         Ship ship = new Ship();
-        ship.setId(rs.getInt("id"));
         ship.setCustomerId(rs.getInt("customer_id"));
         ship.setShipNum(rs.getInt("shipNum"));
         ship.setYear(rs.getInt("year"));
@@ -46,8 +46,8 @@ public class ShipListImpl extends DBConnector implements ShipList {
 
   @Override
   public boolean add(Ship ship) {
-    String query = "insert into ship values (" + ship.getId() + ","
-        + ship.getCustomer_id() + "," + ship.getShipNum() + "," + ship.getYear()
+    String query = "insert into ship values ("
+        + ship.getCustomerId() + "," + ship.getShipNum() + "," + ship.getYear()
         + "," + ship.getPrice() + ",'" + ship.getShipType() + "');";
     if(super.create(query)){
       this.shipList = getShipList();
@@ -59,7 +59,7 @@ public class ShipListImpl extends DBConnector implements ShipList {
   @Override
   public Ship get(int id) {
     for (Ship ship : shipList) {
-      if (ship.getId() == id) {
+      if (ship.getCustomerId() == id) {
         return ship;
       }
     }
@@ -68,10 +68,10 @@ public class ShipListImpl extends DBConnector implements ShipList {
 
   @Override
   public boolean update(Ship ship) {
-    String query = "update ship set customer_id = " + ship.getCustomer_id() + ", shipNum = "
+    String query = "update ship set  shipNum = "
         + ship.getShipNum() + ", year = " + ship.getYear()
         + ", price = " + ship.getPrice() + ", shipType = '" + ship.getShipType()
-        + "' where id = " + ship.getId();
+        + "' where customer_id = " + ship.getCustomerId();
     if(super.update(query)){
       this.shipList = getShipList();
       return true;

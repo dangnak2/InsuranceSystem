@@ -1,10 +1,14 @@
 package Controller.CompensationMange;
 
+import DAO.StaffDAO.StaffDAO;
 import Domain.Contract.*;
 import Domain.Customer.*;
 import Domain.Insurance.*;
 import Controller.CompensationMange.Indemnification.*;
 import Domain.Staff.Staff;
+import DAO.ContractDAO.ContractDAO;
+import DAO.CustomerDAO.CustomerDAO;
+import DAO.InsuranceDAO.InsuranceDAO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,15 +16,18 @@ import java.util.Date;
 
 public class CompensationManage {
 
-    private ContractList contractList;
-    private InsuranceList insuranceList;
-    private CustomerList customerList;
+    private ContractDAO contractDAO;
+    private InsuranceDAO insuranceList;
+    private CustomerDAO customerList;
+    private StaffDAO staffDAO;
 
 
-    public CompensationManage(ContractList contractList, InsuranceList insuranceList, CustomerList customerList) {
-        this.contractList = contractList;
-        this.insuranceList = insuranceList;
-        this.customerList = customerList;
+    public CompensationManage(ContractDAO contractDAO, InsuranceDAO insuranceDAO, CustomerDAO customerDAO, StaffDAO staffDAO) {
+
+        this.contractDAO = contractDAO;
+        this.insuranceList = insuranceDAO;
+        this.customerList = customerDAO;
+        this.staffDAO = staffDAO;
     }
 
 
@@ -30,7 +37,7 @@ public class CompensationManage {
     public ArrayList<Contract> findInsuranceContracts(int customerId) {
         ArrayList<Contract> customerContractList = new ArrayList<>();
 
-            for (Contract contract : this.contractList.getContractList()) {
+            for (Contract contract : this.contractDAO.getContractList()) {
                 if (customerId == contract.getCustomerId() && contract.isUnderWrite()) {
                     customerContractList.add(contract);
                 }
@@ -39,7 +46,7 @@ public class CompensationManage {
     }
 
     public Contract getContract(int contractId) {
-        for (Contract contract : this.contractList.getContractList()) {
+        for (Contract contract : this.contractDAO.getContractList()) {
                 if(contractId == contract.getContractId()) return contract;
                 }
 
@@ -63,12 +70,11 @@ public class CompensationManage {
 
     public void compensation(int contractId, int humanDamage, int buildingDamage, int surroundingDamage, int carDamage, int generalDamage, int revenueDamage, Staff staff) {
         Date date = new Date();
-        Contract selectContract = this.contractList.get(contractId);
+        Contract selectContract = this.contractDAO.get(contractId);
         Insurance selectInsurance = this.insuranceList.get(selectContract.getInsuranceId());
         Customer customer = this.customerList.get(selectContract.getCustomerId());
 
         double totalPrice = 0;
-        double basicPrice = selectInsurance.getBasicConpensation();
 
         if (selectInsurance instanceof FireInsurance) {
 
@@ -77,9 +83,7 @@ public class CompensationManage {
             double compensationBuildingDamage = (1 + buildingDamage / 100) * ((FireInsurance) selectInsurance).getBuildingDamageBasicMoney();
             double compensationSurroundingDamage = (1 + surroundingDamage / 100) * ((FireInsurance) selectInsurance).getSurroundingDamageBasicMoney();
 
-            totalPrice += compensationHumanDamage;
-            totalPrice += compensationBuildingDamage;
-            totalPrice += compensationSurroundingDamage;
+            totalPrice = compensationHumanDamage + compensationBuildingDamage +compensationSurroundingDamage;
 
 
             if (customer.getHouse().getPrice() > 0 &&
@@ -119,7 +123,6 @@ public class CompensationManage {
 
         } else if (selectInsurance instanceof SeaInsurance) {
 
-
             double compensationGeneralDamage = (1 + generalDamage / 100) * ((SeaInsurance) selectInsurance).getGeneralDamageBasicMoney();
             double compensationRevenueDamage = (1 + revenueDamage / 100) * ((SeaInsurance) selectInsurance).getRevenueDamageBasicMoney();
 
@@ -129,20 +132,21 @@ public class CompensationManage {
 
             if (customer.getShip().getPrice() > 0 &&
                     customer.getShip().getPrice() < 50000000) {
-                totalPrice += basicPrice;
+                totalPrice *= 1;
             } else if (customer.getShip().getPrice() <= 100000000) {
-                totalPrice += basicPrice * 1.2;
+                totalPrice *= 1.2;
             } else if (customer.getShip().getPrice() <= 500000000) {
-                totalPrice += basicPrice * 1.3;
+                totalPrice *= 1.3;
             } else {
-                totalPrice += basicPrice * 1.4;
+                totalPrice *=  1.4;
             }
 
             selectContract.setCompensationAmount(totalPrice);
         }
 
         staff.setResult(staff.getResult()+1);
-        this.contractList.update(selectContract);
+        this.staffDAO.update(staff);
+        this.contractDAO.update(selectContract);
     }
 }
 

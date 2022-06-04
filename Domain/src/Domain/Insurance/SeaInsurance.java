@@ -2,16 +2,16 @@ package Domain.Insurance;
 
 public class SeaInsurance extends Insurance {
 
-  private int seaInsurance_id;
+  private int seaInsuranceId;
   private int generalDamageBasicMoney; //제반 손해 정도
   private int revenueDamageBasicMoney; //수익 손해 정도
 
-  public int getSeeInsurance_id() {
-    return seaInsurance_id;
+  public int getSeaInsuranceId() {
+    return seaInsuranceId;
   }
 
-  public void setSeeInsurance_id(int seeInsurance_id) {
-    this.seaInsurance_id = seeInsurance_id;
+  public void setSeaInsuranceId(int seeInsurance_id) {
+    this.seaInsuranceId = seeInsurance_id;
   }
 
   public int getGeneralDamageBasicMoney() {

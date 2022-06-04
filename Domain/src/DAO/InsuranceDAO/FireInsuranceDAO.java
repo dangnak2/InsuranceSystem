@@ -1,6 +1,8 @@
-package Domain.Insurance;
+package DAO.InsuranceDAO;
 
-public interface FireInsuranceList {
+import Domain.Insurance.FireInsurance;
+
+public interface FireInsuranceDAO {
   public boolean add(FireInsurance insurance);
 
   public boolean delete(int insuranceId);

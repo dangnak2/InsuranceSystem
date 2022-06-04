@@ -1,8 +1,10 @@
-package Domain.Customer;
+package DAO.CustomerDAO;
+
+import Domain.Customer.MedicalHistory;
 
 import java.util.ArrayList;
 
-public interface MedicalHistoryList {
+public interface MedicalHistoryDAO {
   boolean add(MedicalHistory medicalHistory);
 
   boolean delete(int customerId);

@@ -1,8 +1,10 @@
-package Domain.Contract;
+package DAO.ContractDAO;
+
+import Domain.Contract.Contract;
 
 import java.util.ArrayList;
 
-public interface ContractList {
+public interface ContractDAO {
 
 	public boolean add(Contract contract);
 

@@ -3,17 +3,19 @@
 // (powered by FernFlower decompiler)
 //
 
-package Domain.Customer;
+package DAO.CustomerDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Customer.House;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class HouseListImpl extends DBConnector implements HouseList {
+public class DBHouseDAO extends DBConnectorDAO implements HouseDAO {
   ArrayList<House> houseList;
 
-  public HouseListImpl() {
+  public DBHouseDAO() {
     houseList = new ArrayList<House>();
     super.getConnection();
     this.houseList = this.getHouseList();
@@ -21,12 +23,11 @@ public class HouseListImpl extends DBConnector implements HouseList {
 
   public ArrayList<House> getHouseList() {
     String query = "select * from house;";
-    ResultSet rs = super.retreive(query);
+    ResultSet rs = super.retrieve(query);
 
     try {
       while(rs.next()) {
         House house = new House();
-        house.setId(rs.getInt("id"));
         house.setCustomerId(rs.getInt("customer_id"));
         house.setPrice(rs.getInt("price"));
         house.setHouseType(House.HouseType.valueOf(rs.getString("houseType")));
@@ -40,8 +41,7 @@ public class HouseListImpl extends DBConnector implements HouseList {
   }
 
   public boolean add(House house) {
-    String query = "insert into house values (" + house.getId() + ","
-        + house.getCustomer_id() + "," + house.getPrice() +",'"+ house.getHouseType() +"');";
+    String query = "insert into house values ("+ house.getCustomerId() + "," + house.getPrice() +",'"+ house.getHouseType() +"');";
 
     if(super.create(query)) {
       this.houseList = getHouseList();
@@ -50,9 +50,9 @@ public class HouseListImpl extends DBConnector implements HouseList {
     return false;
   }
   @Override
-  public House get(int id) {
+  public House get(int customerId) {
     for (House house : houseList) {
-      if (house.getId() == id) {
+      if (house.getCustomerId() == customerId) {
         return house;
       }
     }
@@ -61,9 +61,8 @@ public class HouseListImpl extends DBConnector implements HouseList {
 
   @Override
   public boolean update(House house) {
-    String query = "update house set customer_id = "
-        + house.getCustomer_id() +", price = " + house.getPrice()
-        + " , houseType = '" + house.getHouseType() + "' where id = " + house.getId();
+    String query = "update house set  price = " + house.getPrice()
+        + " , houseType = '" + house.getHouseType() + "' where customer_id = " + house.getCustomerId();
     if(super.update(query)){
       this.houseList = getHouseList();
       return true;
@@ -80,7 +79,7 @@ public class HouseListImpl extends DBConnector implements HouseList {
   @Override
   public boolean delete(int id) {
 
-    String query = "delete from house where id=" + id;
+    String query = "delete from house where customer_id=" + id;
 
     if(super.delete(query)) {
       this.houseList = this.getHouseList();

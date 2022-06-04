@@ -1,8 +1,14 @@
 package Controller.Design;
 
+import DAO.InsuranceDAO.DBInsuranceDAO;
+import DAO.StaffDAO.StaffDAO;
 import Domain.Insurance.*;
 import Domain.Insurance.Insurance.Type;
 import Domain.Staff.Staff;
+import DAO.InsuranceDAO.CarInsuranceDAO;
+import DAO.InsuranceDAO.FireInsuranceDAO;
+import DAO.InsuranceDAO.InsuranceDAO;
+import DAO.InsuranceDAO.SeaInsuranceDAO;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -11,34 +17,39 @@ import java.util.Date;
 
 public class Design {
 
-	private InsuranceList insuranceList;
-	private FireInsuranceList fireInsuranceList;
-	private CarInsuranceList carInsuranceList;
-	private SeaInsuranceList seaInsuranceList;
+	private InsuranceDAO insuranceDAO;
+	private FireInsuranceDAO fireInsuranceDAO;
+	private CarInsuranceDAO carInsuranceDAO;
+	private SeaInsuranceDAO seaInsuranceDAO;
+	private StaffDAO staffDAO;
 
-	public Design(InsuranceList insuranceList, FireInsuranceList fireInsuranceList, CarInsuranceList carInsuranceList, SeaInsuranceList seaInsuranceList) {
-		this.insuranceList = insuranceList;
-		this.fireInsuranceList = fireInsuranceList;
-		this.carInsuranceList = carInsuranceList;
-		this.seaInsuranceList = seaInsuranceList;
+	public Design(InsuranceDAO insuranceDAO, FireInsuranceDAO fireInsuranceDAO, CarInsuranceDAO carInsuranceDAO, SeaInsuranceDAO seaInsuranceDAO, StaffDAO staffDAO) {
+		this.insuranceDAO = insuranceDAO;
+		this.fireInsuranceDAO = fireInsuranceDAO;
+		this.carInsuranceDAO = carInsuranceDAO;
+		this.seaInsuranceDAO = seaInsuranceDAO;
+		this.staffDAO = staffDAO;
 	}
 
 
 
 	public boolean authorize(int insuranceId) {
-		Insurance insurance = this.insuranceList.get(insuranceId);
+		Insurance insurance = this.insuranceDAO.get(insuranceId);
 		if (insurance == null) {
 			return false;
 		}
 		insurance.setAuthorization(true);
 		insurance.setAuthorizedDate(Timestamp.valueOf(LocalDateTime.now()));
-		return insuranceList.update(insurance);
+		return insuranceDAO.update(insurance);
+	}
+
+	public boolean deleteInsurance(int insuranceId) {
+		return insuranceDAO.delete(insuranceId);
 	}
 
 
 	public Insurance design(int type, String name, String explanation, int premium, int surroundingDamageBasicMoney, int humanDamageBasicMoney, int buildingDamageBasicMoney
 												, int carDamageBasicMoney, int generalDamageBasicMoney, int revenueDamageBasicMoney, Staff staff){
-		Date date = new Date();
 		Insurance insurance = null;
 		if (type == 1) {
 			insurance = new FireInsurance();
@@ -51,7 +62,7 @@ public class Design {
 			return null;
 		}
 
-		insurance.setId(insuranceList.getSize()+1);
+		insurance.setId(setInsuranceId());
 		insurance.setType(Type.values()[type - 1]);
 		insurance.setAuthorization(false);
 		insurance.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
@@ -59,43 +70,55 @@ public class Design {
 		insurance.setName(name);
 		insurance.setExplanation(explanation);
 		insurance.setPremium(premium);
-		insuranceList.add(insurance);
+		insuranceDAO.add(insurance);
 
 		if (insurance instanceof FireInsurance) {
-			((FireInsurance) insurance).setFireInsurance_id(insurance.getId());
+			((FireInsurance) insurance).setFireInsuranceId(insurance.getId());
 			((FireInsurance) insurance).setSurroundingDamageBasicMoney(surroundingDamageBasicMoney);
 			((FireInsurance) insurance).setHumanDamageBasicMoney(humanDamageBasicMoney);
 			((FireInsurance) insurance).setBuildingDamageBasicMoney(buildingDamageBasicMoney);
 
-			fireInsuranceList.add((FireInsurance) insurance);
+			fireInsuranceDAO.add((FireInsurance) insurance);
 		}else if (insurance instanceof CarInsurance) {
-			((CarInsurance) insurance).setCarInsurance_id(insurance.getId());
+			((CarInsurance) insurance).setCarInsuranceId(insurance.getId());
 			((CarInsurance) insurance).setCarDamageBasicMoney(carDamageBasicMoney);
 			((CarInsurance) insurance).setHumanDamageBasicMoney(humanDamageBasicMoney);
 
-			carInsuranceList.add((CarInsurance) insurance);
+			carInsuranceDAO.add((CarInsurance) insurance);
 		}else if (insurance instanceof SeaInsurance) {
-			((SeaInsurance) insurance).setSeeInsurance_id(insurance.getId());
+			((SeaInsurance) insurance).setSeaInsuranceId(insurance.getId());
 			((SeaInsurance) insurance).setGeneralDamageBasicMoney(generalDamageBasicMoney);
 			((SeaInsurance) insurance).setRevenueDamageBasicMoney(revenueDamageBasicMoney);
 
-			seaInsuranceList.add((SeaInsurance) insurance);
+			seaInsuranceDAO.add((SeaInsurance) insurance);
 		}
 
 
 		staff.setResult(staff.getResult()+1);
+		this.staffDAO.update(staff);
 		return insurance;
 	}
 
-	public ArrayList<Insurance> getInsuranceList() {
+	public int setInsuranceId() {
+		int insuranceId = 1;
+		while (true) {
+			if (insuranceDAO.get(insuranceId) == null) {
+				return insuranceId;
+			} else {
+				insuranceId++;
+			}
+		}
+	}
 
-			return this.insuranceList.getInsuranceList();
+	public ArrayList<Insurance> getInsuranceDAO() {
+
+			return this.insuranceDAO.getInsuranceList();
 	}
 
 	public int computeAuthorizeCount() {
 		int count = 0;
-		if (insuranceList instanceof InsuranceListImpl) {
-			for (Insurance insurance : ((InsuranceListImpl) insuranceList).getInsuranceList()) {
+		if (insuranceDAO instanceof DBInsuranceDAO) {
+			for (Insurance insurance : ((DBInsuranceDAO) insuranceDAO).getInsuranceList()) {
 				if (insurance.isAuthorization()) {
 					count++;
 				}
@@ -106,8 +129,8 @@ public class Design {
 
 	public int computeNotAuthorizeCount() {
 		int count = 0;
-		if (insuranceList instanceof InsuranceListImpl) {
-			for (Insurance insurance : ((InsuranceListImpl) insuranceList).getInsuranceList()) {
+		if (insuranceDAO instanceof DBInsuranceDAO) {
+			for (Insurance insurance : ((DBInsuranceDAO) insuranceDAO).getInsuranceList()) {
 				if (!insurance.isAuthorization()) {
 					count++;
 				}
@@ -118,6 +141,6 @@ public class Design {
 
 
 	public int computeTotalSize() {
-		return this.insuranceList.getSize();
+		return this.insuranceDAO.getSize();
 	}
 }

@@ -1,16 +1,17 @@
-package Domain.Staff;
+package DAO.StaffDAO;
 
-import DAO.DBConnector;
+import DAO.DBConnector.DBConnectorDAO;
+import Domain.Staff.Staff;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class StaffListImpl extends DBConnector implements StaffList {
+public class StaffDAOImpl extends DBConnectorDAO implements StaffDAO {
 
     ArrayList<Staff> staffList;
 
-    public StaffListImpl() {
+    public StaffDAOImpl() {
         this.staffList = new ArrayList<>();
         super.getConnection();
         this.staffList = this.getStaffList();
@@ -18,7 +19,7 @@ public class StaffListImpl extends DBConnector implements StaffList {
 
     public ArrayList<Staff> getStaffList() {
         String query = "select * from staff;";
-        ResultSet rs = super.retreive(query);
+        ResultSet rs = super.retrieve(query);
         ArrayList<Staff> staffList = new ArrayList<Staff>();
         try {
             while (rs.next()) {
