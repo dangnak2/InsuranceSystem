@@ -43,7 +43,7 @@ public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 				customer.setSex(rs.getBoolean("sex"));
 				customer.setSSN(rs.getString("ssn"));
 				customer.setAge(rs.getInt("age"));
-				customer.setPay(rs.getBoolean("pay"));
+
 				customer.setJoinDate(rs.getDate("joinDate"));
 
 				MedicalHistory medicalHistory = medicalHistoryDAO.get(customer.getId());
@@ -78,8 +78,7 @@ public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 		String query = "insert into customer values ("
 				+ customer.getId() + ",'" + customer.getAddress() + "','" + customer.getEmail()
 				+ "','" + customer.getAccount() + "','" + customer.getJob() + "','" + customer.getName() + "','"
-				+ customer.getPhoneNumber() + "', " + customer.isSex() + ",'" + customer.getSSN() + "'," + customer.getAge() +", "
-				+ customer.isPay() + ", '" + customer.getJoinDate() + "');";
+				+ customer.getPhoneNumber() + "', " + customer.isSex() + ",'" + customer.getSSN() + "'," + customer.getAge() +",'" + customer.getJoinDate() + "');";
 		if(super.create(query)){
 			return true;
 		}
@@ -102,7 +101,7 @@ public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 				+ customer.getAddress() + "', email = '" + customer.getEmail()
 				+ "', account = '" + customer.getAccount() + "', job = '" + customer.getJob() + "', name = '" + customer.getName()
 				+ "', phoneNumber = '" + customer.getPhoneNumber() + "', sex = " + customer.isSex() + ", ssn = '" + customer.getSSN()
-				+ "', age = " + customer.getAge() + ", pay = " + customer.isPay() + ", joinDate = '" + customer.getJoinDate()
+				+ "', age = " + customer.getAge() + ", joinDate = '" + customer.getJoinDate()
 				+ "' where customer_id = " + customer.getId();
 		if(super.update(query)){
 			return true;

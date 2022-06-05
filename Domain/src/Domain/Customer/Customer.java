@@ -8,6 +8,33 @@ package Domain.Customer;
 import java.util.Date;
 
 public class Customer {
+
+
+	public static enum Job {
+		영업직(70, false),
+		생산직(60, true),
+		사무직(75, false),
+		자영업자(70, true),
+		무직(30, false);
+
+		private int maxAge;
+		private boolean danger;
+
+		private Job(int maxAge, boolean danger) {
+			this.maxAge = maxAge;
+			this.danger = danger;
+		}
+
+		public int getMaxAge() {
+			return this.maxAge;
+		}
+
+		public boolean isDanger() {
+			return this.danger;
+		}
+	}
+
+
 	private int id;
 	private int age;
 	private String account;
@@ -19,7 +46,6 @@ public class Customer {
 	private String phoneNumber;
 	private boolean sex;
 	private String SSN;
-	private boolean pay;
 	private Date joinDate;
 	private House house;
 	private Car car;
@@ -44,13 +70,6 @@ public class Customer {
 		this.job = job;
 	}
 
-	public boolean isPay() {
-		return this.pay;
-	}
-
-	public void setPay(boolean pay) {
-		this.pay = pay;
-	}
 
 	public Date getJoinDate() {
 		return this.joinDate;
@@ -156,27 +175,5 @@ public class Customer {
 		this.ship = ship;
 	}
 
-	public static enum Job {
-		영업직(70, false),
-		생산직(60, true),
-		사무직(75, false),
-		자영업자(70, true),
-		무직(30, false);
 
-		private int maxAge;
-		private boolean danger;
-
-		private Job(int maxAge, boolean danger) {
-			this.maxAge = maxAge;
-			this.danger = danger;
-		}
-
-		public int getMaxAge() {
-			return this.maxAge;
-		}
-
-		public boolean isDanger() {
-			return this.danger;
-		}
-	}
 }

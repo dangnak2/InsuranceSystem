@@ -79,7 +79,7 @@ public class Sale {
         for (Customer customer : this.customerDAO.getCustomerList()) {
             addCustomer = false;
             for (Contract contract : this.contractDAO.getContractList()) {
-                if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !customer.isPay() && !addCustomer) {
+                if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !contract.isPay() && !addCustomer) {
                     count++;
                     addCustomer = true;
                 }
@@ -104,6 +104,20 @@ public class Sale {
 
         return joinInsurance;
     }
+
+    public ArrayList<Insurance> getUnpaidInsurance(int customerId) {
+        ArrayList<Insurance> joinInsurance = new ArrayList<>();
+
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getCustomerId() == customerId && !contract.isPay()) {
+                joinInsurance.add(this.getInsurance(contract.getInsuranceId()));
+            }
+        }
+
+        return joinInsurance;
+    }
+
+
 
     //고객 정보 수정하기
     public boolean updateCustomer(int customerId, String address, String phoneNum, String email) {
@@ -153,7 +167,7 @@ public class Sale {
         for (Customer customer : this.customerDAO.getCustomerList()) {
             addCustomer = false;
             for (Contract contract : this.contractDAO.getContractList()) {
-                if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !customer.isPay() && !addCustomer) {
+                if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !contract.isPay() && !addCustomer) {
                     unpaidCustomerList.add(customer);
                     addCustomer = true;
                 }
@@ -165,13 +179,7 @@ public class Sale {
 
     //미납한 고객 돈 받기
     public boolean payCustomer(ArrayList<Customer> unpaidCustomerList) {
-
         if (verifyEmail(unpaidCustomerList)) {
-            for (Customer customer : unpaidCustomerList) {
-                customer.setPay(true);
-                this.customerDAO.update(customer);
-            }
-
             return true;
         } else {
             return false;
@@ -201,7 +209,7 @@ public class Sale {
 
             for (Customer customer : unpaidCustomerList) {
                 for (Contract contract : this.contractDAO.getContractList()) {
-                    if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite()) {
+                    if (contract.getCustomerId() == customer.getId() && contract.isUnderWrite() && !contract.isPay()) {
                         message.setRecipient(Message.RecipientType.TO, new InternetAddress(customer.getEmail()));
                         message.setSubject("[전과자들]"+this.insuranceDAO.get(contract.getInsuranceId()).getName()+" 보험 보험료 체납 안내", "UTF-8");
                         message.setText("안녕하세요 전과자들입니다.\n" +
@@ -211,6 +219,8 @@ public class Sale {
                                 "갑사합니다.", "UTF-8");
                         Transport.send(message);
 
+                        contract.setPay(true);
+                        this.contractDAO.update(contract);
                     }
                 }
             }
@@ -222,7 +232,7 @@ public class Sale {
     }
 
     //보험 리스트 전달
-    public ArrayList<Insurance> getInsuranceDAO() {
+    public ArrayList<Insurance> getInsuranceList() {
         return this.insuranceDAO.getInsuranceList();
     }
 
@@ -250,7 +260,7 @@ public class Sale {
     public int getUnPaidAmount(int customerId) {
         int amount = 0;
         for (Contract contract : this.contractDAO.getContractList()) {
-            if (contract.getCustomerId() == customerId && contract.isUnderWrite() && !customerDAO.get(customerId).isPay()) {
+            if (contract.getCustomerId() == customerId && contract.isUnderWrite() && !contract.isPay()) {
                 amount += contract.getInsurancePrice();
             }
         }
@@ -402,7 +412,6 @@ public class Sale {
         contract.setInsurancePrice(
                 (int) this.calculatePremium.calculatePremium(customer, this.insuranceDAO.get(insuranceId).getPremium()));
         contract.setContractDate(Timestamp.valueOf(LocalDateTime.now()));
-        customer.setPay(false);
         staff.setResult(staff.getResult() + 1);
 
         this.staffDAO.update(staff);
@@ -422,4 +431,12 @@ public class Sale {
     }
 
 
+    public boolean getPaid(int customerId) {
+        for (Contract contract : this.contractDAO.getContractList()) {
+            if (contract.getCustomerId() == customerId && contract.isUnderWrite() && !contract.isPay()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

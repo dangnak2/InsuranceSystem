@@ -7,51 +7,19 @@ public class Contract {
 
 	private int contractId;
 	private int customerId;
-
-	public int getSalesId() {
-		return salesId;
-	}
-
-	public void setSalesId(int salesId) {
-		this.salesId = salesId;
-	}
-
 	private int salesId;
 	private int insuranceId;
 	private int insurancePrice;
 	private int premiumRate;
-
-	public double getCompensationAmount() {
-		return compensationAmount;
-	}
-
-	public void setCompensationAmount(double compensationAmount) {
-		this.compensationAmount = compensationAmount;
-	}
-
-	public Date getContractDate() {
-		return contractDate;
-	}
-
-	public void setContractDate(Date contractDate) {
-		this.contractDate = contractDate;
-	}
-
 	private double compensationAmount;
 	private Date contractDate;
 	private boolean underWrite;
+	private boolean pay;
 
 	public Contract(){
 
 	}
 
-	public boolean isUnderWrite() {
-		return this.underWrite;
-	}
-
-	public void setUnderWrite(boolean underWrite) {
-		this.underWrite = underWrite;
-	}
 
 	public int getContractId() {
 		return contractId;
@@ -67,6 +35,14 @@ public class Contract {
 
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
+	}
+
+	public int getSalesId() {
+		return salesId;
+	}
+
+	public void setSalesId(int salesId) {
+		this.salesId = salesId;
 	}
 
 	public int getInsuranceId() {
@@ -93,4 +69,35 @@ public class Contract {
 		this.premiumRate = premiumRate;
 	}
 
+	public double getCompensationAmount() {
+		return compensationAmount;
+	}
+
+	public void setCompensationAmount(double compensationAmount) {
+		this.compensationAmount = compensationAmount;
+	}
+
+	public Date getContractDate() {
+		return contractDate;
+	}
+
+	public void setContractDate(Date contractDate) {
+		this.contractDate = contractDate;
+	}
+
+	public boolean isUnderWrite() {
+		return underWrite;
+	}
+
+	public void setUnderWrite(boolean underWrite) {
+		this.underWrite = underWrite;
+	}
+
+	public boolean isPay() {
+		return pay;
+	}
+
+	public void setPay(boolean pay) {
+		this.pay = pay;
+	}
 }

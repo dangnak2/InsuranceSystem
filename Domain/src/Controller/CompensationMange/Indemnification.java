@@ -32,7 +32,7 @@ public class Indemnification {
         eCarCause4("고객이 고의로 사고를 일으킨 경우", false),
         eCarCause5("고객이 자동차를 이용한 영업 행위(유사운송)였을 경우", false),
         eCarCause6("고객이 시험용 또는 경기용으로 운행 했을 경우", false),
-        eCarCause7("고객이 음주 및 무면허 운정 행위인 경우", false);
+        eCarCause7("고객이 음주 및 무면허 운행 했을 경우", false);
 
         private final String explanation;
         private final boolean judgment;

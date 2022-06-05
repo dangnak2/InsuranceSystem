@@ -22,24 +22,9 @@ public class StaffManagement {
 
 
     public ArrayList<Staff> getTotalStaff() {
-        ArrayList<Staff> totalStaffList = new ArrayList<>();
-        if (this.staffRepository instanceof StaffDAOImpl) {
-            totalStaffList = ((StaffDAOImpl) this.staffRepository).getStaffList();
-        }
-        return totalStaffList;
+        return this.staffRepository.getStaffList();
     }
 
-    public ArrayList<Staff> getDepartmentStaff(int department) {
-        ArrayList<Staff> departmentStaffList = new ArrayList<>();
-        if (this.staffRepository instanceof StaffDAOImpl) {
-            for (Staff staff : ((StaffDAOImpl) this.staffRepository).getStaffList()) {
-                if (Department.values()[department-1] == staff.getDepartment()) {
-                    departmentStaffList.add(staff);
-                }
-            }
-        }
-        return departmentStaffList;
-    }
 
     public Staff createStaff(int staffId, String staffPw, String staffName, String staffSsn, int staffGender, String staffEmail, String staffPhone, int department, int position) {
         Staff createdStaff = new Staff();
@@ -136,13 +121,16 @@ public class StaffManagement {
 
     }
 
-    public void changePosition(Staff staff, int position, Staff loginStaff) {
+    public boolean changePosition(Staff staff, int position, Staff loginStaff) {
         staff.setPosition(Position.values()[position - 1]);
-        this.staffRepository.update(staff);
-        this.calculateSalary(staff.getId(), loginStaff);
+        if (this.staffRepository.update(staff)) {
+            this.calculateSalary(staff.getId(), loginStaff);
+            return true;
+        }
+        return false;
     }
 
-    public void calculateSalary(int staffId, Staff loginStaff) {
+    public boolean calculateSalary(int staffId, Staff loginStaff) {
         Staff staff = this.staffRepository.get(staffId);
 
         int workDate = this.calculateWorkDate(staffId);
@@ -150,8 +138,14 @@ public class StaffManagement {
 
         staff.setTotalSalary(totalSalary);
         loginStaff.setResult(staff.getResult()+1);
-        this.staffRepository.update(staff);
         this.staffRepository.update(loginStaff);
+
+        if (this.staffRepository.update(staff)) {
+            return true;
+        } else {
+            return false;
+        }
+
 
 //        최종 월급 = 기본 월급(basicSalary) + 근무일수(count) / 365 * x + 판매 실적(result) * y
 

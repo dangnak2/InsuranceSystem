@@ -35,6 +35,7 @@ public class DBContractDAO extends DBConnectorDAO implements ContractDAO {
         contract.setCompensationAmount(rs.getDouble("compensation_amount"));
         contract.setContractDate(rs.getDate("contracted_date"));
         contract.setUnderWrite(rs.getBoolean("underwrite"));
+        contract.setPay(rs.getBoolean("pay"));
 
 
         contractList.add(contract);
@@ -51,12 +52,12 @@ public class DBContractDAO extends DBConnectorDAO implements ContractDAO {
   @Override
   public boolean add(Contract contract) {
     String query = "insert into contract values("
-        + contract.getContractId() + "," + contract.getCustomerId() + "," + contract.getSalesId()
-        + ","
-        + contract.getInsuranceId() + "," + contract.getInsurancePrice() + ","
-        + contract.getPremiumRate() + ","
-        + contract.getCompensationAmount() + ",'" + contract.getContractDate()
-        + "'," +false+");";
+            + contract.getContractId() + "," + contract.getCustomerId() + "," + contract.getSalesId()
+            + ","
+            + contract.getInsuranceId() + "," + contract.getInsurancePrice() + ","
+            + contract.getPremiumRate() + ","
+            + contract.getCompensationAmount() + ",'" + contract.getContractDate()
+            + "'," + false + "," + contract.isPay() + ");";
     if (super.create(query)) {
       this.contractList = getContractList();
       return true;
@@ -80,13 +81,13 @@ public class DBContractDAO extends DBConnectorDAO implements ContractDAO {
   @Override
   public boolean update(Contract contract) {
     String query = "update contract set "
-        + "customer_id = " + contract.getCustomerId() + ", sales_id = " + contract.getSalesId()
-        + ", insurance_id = "
-        + contract.getInsuranceId() + ", insurance_price = " + contract.getInsurancePrice()
-        + ", premium_rate = "
-        + contract.getPremiumRate() + ", compensation_amount = " + contract.getCompensationAmount()
-        + ", contracted_date = '" + contract.getContractDate() + "', underwrite = " + contract.isUnderWrite()
-        + " where contract_id = " + contract.getContractId();
+            + "customer_id = " + contract.getCustomerId() + ", sales_id = " + contract.getSalesId()
+            + ", insurance_id = "
+            + contract.getInsuranceId() + ", insurance_price = " + contract.getInsurancePrice()
+            + ", premium_rate = "
+            + contract.getPremiumRate() + ", compensation_amount = " + contract.getCompensationAmount()
+            + ", contracted_date = '" + contract.getContractDate() + "', underwrite = " + contract.isUnderWrite()
+            + ", pay = " + contract.isPay() + "where contract_id = " + contract.getContractId();
     if (super.update(query)) {
       this.contractList = getContractList();
       return true;
