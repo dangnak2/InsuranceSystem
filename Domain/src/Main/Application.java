@@ -1,30 +1,27 @@
 package Main;
 
-import Contract.Contract;
-import Contract.ContractListImpl;
-import Control.CompensationMange.CompensationManage;
-import Control.CompensationMange.Indemnification.*;
-import Control.Design.Design;
-import Control.Sale.CalculatePremiumImpl;
-import Control.Sale.CalculatePremium;
-import Control.Sale.Sale;
-import Control.StaffManage.StaffManagement;
-import Control.UnderWrite.UnderWrite;
-import Customer.Customer;
-import Customer.CustomerListImpl;
-import Customer.MedicalHistoryListImpl;
-import Customer.CarListImpl;
-import Customer.HouseListImpl;
-import Customer.ShipListImpl;
-import Insurance.Insurance;
-import Insurance.InsuranceListImpl;
-import Insurance.*;
-import Insurance.FireInsuranceListImpl;
-import Insurance.CarInsuranceListImpl;
-import Insurance.SeaInsuranceListImpl;
-import Staff.Staff;
-import Staff.*;
-import Auth.*;
+import Controller.Authorizate.Auth;
+import Controller.CompensationMange.CompensationManage;
+import Controller.CompensationMange.Indemnification.AccidentSubjectIndemnification;
+import Controller.CompensationMange.Indemnification.CarAccidentCauseIndemnification;
+import Controller.CompensationMange.Indemnification.FireAccidentCauseIndemnification;
+import Controller.CompensationMange.Indemnification.SeaAccidentCauseIndemnification;
+import Controller.Design.Design;
+import Controller.Sale.CalculatePremium;
+import Controller.Sale.CalculatePremiumImpl;
+import Controller.Sale.Sale;
+import Controller.StaffManage.StaffManagement;
+import Controller.UnderWrite.UnderWrite;
+import DAO.ContractDAO.DBContractDAO;
+import DAO.CustomerDAO.*;
+import DAO.InsuranceDAO.*;
+import DAO.StaffDAO.StaffDAO;
+import DAO.StaffDAO.StaffDAOImpl;
+import Domain.Contract.Contract;
+import Domain.Customer.Customer;
+import Domain.Insurance.Insurance;
+import Domain.Staff.Staff;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -37,29 +34,32 @@ public class Application {
 
         Staff staff = null;
 
-        StaffList staffList = new StaffListImpl();
-        Auth auth = new Auth(staffList);
-        InsuranceListImpl insuranceList = new InsuranceListImpl();
-        FireInsuranceList fireInsuranceList = new FireInsuranceListImpl();
-        CarInsuranceList carInsuranceList = new CarInsuranceListImpl();
-        SeaInsuranceList seaInsuranceList = new SeaInsuranceListImpl();
-        CustomerListImpl customerList = new CustomerListImpl();
-        MedicalHistoryListImpl medicalHistoryList = new MedicalHistoryListImpl();
-        CarListImpl carList = new CarListImpl();
-        HouseListImpl houseList = new HouseListImpl();
-        ShipListImpl shipList = new ShipListImpl();
-        ContractListImpl contractList = new ContractListImpl();
-        MyAuthentication emailVerify = new MyAuthentication();
+        StaffDAO staffDAO = new StaffDAOImpl();
+        Auth auth = new Auth(staffDAO);
+
+        FireInsuranceDAO fireInsuranceDAO = new DBFireInsuranceDAO();
+        CarInsuranceDAO carInsuranceDAO = new DBCarInsuranceDAO();
+        SeaInsuranceDAO seaInsuranceDAO = new DBSeaInsuranceDAO();
+
+        DBInsuranceDAO insuranceDAO = new DBInsuranceDAO(carInsuranceDAO, fireInsuranceDAO, seaInsuranceDAO);
+
+        DBMedicalHistoryDAO medicalHistoryDAO = new DBMedicalHistoryDAO();
+        DBCarDAO carDAO = new DBCarDAO();
+        DBHouseDAO houseDAO = new DBHouseDAO();
+        DBShipDAO shipDAO = new DBShipDAO();
+
+        DBCustomerDAO customerDAO = new DBCustomerDAO(medicalHistoryDAO, carDAO, houseDAO, shipDAO);
+
+        DBContractDAO contractDAO = new DBContractDAO();
 
         Date date = new Date();
 
-        CompensationManage compensationManagement = new CompensationManage(contractList,
-                insuranceList, customerList, staffList, fireInsuranceList, carInsuranceList, seaInsuranceList);
-        UnderWrite underWrite = new UnderWrite(contractList, insuranceList, customerList, staffList, medicalHistoryList);
-        Design design = new Design(insuranceList, fireInsuranceList, carInsuranceList, seaInsuranceList);
+        CompensationManage compensationManagement = new CompensationManage(contractDAO, insuranceDAO, customerDAO, staffDAO);
+        UnderWrite underWrite = new UnderWrite(contractDAO, insuranceDAO, customerDAO, staffDAO, medicalHistoryDAO);
+        Design design = new Design(insuranceDAO, fireInsuranceDAO, carInsuranceDAO, seaInsuranceDAO, staffDAO);
         CalculatePremium calculatePremium = new CalculatePremiumImpl();
-        Sale sale = new Sale(insuranceList, customerList, medicalHistoryList, carList, houseList, shipList, contractList, staffList, calculatePremium);
-        StaffManagement staffManagement = new StaffManagement(staffList);
+        Sale sale = new Sale(insuranceDAO, customerDAO, medicalHistoryDAO, carDAO, houseDAO, shipDAO, contractDAO, staffDAO, calculatePremium);
+        StaffManagement staffManagement = new StaffManagement(staffDAO);
 
         main:
         while (true) {
@@ -92,10 +92,6 @@ public class Application {
                     staff = auth.login(Integer.parseInt(inputId), inputPW);
 
                     if (staff != null) {
-                        System.out.println(staff.getId()
-                                + " " + staff.getDepartment()
-                                + " " + staff.getName()
-                                + "님 환영합니다!");
                         break login;
                     } else {
                         System.out.println("등록된 정보가 없습니다. 다시 시도해주시거나 회원 가입 후 진행해주세요");
@@ -162,7 +158,6 @@ public class Application {
                                 break;
                             }
                         }
-
                         System.out.println("Email : ");
                         String email = sc.nextLine();
                         System.out.println("Phone : ");
@@ -175,7 +170,7 @@ public class Application {
                         if (staff != null) {
                             System.out.println("가입을 축하합니다 " + staff.getName() + "님!");
                             System.out.println(
-                                    "ID는 " + staff.getId() + "이며 기본 PW는" + staff.getPassword()
+                                    "ID는 " + staff.getId() + "이며 PW는" + staff.getPassword()
                                             + "입니다.");
                             break login;
                         } else {
@@ -188,6 +183,11 @@ public class Application {
             }
             selectWork:
             while (true) {
+                System.out.println(staff.getId()
+                        + " " + staff.getDepartment()
+                        + " " + staff.getName()
+                        + "님 환영합니다!");
+
                 String select;
                 switch (staff.getDepartment()) {
                     case Design:
@@ -215,20 +215,26 @@ public class Application {
                                     if (select2.equals("1")) {
                                         selectDesign:
                                         while (true) {
-                                            ArrayList<Insurance> insurances = design.getInsuranceList();
-                                            for (Insurance insurance : insurances) {
+                                            ArrayList<Insurance> insurances = design.getInsuranceDAO();
+                                            if (insurances.isEmpty()) {
+                                                System.out.println("보험이 존재하지 않습니다. 먼저 보험을 생성해주세요.");
+                                            } else {
+                                                for (Insurance insurance : insurances) {
 
-                                                System.out.println(
-                                                        insurance.getId() + ". " + " 보험 종류 : "
-                                                                + insurance.getType().name() + " 보험 이름 : "
-                                                                + insurance.getName() + " 보험 설명 : "
-                                                                + insurance.getExplanation() + " 인가 여부: "
-                                                                + insurance.isAuthorization());
+                                                    System.out.println(
+                                                            insurance.getId() + ". " + " 보험 종류 : "
+                                                                    + insurance.getType().name() + " 보험 이름 : "
+                                                                    + insurance.getName() + " 보험 설명 : "
+                                                                    + insurance.getExplanation() + " 인가 여부: "
+                                                                    + insurance.isAuthorization());
+                                                }
                                             }
+
 
                                             System.out.println("1. 새로 만들기");
                                             System.out.println("2. 인가 받기");
-                                            System.out.println("3. 뒤로가기");
+                                            System.out.println("3. 보험 삭제");
+                                            System.out.println("4. 뒤로가기");
 
                                             String select3 = sc.nextLine();
 
@@ -329,7 +335,7 @@ public class Application {
                                                                     + " 1. 예 2. 아니요 ");
                                                             break;
                                                         case "2":
-                                                            System.out.println("주변 피해 기본 보상금 : ");
+                                                            System.out.println("자동차 피해 기본 보상금 : ");
 
                                                             while (true) {
                                                                 carDamageBasicMoney = sc.nextLine();
@@ -411,18 +417,18 @@ public class Application {
                                                     String answer = sc.nextLine();
                                                     if (answer.equals("1")) {
                                                         Insurance createInsurance = design.design(
-                                                            Integer.parseInt(type), name,
-                                                            explanation, Integer.parseInt(premium),
-                                                            Integer.parseInt(
-                                                                surroundingDamageBasicMoney),
-                                                            Integer.parseInt(humanDamageBasicMoney),
-                                                            Integer.parseInt(
-                                                                buildingDamageBasicMoney),
-                                                            Integer.parseInt(carDamageBasicMoney),
-                                                            Integer.parseInt(
-                                                                generalDamageBasicMoney),
-                                                            Integer.parseInt(
-                                                                revenueDamageBasicMoney), staff);
+                                                                Integer.parseInt(type), name,
+                                                                explanation, Integer.parseInt(premium),
+                                                                Integer.parseInt(
+                                                                        surroundingDamageBasicMoney),
+                                                                Integer.parseInt(humanDamageBasicMoney),
+                                                                Integer.parseInt(
+                                                                        buildingDamageBasicMoney),
+                                                                Integer.parseInt(carDamageBasicMoney),
+                                                                Integer.parseInt(
+                                                                        generalDamageBasicMoney),
+                                                                Integer.parseInt(
+                                                                        revenueDamageBasicMoney), staff);
                                                         if (createInsurance != null) {
                                                             System.out.println(
                                                                     "보험 생성이 완료되었습니다. 보험 관리 화면에서 인가를 받아야 해당 보험을 이용할 수 있습니다.");
@@ -474,16 +480,29 @@ public class Application {
                                                             }
                                                         }
 
-                                                        if (design.authorize(
-                                                                Integer.parseInt(select5))) {
-                                                            System.out.println(
-                                                                    "해당 보험의 인가가 완료 되었습니다.");
-                                                            continue selectDesign;
-                                                        } else {
-                                                            System.out.println(
-                                                                    "입력한 id의 보험이 없습니다. 다시 입력해 주세요.");
+                                                        System.out.println("해당 보험을 인가 하시겠습니까?");
+
+                                                        String select6 = sc.nextLine();
+                                                        System.out.println("1. 예");
+                                                        System.out.println("2. 아니요");
+
+                                                        if (select6.equals("1")) {
+                                                            if (design.authorize(
+                                                                    Integer.parseInt(select5))) {
+                                                                System.out.println(
+                                                                        "해당 보험의 인가가 완료 되었습니다.");
+                                                                continue selectDesign;
+                                                            } else {
+                                                                System.out.println(
+                                                                        "입력한 id의 보험이 없습니다. 다시 입력해 주세요.");
+                                                                continue authorize;
+                                                            }
+                                                        } else if (select6.equals("2")) {
+                                                            System.out.println("인가가 취소되었습니다.");
                                                             continue authorize;
                                                         }
+
+
                                                     } else if (select4.equals("2")) {
                                                         continue selectDesign;
                                                     } else {
@@ -492,6 +511,32 @@ public class Application {
                                                     }
                                                 }
                                             } else if (select3.equals("3")) {
+                                                deleteInsurance:
+                                                while (true) {
+                                                    System.out.println("삭제 할 보험의 ID를 입력해 주세요.");
+
+                                                    String insuranceId;
+
+                                                    while (true) {
+                                                        insuranceId = sc.nextLine();
+                                                        if (!insuranceId.matches("[+-]?\\d*(\\.\\d+)?")) {
+                                                            System.out.println("숫자만 입력해 주세요.");
+                                                            continue;
+                                                        } else {
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    if (design.deleteInsurance(Integer.parseInt(insuranceId))) {
+                                                        System.out.println("해당 보험을 성공적으로 삭제 완료하였습니다.");
+                                                        continue selectDesign;
+                                                    } else {
+                                                        System.out.println("오류로 인해 해당 보험을 삭제할 수 없습니다. 다시 시도해 주세요.");
+                                                        continue deleteInsurance;
+                                                    }
+
+                                                }
+                                            } else if (select3.equals("4")) {
                                                 continue design;
                                             } else {
                                                 System.out.println("목록에 있는 번호를 입력해 주세요.");
@@ -512,8 +557,6 @@ public class Application {
                                 staff = null;
                                 continue main;
                         }
-
-                        break;
 
                     case Underwriting:
                         System.out.println("1. 인수 심사 관리");
@@ -615,8 +658,7 @@ public class Application {
                                                                             + " 고객 직업 : "
                                                                             + customer.getJob().name()
                                                                             + " 고객 병력 : "
-                                                                            + medicalHistoryList.get(customer.getId())
-                                                                            .getMyDisease().name());
+                                                                            + customer.getMedicalHistory().getMyDisease().name());
 
                                                             System.out.println();
                                                             if (underWrite.checkDangerJob(
@@ -685,8 +727,8 @@ public class Application {
                         }
 
                     case Sales:
-                        System.out.println("1. 보험가입자 관리");
-                        System.out.println("2. 보험 계약관리");
+                        System.out.println("1. 고객 관리");
+                        System.out.println("2. 보험 계약 관리");
                         System.out.println("q. 로그아웃");
                         select = sc.nextLine();
 
@@ -694,14 +736,14 @@ public class Application {
                             case "1":
                                 manageCustomer:
                                 while (true) {
-                                    System.out.println("총 보험 가입자 수 : " + sale.totalCustomerCount());
+                                    System.out.println("총 고객 수 : " + sale.totalCustomerCount());
                                     System.out.println(
-                                            "이 달에 가입한 보험 가입자 수 : " + sale.thisMonthCustomerCount());
+                                            "이 달에 가입한 고객 수 : " + sale.thisMonthCustomerCount());
                                     System.out.println(
-                                            "보험료 미납한 보험 가입자의 수 : " + sale.unpaidCustomerCount());
+                                            "보험료 미납한 고객의 수 : " + sale.unpaidCustomerCount());
 
                                     System.out.println();
-                                    System.out.println("1. 보험 가입자 정보 상세보기");
+                                    System.out.println("1. 고객 정보 상세보기");
                                     System.out.println("2. 돌아가기");
 
                                     String select1 = sc.nextLine();
@@ -709,6 +751,10 @@ public class Application {
                                         detailCustomer:
                                         while (true) {
                                             ArrayList<Customer> customers = sale.getTotalCustomer();
+                                            if (customers.isEmpty()) {
+                                                System.out.println("보험사에 가입한 고객이 없습니다.");
+                                                continue selectWork;
+                                            }
                                             for (Customer customer : customers) {
 
                                                 System.out.print(customer.getId() + ". " + " 이름 : "
@@ -724,7 +770,7 @@ public class Application {
                                                     System.out.print(insurance.getName() + " ");
                                                 }
                                                 System.out.println(
-                                                        "이달의 납입 유무 : " + customer.isPay());
+                                                        "이달의 납입 유무 : " + sale.getPaid(customer.getId()));
                                             }
                                             System.out.println();
                                             System.out.println("1. 고객 정보 수정 하기");
@@ -800,10 +846,11 @@ public class Application {
                                                             continue detailCustomer;
                                                         } else {
                                                             System.out.println(
-                                                                    "정보 수정에 실패하였습니다. 다시 시도해 주세요.");
+                                                                    "삭제를 실패하였습니다. 다시 시도해 주세요.");
                                                             continue;
                                                         }
                                                     } else if (select3.equals("2")) {
+                                                        System.out.println("삭제를 취소하였습니다.");
                                                         continue detailCustomer;
                                                     } else {
                                                         System.out.println("목록에 있는 번호를 입력해 주세요.");
@@ -815,6 +862,10 @@ public class Application {
                                                 claimPay:
                                                 while (true) {
                                                     ArrayList<Customer> unpaidCustomers = sale.getUnpaidCustomer();
+                                                    if (unpaidCustomers.isEmpty()) {
+                                                        System.out.println("보험료 미납입 고객이 없습니다.");
+                                                        continue detailCustomer;
+                                                    }
                                                     for (Customer customer : unpaidCustomers) {
                                                         System.out.print(
                                                                 customer.getId() + ". " + " 이름 : "
@@ -824,11 +875,11 @@ public class Application {
                                                                         + " 전화번호 : "
                                                                         + customer.getPhoneNumber()
                                                                         + " E-mail : " + customer.getEmail()
-                                                                        + " 가입한 보험 : ");
-                                                        for (Insurance insurance : sale.getJoinInsurances(
-                                                                customer.getId())) {
-                                                            System.out.print(
-                                                                    insurance.getName() + " ");
+                                                                        + " 미납된 보험료 : " + sale.getUnPaidAmount(customer.getId())
+                                                                        + " 미납된 보험 : ");
+
+                                                        for (Insurance insurance : sale.getUnpaidInsurance(customer.getId())) {
+                                                            System.out.print(insurance.getName() + " ");
                                                         }
                                                         System.out.println();
                                                     }
@@ -840,7 +891,13 @@ public class Application {
                                                     if (select3.equals("1")) {
                                                         sendEmail:
                                                         while (true) {
-                                                            System.out.println("체납된 보험 가입자 "
+
+                                                            if (sale.unpaidCustomerCount() == 0) {
+                                                                System.out.println("시스템 오류로 인해 미납입자의 수를 불러오지 못하였습니다. 다시 시도해주세요.");
+                                                                continue claimPay;
+                                                            }
+
+                                                            System.out.println("체납된 고객 "
                                                                     + sale.unpaidCustomerCount()
                                                                     + "명에게 청구서를 보내시겠습니까?");
 
@@ -862,6 +919,7 @@ public class Application {
                                                                     continue sendEmail;
                                                                 }
                                                             } else if (select4.equals("2")) {
+                                                                System.out.println("청구서 전송을 취소하였습니다.");
                                                                 continue detailCustomer;
                                                             } else {
                                                                 System.out.println(
@@ -905,6 +963,10 @@ public class Application {
                                                         insurance.getId()));
                                             }
                                         }
+                                    }else {
+                                        System.out.println("저장된 보험이 없습니다. 보험을 먼저 설계해 주세요.");
+                                        continue selectWork;
+                                    }
                                         System.out.println();
                                         System.out.println("1. 계약 검색");
                                         System.out.println("2. 계약 하기");
@@ -914,7 +976,7 @@ public class Application {
                                         if (select1.equals("1")) {
                                             findContract:
                                             while (true) {
-                                                System.out.println("검색하실 계약의 보험 가입자 ID를 입력해 주세요.");
+                                                System.out.println("검색하실 계약의 고객 ID를 입력해 주세요.");
                                                 String customerId;
 
                                                 while (true) {
@@ -958,7 +1020,7 @@ public class Application {
                                                             cancelContract:
                                                             while (true) {
                                                                 System.out.println(
-                                                                        "계약 해지 할 계약 ID를 입력해 주세요.");
+                                                                        "해지 할 계약 ID를 입력해 주세요.");
                                                                 String contractId;
 
                                                                 while (true) {
@@ -995,15 +1057,15 @@ public class Application {
                                                                                     date + ", "
                                                                                             + sale.getInsuranceName(
                                                                                             contract.getInsuranceId())
-                                                                                            + "보험 계약해지가 완료되었습니다.");
+                                                                                            + "계약 해지가 완료되었습니다.");
                                                                             continue selectCancelContract;
                                                                         } else {
                                                                             System.out.println(
                                                                                     "시스템 오류로 계약 해지가 진행 되지 않았습니다. 잠시 후 다시 시도해 주세요.");
                                                                             continue cancelContract;
                                                                         }
-                                                                    } else if (select3.equals(
-                                                                            "2")) {
+                                                                    } else if (select3.equals("2")) {
+                                                                        System.out.println("계약 해지를 취소하였습니다.");
                                                                         continue selectCancelContract;
                                                                     } else {
                                                                         System.out.println(
@@ -1012,7 +1074,7 @@ public class Application {
                                                                     }
                                                                 } else {
                                                                     System.out.println(
-                                                                            "오류로 인하여 보험 가입자 및 보험의 정보를 불러오지 못했습니다. 다시 시도해 주세요.");
+                                                                            "오류로 인하여 고객 및 보험의 정보를 불러오지 못했습니다. 다시 시도해 주세요.");
                                                                     continue cancelContract;
                                                                 }
                                                             }
@@ -1026,7 +1088,7 @@ public class Application {
                                                     }
                                                 } else {
                                                     System.out.println(
-                                                            "해당 정보의 보험 가입자를 조회할 수 없습니다. 다시 시도해 주세요.");
+                                                            "해당 고객의 정보 조회할 수 없습니다. 다시 시도해 주세요.");
                                                     continue manageContract;
                                                 }
                                             }
@@ -1081,31 +1143,27 @@ public class Application {
                                                                     Integer.parseInt(customerId));
 
                                                             if (customer == null) {
-                                                                System.out.println(
-                                                                        "입력하신 ID의 고객 정보가 없습니다. 다시 입력해 주세요.");
+                                                                System.out.println("입력하신 ID의 고객 정보가 없습니다. 다시 입력해 주세요.");
                                                                 continue findCustomer;
                                                             }
 
                                                             switch (insurance.getType()) {
                                                                 case Car:
-                                                                    if(customer.getCar() == null) {
-                                                                        System.out.println(
-                                                                                "자동차 번호 : ");
+                                                                    if (customer.getCar() == null) {
+                                                                        System.out.println("자동차 번호 : ");
                                                                         String carNum;
 
                                                                         while (true) {
                                                                             carNum = sc.nextLine();
                                                                             if (!carNum.matches(
                                                                                     "[+-]?\\d*(\\.\\d+)?")) {
-                                                                                System.out.println(
-                                                                                        "숫자만 입력해 주세요.");
+                                                                                System.out.println("숫자만 입력해 주세요.");
                                                                                 continue;
                                                                             } else {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        System.out.println(
-                                                                                "자동차 연식 : ");
+                                                                        System.out.println("자동차 연식 : ");
                                                                         String carYear;
 
                                                                         while (true) {
@@ -1119,23 +1177,20 @@ public class Application {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        System.out.println(
-                                                                                "자동차 배기량 : ");
+                                                                        System.out.println("자동차 배기량 : ");
                                                                         String carDisplacement;
 
                                                                         while (true) {
                                                                             carDisplacement = sc.nextLine();
                                                                             if (!carDisplacement.matches(
                                                                                     "[+-]?\\d*(\\.\\d+)?")) {
-                                                                                System.out.println(
-                                                                                        "숫자만 입력해 주세요.");
+                                                                                System.out.println("숫자만 입력해 주세요.");
                                                                                 continue;
                                                                             } else {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        System.out.println(
-                                                                                "자동차 가격 : ");
+                                                                        System.out.println("자동차 가격 : ");
                                                                         String carPrice;
 
                                                                         while (true) {
@@ -1163,7 +1218,7 @@ public class Application {
                                                                     }
                                                                     break;
                                                                 case Fire:
-                                                                    if(customer.getHouse() == null) {
+                                                                    if (customer.getHouse() == null) {
                                                                         System.out.println(
                                                                                 "건물 종류 : 1. 아파트 / 2. 주택 / 3. 오피스텔");
                                                                         String houseType;
@@ -1204,7 +1259,7 @@ public class Application {
                                                                     }
                                                                     break;
                                                                 case Sea:
-                                                                    if(customer.getShip() == null) {
+                                                                    if (customer.getShip() == null) {
                                                                         System.out.println(
                                                                                 "선박 번호 : ");
                                                                         String shipNum;
@@ -1281,39 +1336,18 @@ public class Application {
                                                                     break;
                                                             }
 
-                                                            signContract:
-                                                            while (true) {
+                                                            if (sale.signContract(
+                                                                    insurance.getId(),
+                                                                    customer, staff)) {
                                                                 System.out.println(
-                                                                        "청약서에 동의하시고 계약을 진행하시겠습니까?");
+                                                                        "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
+                                                                continue manageContract;
+                                                            } else {
                                                                 System.out.println(
-                                                                        "1. 동의하고 계약하기");
-                                                                System.out.println("2. 취소");
-
-                                                                String select3 = sc.nextLine();
-
-                                                                if (select3.equals("1")) {
-                                                                    if (sale.signContract(
-                                                                            insurance.getId(),
-                                                                            customer, staff)) {
-                                                                        System.out.println(
-                                                                                "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
-                                                                        continue manageContract;
-                                                                    } else {
-                                                                        System.out.println(
-                                                                                "예기치 못한 오류로 보험 계약에 실패하였습니다. 계약을 다시 시도해주세요.");
-                                                                        continue findInsurance;
-                                                                    }
-                                                                } else if (select3.equals(
-                                                                        "2")) {
-                                                                    System.out.println(
-                                                                            "계약을 취소하였습니다.");
-                                                                    continue manageContract;
-                                                                } else {
-                                                                    System.out.println(
-                                                                            "목록에 있는 번호를 입력해 주세요.");
-                                                                    continue signContract;
-                                                                }
+                                                                        "예기치 못한 오류로 보험 계약에 실패하였습니다. 계약을 다시 시도해주세요.");
+                                                                continue findInsurance;
                                                             }
+
 
                                                         } else if (select2.equals("2")) {
                                                             createCustomer:
@@ -1648,39 +1682,20 @@ public class Application {
                                                                                         shipType));
                                                                         break;
                                                                 }
-                                                                signContract:
-                                                                while (true) {
-                                                                    System.out.println(
-                                                                            "청약서에 동의하시고 계약을 진행하시겠습니까?");
-                                                                    System.out.println(
-                                                                            "1. 동의하고 계약하기");
-                                                                    System.out.println("2. 취소");
 
-                                                                    String select3 = sc.nextLine();
-
-                                                                    if (select3.equals("1")) {
-                                                                        if (sale.signContract(
-                                                                            insurance.getId(),
-                                                                            customer, staff)) {
-                                                                            System.out.println(
-                                                                                    "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
-                                                                            continue manageContract;
-                                                                        } else {
-                                                                            System.out.println(
-                                                                                    "예기치 못한 오류로 보험 계약에 실패하였습니다. 계약을 다시 시도해주세요.");
-                                                                            continue findInsurance;
-                                                                        }
-                                                                    } else if (select3.equals(
-                                                                            "2")) {
-                                                                        System.out.println(
-                                                                                "계약을 취소하였습니다.");
-                                                                        continue manageContract;
-                                                                    } else {
-                                                                        System.out.println(
-                                                                                "목록에 있는 번호를 입력해 주세요.");
-                                                                        continue signContract;
-                                                                    }
+                                                                if (sale.signContract(
+                                                                        insurance.getId(),
+                                                                        customer, staff)) {
+                                                                    System.out.println(
+                                                                            "계약서 작성이 완료되었습니다. 인수 심사 후 최종 가입 여부가 결정됩니다.");
+                                                                    continue manageContract;
+                                                                } else {
+                                                                    System.out.println(
+                                                                            "예기치 못한 오류로 보험 계약에 실패하였습니다. 계약을 다시 시도해주세요.");
+                                                                    continue findInsurance;
                                                                 }
+
+
                                                             }
                                                         } else if (select2.equals("3")) {
                                                             continue findInsurance;
@@ -1706,7 +1721,7 @@ public class Application {
                                             System.out.println("목록에 있는 번호를 입력해 주세요.");
                                             continue;
                                         }
-                                    }
+
                                 }
                             case "q":
                                 staff = null;
@@ -1724,250 +1739,266 @@ public class Application {
                             case "1":
                                 manageStaff:
                                 while (true) {
-                                    System.out.println("관리하실 부서를 선택해 주세요.");
-                                    System.out.println("1. 보험 설계부");
-                                    System.out.println("2. 인수 심사부");
-                                    System.out.println("3. 영업 관리부");
-                                    System.out.println("4. 인사 관리부");
-                                    System.out.println("5. 보상 운영부");
-                                    System.out.println("6. 돌아 가기");
-
-                                    String department;
-
-                                    while (true) {
-                                        department = sc.nextLine();
-                                        if (!department.matches("[+-]?\\d*(\\.\\d+)?")) {
-                                            System.out.println("숫자만 입력해 주세요.");
-                                            continue;
-                                        } else {
-                                            break;
+                                    ArrayList<Staff> staffs = new ArrayList<>();
+                                    staffs = staffManagement.getTotalStaff();
+                                    if (!staffs.isEmpty()) {
+                                        for (Staff getStaff : staffs) {
+                                            staffManagement.calculateSalary(
+                                                    getStaff.getId(), staff);
+                                            System.out.println(
+                                                    "부서 : " + getStaff.getDepartment().name()
+                                                            + " 사원 번호 : " + getStaff.getId()
+                                                            + " 사원 이름 : " + getStaff.getName()
+                                                            + " 입사 일자 : "
+                                                            + getStaff.getJoinDate());
                                         }
-                                    }
+                                        System.out.println("1. 상세 보기");
+                                        System.out.println("2. 월급 관리");
+                                        System.out.println("3. 부서 이동");
+                                        System.out.println("4. 해고 하기");
+                                        System.out.println("5. 돌아 가기");
 
-                                    if (department.equals("1") || department.equals("2")
-                                            || department.equals("3") || department.equals("4")
-                                            || department.equals("5")) {
-                                        findStaff:
-                                        while (true) {
-                                            ArrayList<Staff> staffs = new ArrayList<>();
-                                            staffs = staffManagement.getDepartmentStaff(
-                                                    Integer.parseInt(department));
-                                            if (!staffs.isEmpty()) {
+                                        String select2 = sc.nextLine();
+                                        if (select2.equals("1")) {
+                                            findStaff:
+                                            while (true) {
 
-                                                for (Staff findStaff : staffs) {
-                                                    staffManagement.calculateSalary(
-                                                        findStaff.getId(), staff);
-                                                    System.out.println(
-                                                            "부서 : " + findStaff.getDepartment().name()
-                                                                    + " 사원 번호 : " + findStaff.getId()
-                                                                    + " 사원 이름 : " + findStaff.getName()
-                                                                    + " 입사 일자 : "
-                                                                    + findStaff.getJoinDate());
-                                                }
-                                                System.out.println("1. 상세 보기");
-                                                System.out.println("2. 월급 관리");
-                                                System.out.println("3. 부서 이동");
-                                                System.out.println("4. 해고 하기");
-                                                System.out.println("5. 돌아 가기");
-
-                                                String select2 = sc.nextLine();
-                                                if (select2.equals("1")) {
-                                                    for (Staff findStaff : staffs) {
-                                                        System.out.println(
-                                                                " 사원 번호 : " + findStaff.getId()
-                                                                        + " 사원 이름 : " + findStaff.getName()
-                                                                        + " 부서 : "
-                                                                        + findStaff.getDepartment().name()
-                                                                        + "주민등록번호 : " + findStaff.getSSN()
-                                                                        + " 이메일 : " + findStaff.getEmail()
-                                                                        + " 전화 번호 : "
-                                                                        + findStaff.getPhoneNum()
-                                                                        + " 입사 일자 : "
-                                                                        + findStaff.getJoinDate());
-                                                    }
-                                                    continue findStaff;
-                                                } else if (select2.equals("2")) {
-                                                    managementSalary:
-                                                    while (true) {
-                                                        System.out.println(
-                                                                "월급을 관리할 사원의 ID를 입력해 주세요.");
-                                                        String staffId;
-
-                                                        while (true) {
-                                                            staffId = sc.nextLine();
-                                                            if (!staffId.matches(
-                                                                    "[+-]?\\d*(\\.\\d+)?")) {
-                                                                System.out.println("숫자만 입력해 주세요.");
-                                                                continue;
-                                                            } else {
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        Staff manageStaff = staffManagement.getStaff(
-                                                                Integer.parseInt(staffId));
-
-                                                        if (manageStaff == null) {
-                                                            System.out.println(
-                                                                    "죄송합니다. 해당 사원의 월급 정보를 제대로 불러올 수 없습니다. 잠시 후 다시 시도해주세요.");
-                                                            continue managementSalary;
-                                                        }
-
-                                                        System.out.println(
-                                                                "직급 : " + manageStaff.getPosition()
-                                                                        .name() + " 근무 일수: "
-                                                                        + staffManagement.calculateWorkDate(
-                                                                        manageStaff.getId())
-                                                                        + " 보너스 실적 : "
-                                                                        + manageStaff.getResult()
-                                                                        + " 최종 월급 : "
-                                                                        + manageStaff.getTotalSalary());
-
-                                                        System.out.println("1. 직급 변경하기");
-                                                        System.out.println("2. 돌아가기");
-                                                        String select3 = sc.nextLine();
-                                                        if (select3.equals("1")) {
-                                                            System.out.println(
-                                                                    "변경 하실 직급을 선택해 주세요.");
-                                                            System.out.println(
-                                                                    "직급 1. 평사원 / 2. 주임 / 3. 대리 / 4. 과장 / 5. 차장 / 6. 부장");
-
-                                                            String position;
-
-                                                            while (true) {
-                                                                position = sc.nextLine();
-                                                                if (!position.matches(
-                                                                        "[+-]?\\d*(\\.\\d+)?")) {
-                                                                    System.out.println(
-                                                                            "숫자만 입력해 주세요.");
-                                                                    continue;
-                                                                } else {
-                                                                    break;
-                                                                }
-                                                            }
-
-                                                            staffManagement.changePosition(
-                                                                manageStaff,
-                                                                Integer.parseInt(position), staff);
-
-                                                            System.out.println(
-                                                                    "직책이 변경되었습니다. 직책에 따라 기본 월급이 변경됩니다.");
-                                                            continue manageStaff;
-
-                                                        } else if (select3.equals("2")) {
-                                                            continue manageStaff;
-                                                        } else {
-                                                            continue managementSalary;
-                                                        }
-                                                    }
-
-
-                                                } else if (select2.equals("3")) {
-                                                    changeDepartment:
-                                                    while (true) {
-                                                        System.out.println("부서를 이동할 사원의 ID를 입력해 주세요.");
-
-
-                                                        String staffId;
-
-                                                        while (true) {
-                                                            staffId = sc.nextLine();
-                                                            if (!staffId.matches(
-                                                                    "[+-]?\\d*(\\.\\d+)?")) {
-                                                                System.out.println("숫자만 입력해 주세요.");
-                                                                continue;
-                                                            } else {
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        System.out.println("이동할 부서를 선택해 주세요.");
-                                                        System.out.println("1. 보험 설계부");
-                                                        System.out.println("2. 인수 심사부");
-                                                        System.out.println("3. 영업 관리부");
-                                                        System.out.println("4. 인사 관리부");
-                                                        System.out.println("5. 보상 운영부");
-
-                                                        String changeDepartment;
-
-                                                        while (true) {
-                                                            changeDepartment = sc.nextLine();
-                                                            if (!changeDepartment.matches(
-                                                                    "[+-]?\\d*(\\.\\d+)?")) {
-                                                                System.out.println("숫자만 입력해 주세요.");
-                                                                continue;
-                                                            } else {
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        if (staffManagement.updateDepartment(
-                                                                Integer.parseInt(staffId),
-                                                                Integer.parseInt(changeDepartment))) {
-                                                            System.out.println(
-                                                                    "성공적으로 부서가 이동되었습니다.");
-                                                            continue findStaff;
-                                                        } else {
-                                                            System.out.println(
-                                                                    "예기치 못한 오류로 인해 부서 이동에 실패하였습니다. 다시 시도해주세요.");
-                                                            continue changeDepartment;
-                                                        }
-                                                    }
-
-                                                } else if (select2.equals("4")) {
-                                                    fireStaff:
-                                                    while (true) {
-                                                        System.out.println("해고하실 사원의 ID를 입력해 주세요.");
-                                                        String staffId;
-
-                                                        while (true) {
-                                                            staffId = sc.nextLine();
-                                                            if (!staffId.matches(
-                                                                    "[+-]?\\d*(\\.\\d+)?")) {
-                                                                System.out.println("숫자만 입력해 주세요.");
-                                                                continue;
-                                                            } else {
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        System.out.println(
-                                                                "정말로 해고하시겠습니까? 해당 사원의 정보가 시스템에서 삭제됩니다.");
-                                                        System.out.println("1. 예");
-                                                        System.out.println("2. 아니요");
-                                                        String select3 = sc.nextLine();
-                                                        if (select3.equals("1")) {
-                                                            staffManagement.fireStaff(
-                                                                    Integer.parseInt(staffId));
-                                                            System.out.println("사원이 해고되었습니다.");
-                                                            continue manageStaff;
-                                                        } else if (select3.equals("2")) {
-                                                            System.out.println("해고를 취소하였습니다.");
-                                                            continue findStaff;
-                                                        } else {
-                                                            System.out.println(
-                                                                    "목록에 있는 번호를 입력해 주세요.");
-                                                            continue fireStaff;
-                                                        }
-                                                    }
-                                                } else if (select2.equals("5")) {
-                                                    continue manageStaff;
-                                                } else {
-                                                    System.out.println("목록에 있는 번호를 입력해 주세요.");
-                                                    continue findStaff;
-                                                }
-                                            } else {
                                                 System.out.println(
-                                                        "죄송합니다. 사원 정보를 제대로 불러올 수 없습니다. 잠시 후 다시 시도해주세요.");
+                                                        "상세히 볼 사원의 ID를 입력해 주세요.");
+                                                String staffId;
+
+                                                while (true) {
+                                                    staffId = sc.nextLine();
+                                                    if (!staffId.matches(
+                                                            "[+-]?\\d*(\\.\\d+)?")) {
+                                                        System.out.println("숫자만 입력해 주세요.");
+                                                        continue;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+
+                                                Staff findStaff = staffManagement.getStaff(Integer.parseInt(staffId));
+
+                                                System.out.println(
+                                                        " 사원 번호 : " + findStaff.getId()
+                                                                + " 사원 이름 : " + findStaff.getName()
+                                                                + " 부서 : "
+                                                                + findStaff.getDepartment().name()
+                                                                + "주민등록번호 : " + findStaff.getSSN()
+                                                                + " 이메일 : " + findStaff.getEmail()
+                                                                + " 전화 번호 : "
+                                                                + findStaff.getPhoneNum()
+                                                                + " 입사 일자 : "
+                                                                + findStaff.getJoinDate());
+
                                                 continue manageStaff;
                                             }
+
+
+                                        } else if (select2.equals("2")) {
+                                            managementSalary:
+                                            while (true) {
+                                                System.out.println(
+                                                        "월급을 관리할 사원의 ID를 입력해 주세요.");
+                                                String staffId;
+
+                                                while (true) {
+                                                    staffId = sc.nextLine();
+                                                    if (!staffId.matches(
+                                                            "[+-]?\\d*(\\.\\d+)?")) {
+                                                        System.out.println("숫자만 입력해 주세요.");
+                                                        continue;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+
+                                                Staff manageStaff = staffManagement.getStaff(
+                                                        Integer.parseInt(staffId));
+
+                                                if (manageStaff == null) {
+                                                    System.out.println(
+                                                            "죄송합니다. 해당 사원의 월급 정보를 제대로 불러올 수 없습니다. 잠시 후 다시 시도해주세요.");
+                                                    continue managementSalary;
+                                                }
+
+                                                System.out.println(
+                                                        "직급 : " + manageStaff.getPosition()
+                                                                .name() + " 근무 일수: "
+                                                                + staffManagement.calculateWorkDate(
+                                                                manageStaff.getId())
+                                                                + " 보너스 실적 : "
+                                                                + manageStaff.getResult()
+                                                                + " 최종 월급 : "
+                                                                + manageStaff.getTotalSalary());
+
+                                                System.out.println("1. 직급 변경하기");
+                                                System.out.println("2. 돌아가기");
+                                                String select3 = sc.nextLine();
+                                                if (select3.equals("1")) {
+                                                    changePosition:
+                                                    while (true) {
+                                                        System.out.println(
+                                                                "변경 하실 직급을 선택해 주세요.");
+                                                        System.out.println(
+                                                                "직급 1. 평사원 / 2. 주임 / 3. 대리 / 4. 과장 / 5. 차장 / 6. 부장");
+
+                                                        String position;
+
+                                                        while (true) {
+                                                            position = sc.nextLine();
+                                                            if (!position.matches(
+                                                                    "[+-]?\\d*(\\.\\d+)?")) {
+                                                                System.out.println(
+                                                                        "숫자만 입력해 주세요.");
+                                                                continue;
+                                                            } else {
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (Staff.Position.values()[Integer.parseInt(position)] != null) {
+                                                            System.out.println("변경 하실 직급이 " +
+                                                                    Staff.Position.values()[Integer.parseInt(position)]
+                                                                    + "이 맞습니까?");
+
+
+                                                            System.out.println("1. 예");
+                                                            System.out.println("2. 아니요");
+
+                                                            String select4 = sc.next();
+
+                                                            if (select4.equals("1")) {
+                                                                if (staffManagement.changePosition(
+                                                                        manageStaff,
+                                                                        Integer.parseInt(position), staff)) {
+                                                                    System.out.println("직책이 변경되었습니다. 직책에 따라 기본 월급이 변경됩니다.");
+                                                                    continue manageStaff;
+                                                                } else {
+                                                                    System.out.println("예기치 못한 오류로 인해 직책 변경에 실패하였습니다. 다시 시도해 주세요.");
+                                                                    continue manageStaff;
+                                                                }
+
+                                                            } else if (select4.equals("2")) {
+                                                                System.out.println("직급 변경이 취소되었습니다.");
+                                                                continue manageStaff;
+                                                            } else {
+                                                                System.out.println("목록에 있는 번호를 입력해 주세요.");
+                                                                continue changePosition;
+                                                            }
+
+
+                                                        }
+
+                                                    }
+                                                } else if (select3.equals("2")) {
+                                                    continue manageStaff;
+                                                } else {
+                                                    continue managementSalary;
+                                                }
+                                            }
+
+
+                                        } else if (select2.equals("3")) {
+                                            changeDepartment:
+                                            while (true) {
+                                                System.out.println("부서를 이동할 사원의 ID를 입력해 주세요.");
+
+
+                                                String staffId;
+
+                                                while (true) {
+                                                    staffId = sc.nextLine();
+                                                    if (!staffId.matches(
+                                                            "[+-]?\\d*(\\.\\d+)?")) {
+                                                        System.out.println("숫자만 입력해 주세요.");
+                                                        continue;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+
+                                                System.out.println("이동할 부서를 선택해 주세요.");
+                                                System.out.println("1. 보험 설계부");
+                                                System.out.println("2. 인수 심사부");
+                                                System.out.println("3. 영업 관리부");
+                                                System.out.println("4. 인사 관리부");
+                                                System.out.println("5. 보상 운영부");
+
+                                                String changeDepartment;
+
+                                                while (true) {
+                                                    changeDepartment = sc.nextLine();
+                                                    if (!changeDepartment.matches(
+                                                            "[+-]?\\d*(\\.\\d+)?")) {
+                                                        System.out.println("숫자만 입력해 주세요.");
+                                                        continue;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+
+                                                if (staffManagement.updateDepartment(
+                                                        Integer.parseInt(staffId),
+                                                        Integer.parseInt(changeDepartment))) {
+                                                    System.out.println(
+                                                            "성공적으로 부서가 이동되었습니다.");
+                                                    continue manageStaff;
+                                                } else {
+                                                    System.out.println(
+                                                            "예기치 못한 오류로 인해 부서 이동에 실패하였습니다. 다시 시도해주세요.");
+                                                    continue changeDepartment;
+                                                }
+                                            }
+
+                                        } else if (select2.equals("4")) {
+                                            fireStaff:
+                                            while (true) {
+                                                System.out.println("해고하실 사원의 ID를 입력해 주세요.");
+                                                String staffId;
+
+                                                while (true) {
+                                                    staffId = sc.nextLine();
+                                                    if (!staffId.matches(
+                                                            "[+-]?\\d*(\\.\\d+)?")) {
+                                                        System.out.println("숫자만 입력해 주세요.");
+                                                        continue;
+                                                    } else {
+                                                        break;
+                                                    }
+                                                }
+
+                                                System.out.println(
+                                                        "정말로 해고하시겠습니까? 해당 사원의 정보가 시스템에서 삭제됩니다.");
+                                                System.out.println("1. 예");
+                                                System.out.println("2. 아니요");
+                                                String select3 = sc.nextLine();
+                                                if (select3.equals("1")) {
+                                                    staffManagement.fireStaff(
+                                                            Integer.parseInt(staffId));
+                                                    System.out.println("사원이 해고되었습니다.");
+                                                    continue manageStaff;
+                                                } else if (select3.equals("2")) {
+                                                    System.out.println("해고를 취소하였습니다.");
+                                                    continue manageStaff;
+                                                } else {
+                                                    System.out.println(
+                                                            "목록에 있는 번호를 입력해 주세요.");
+                                                    continue fireStaff;
+                                                }
+                                            }
+                                        } else if (select2.equals("5")) {
+                                            continue selectWork;
+                                        } else {
+                                            System.out.println("목록에 있는 번호를 입력해 주세요.");
+                                            continue manageStaff;
                                         }
-                                    } else if (department.equals("6")) {
-                                        continue selectWork;
                                     } else {
-                                        System.out.println("목록에 있는 번호를 입력해 주세요.");
+                                        System.out.println(
+                                                "죄송합니다. 사원 정보를 제대로 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.");
                                         continue manageStaff;
                                     }
+
                                 }
                             case "q":
                                 staff = null;
@@ -1991,7 +2022,7 @@ public class Application {
                                     if (select1.equals("1")) {
                                         findContract:
                                         while (true) {
-                                            System.out.println("보험 가입자 ID : ");
+                                            System.out.println("고객 ID : ");
                                             String customerId;
 
                                             while (true) {
@@ -2020,6 +2051,7 @@ public class Application {
                                                 System.out.println("보상 신청 할 계약 ID를 입력해 주세요.");
                                                 String contractId;
 
+
                                                 while (true) {
                                                     contractId = sc.nextLine();
                                                     if (!contractId.matches(
@@ -2030,17 +2062,22 @@ public class Application {
                                                         break;
                                                     }
                                                 }
-                                                Insurance insurance = sale.getInsurance(
-                                                    sale.getContract(Integer.parseInt(contractId)).getInsuranceId());
+                                                Contract contract = compensationManagement.getContract(
+                                                        Integer.parseInt(contractId));
 
-                                                if (insurance == null) {
+                                                if (contract == null) {
                                                     System.out.println(
-                                                            "입력하신 보험을 찾아오지 못하였습니다. 다시 시도해 주세요.");
+                                                            "입력하신 계약을 찾아오지 못하였습니다. 다시 시도해 주세요.");
                                                     continue findContract;
                                                 }
 
-                                                Contract contract = compensationManagement.getContract(
-                                                        Integer.parseInt(contractId));
+
+                                                Insurance insurance = sale.getInsurance(
+                                                        contract.getInsuranceId());
+
+
+
+
                                                 Customer customer = sale.getCustomer(
                                                         Integer.parseInt(customerId));
 
@@ -2094,20 +2131,8 @@ public class Application {
                                                                                 break;
                                                                             }
                                                                         }
-                                                                        if (indemnification.equals(
-                                                                                "1")
-                                                                                || indemnification.equals(
-                                                                                "2")
-                                                                                || indemnification.equals(
-                                                                                "3")
-                                                                                || indemnification.equals(
-                                                                                "4")
-                                                                                || indemnification.equals(
-                                                                                "5")
-                                                                                || indemnification.equals(
-                                                                                "6")
-                                                                                || indemnification.equals(
-                                                                                "7")) {
+                                                                        if (indemnification.equals("1") || indemnification.equals("2") || indemnification.equals("3")
+                                                                                || indemnification.equals("4") || indemnification.equals("5") || indemnification.equals("6") || indemnification.equals("7")) {
                                                                             if (compensationManagement.judgeCarIndemnification(
                                                                                     Integer.parseInt(
                                                                                             indemnification))) {
@@ -2144,16 +2169,26 @@ public class Application {
                                                                                         }
                                                                                     }
 
-                                                                                    compensationManagement.compensation(
 
-                                                                                        contract.getContractId(),
-                                                                                        Integer.parseInt(
-                                                                                            humanDamage),
-                                                                                        0, 0,
-                                                                                        Integer.parseInt(
-                                                                                            carDamage),
-                                                                                        0, 0, staff);
-                                                                                    break calculateCompensation;
+
+                                                                                    System.out.println("입력하신 정보로 보상금 계산을 하시겠습니까?");
+
+                                                                                    String select3 = sc.nextLine();
+
+                                                                                    if (select3.equals("1")) {
+                                                                                        compensationManagement.compensation(contract.getContractId(), Integer.parseInt(humanDamage),
+                                                                                                0, 0, Integer.parseInt(carDamage), 0, 0, staff);
+                                                                                        break calculateCompensation;
+                                                                                    } else if (select3.equals("2")) {
+                                                                                        System.out.println("보상금 계산을 취소하였습니다.");
+                                                                                        continue compensationManage;
+                                                                                    } else {
+                                                                                        System.out.println("목록에 있는 번호를 입력해 주세요.");
+                                                                                        continue;
+                                                                                    }
+
+
+
                                                                                 }
                                                                                 break;
                                                                             } else {
@@ -2233,15 +2268,28 @@ public class Application {
                                                                                             break;
                                                                                         }
                                                                                     }
+                                                                                    System.out.println("입력하신 정보로 보상금 계산을 하시겠습니까?");
 
-                                                                                    compensationManagement.compensation(
-                                                                                     contract.getContractId(),
-                                                                                        0, 0, 0, 0,
-                                                                                        Integer.parseInt(
-                                                                                            generalDamage),
-                                                                                        Integer.parseInt(
-                                                                                            revenueDamage), staff);
-                                                                                    break calculateCompensation;
+                                                                                    String select3 = sc.nextLine();
+
+                                                                                    if (select3.equals("1")) {
+                                                                                        compensationManagement.compensation(
+                                                                                                contract.getContractId(),
+                                                                                                0, 0, 0, 0,
+                                                                                                Integer.parseInt(
+                                                                                                        generalDamage),
+                                                                                                Integer.parseInt(
+                                                                                                        revenueDamage), staff);
+                                                                                        break calculateCompensation;
+                                                                                    } else if (select3.equals("2")) {
+                                                                                        System.out.println("보상금 계산을 취소하였습니다.");
+                                                                                        continue compensationManage;
+                                                                                    } else {
+                                                                                        System.out.println("목록에 있는 번호를 입력해 주세요.");
+                                                                                        continue;
+                                                                                    }
+
+
                                                                                 }
                                                                                 break;
                                                                             } else {
@@ -2338,17 +2386,25 @@ public class Application {
                                                                                         }
                                                                                     }
 
-                                                                                    compensationManagement.compensation(
+                                                                                    System.out.println("입력하신 정보로 보상금 계산을 하시겠습니까?");
 
-                                                                                        contract.getContractId(),
-                                                                                        Integer.parseInt(
-                                                                                            humanDamage),
-                                                                                        Integer.parseInt(
-                                                                                            buildingDamage),
-                                                                                        Integer.parseInt(
-                                                                                            surroundingDamage),
-                                                                                        0, 0, 0, staff);
-                                                                                    break calculateCompensation;
+                                                                                    String select3 = sc.nextLine();
+
+                                                                                    if (select3.equals("1")) {
+                                                                                        compensationManagement.compensation(
+                                                                                                contract.getContractId(), Integer.parseInt(humanDamage),
+                                                                                                Integer.parseInt(buildingDamage), Integer.parseInt(surroundingDamage),
+                                                                                                0, 0, 0, staff);
+                                                                                        break calculateCompensation;
+                                                                                    } else if (select3.equals("2")) {
+                                                                                        System.out.println("보상금 계산을 취소하였습니다.");
+                                                                                        continue compensationManage;
+                                                                                    } else {
+                                                                                        System.out.println("목록에 있는 번호를 입력해 주세요.");
+                                                                                        continue;
+                                                                                    }
+
+
                                                                                 }
                                                                             } else {
                                                                                 System.out.println(
@@ -2366,10 +2422,12 @@ public class Application {
                                                                             continue judgementIndemnification;
                                                                         }
                                                                 }
+
+                                                                Contract updateContract = compensationManagement.getContract(contract.getContractId());
                                                                 System.out.println(
                                                                         customer.getName()
                                                                                 + "님의 총 보상 금액은 "
-                                                                                + contract.getCompensationAmount()
+                                                                                + updateContract.getCompensationAmount()
                                                                                 + "원 입니다.");
                                                                 continue compensationManage;
                                                             }
@@ -2404,7 +2462,6 @@ public class Application {
                                 staff = null;
                                 continue main;
                             default:
-                                continue;
                         }
 
 
