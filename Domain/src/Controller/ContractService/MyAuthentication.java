@@ -1,4 +1,4 @@
-package Controller.Sale;
+package Controller.ContractService;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

@@ -1,4 +1,4 @@
-package Controller.CompensationMange;
+package Controller.ContractService;
 
 public class Indemnification {
 

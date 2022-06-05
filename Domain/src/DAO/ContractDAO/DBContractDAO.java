@@ -87,7 +87,7 @@ public class DBContractDAO extends DBConnectorDAO implements ContractDAO {
             + ", premium_rate = "
             + contract.getPremiumRate() + ", compensation_amount = " + contract.getCompensationAmount()
             + ", contracted_date = '" + contract.getContractDate() + "', underwrite = " + contract.isUnderWrite()
-            + ", pay = " + contract.isPay() + "where contract_id = " + contract.getContractId();
+            + ", pay = " + contract.isPay() + " where contract_id = " + contract.getContractId();
     if (super.update(query)) {
       this.contractList = getContractList();
       return true;

@@ -7,11 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class StaffDAOImpl extends DBConnectorDAO implements StaffDAO {
+public class DBStaffDAO extends DBConnectorDAO implements StaffDAO {
 
     ArrayList<Staff> staffList;
 
-    public StaffDAOImpl() {
+    public DBStaffDAO() {
         this.staffList = new ArrayList<>();
         super.getConnection();
         this.staffList = this.getStaffList();
