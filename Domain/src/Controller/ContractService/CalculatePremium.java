@@ -1,4 +1,4 @@
-package Controller.Sale;
+package Controller.ContractService;
 
 import Domain.Customer.Customer;
 
