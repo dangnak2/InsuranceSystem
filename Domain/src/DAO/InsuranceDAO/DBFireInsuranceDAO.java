@@ -23,7 +23,7 @@ public class DBFireInsuranceDAO extends DBConnectorDAO implements FireInsuranceD
       while (rs.next()) {
         FireInsurance fireInsurance = new FireInsurance();
 
-        fireInsurance.setFireInsuranceId(rs.getInt("fireInsurance_id"));
+        fireInsurance.setId(rs.getInt("fireInsurance_id"));
         fireInsurance.setHumanDamageBasicMoney(rs.getInt("humanDamageBasicMoney"));
         fireInsurance.setSurroundingDamageBasicMoney(rs.getInt("surroundingDamageBasicMoney"));
         fireInsurance.setBuildingDamageBasicMoney(rs.getInt("buildingDamageBasicMoney"));
@@ -39,7 +39,7 @@ public class DBFireInsuranceDAO extends DBConnectorDAO implements FireInsuranceD
   @Override
   public boolean add(FireInsurance fireInsurance) {
       String query = "INSERT INTO fireInsurance VALUES ("
-              + fireInsurance.getFireInsuranceId() + "," + fireInsurance.getSurroundingDamageBasicMoney()
+              + fireInsurance.getId() + "," + fireInsurance.getSurroundingDamageBasicMoney()
               + "," + fireInsurance.getHumanDamageBasicMoney() + "," + fireInsurance.getBuildingDamageBasicMoney() + ");";
     if (super.create(query)) {
       return true;
@@ -61,10 +61,10 @@ public class DBFireInsuranceDAO extends DBConnectorDAO implements FireInsuranceD
 
   @Override
   public boolean update(FireInsurance fireInsurance) {
-      String query = "UPDATE fireInsurance SET ("
-              + fireInsurance.getFireInsuranceId() + "," + fireInsurance.getSurroundingDamageBasicMoney()
-              + "," + fireInsurance.getHumanDamageBasicMoney() + "," + fireInsurance.getBuildingDamageBasicMoney()
-              + ")" + "WHERE fireInsurance_id = " + fireInsurance.getFireInsuranceId();
+      String query = "UPDATE fireInsurance SET surroundingDamageBasicMoney = "
+              + fireInsurance.getSurroundingDamageBasicMoney()
+              + ", humanDamageBasicMoney = " + fireInsurance.getHumanDamageBasicMoney() + ", buildingDamageBasicMoney = " + fireInsurance.getBuildingDamageBasicMoney()
+              + " WHERE fireInsurance_id = " + fireInsurance.getId();
      if(super.update(query)){
       return true;
     } else {
@@ -75,7 +75,7 @@ public class DBFireInsuranceDAO extends DBConnectorDAO implements FireInsuranceD
   @Override
   public FireInsurance get(int insuranceId) {
     for(FireInsurance fireInsurance : getFireInsuranceList()){
-      if(insuranceId == fireInsurance.getFireInsuranceId()){
+      if(insuranceId == fireInsurance.getId()){
         return fireInsurance;
       }
     }

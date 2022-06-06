@@ -68,16 +68,13 @@ public class InsuranceService {
 
 
         if (insurance instanceof FireInsurance) {
-            ((FireInsurance) insurance).setFireInsuranceId(insurance.getId());
             ((FireInsurance) insurance).setSurroundingDamageBasicMoney(surroundingDamageBasicMoney);
             ((FireInsurance) insurance).setHumanDamageBasicMoney(humanDamageBasicMoney);
             ((FireInsurance) insurance).setBuildingDamageBasicMoney(buildingDamageBasicMoney);
         }else if (insurance instanceof CarInsurance) {
-            ((CarInsurance) insurance).setCarInsuranceId(insurance.getId());
             ((CarInsurance) insurance).setCarDamageBasicMoney(carDamageBasicMoney);
             ((CarInsurance) insurance).setHumanDamageBasicMoney(humanDamageBasicMoney);
         }else if (insurance instanceof SeaInsurance) {
-            ((SeaInsurance) insurance).setSeaInsuranceId(insurance.getId());
             ((SeaInsurance) insurance).setGeneralDamageBasicMoney(generalDamageBasicMoney);
             ((SeaInsurance) insurance).setRevenueDamageBasicMoney(revenueDamageBasicMoney);
         }
