@@ -125,16 +125,22 @@ public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 			if (customer.getCar() != null) {
 				if (carDAO.get(customer.getId()) != null) {
 					carDAO.update(customer.getCar());
+				} else {
+					carDAO.add(customer.getCar());
 				}
 			}
 			if (customer.getHouse() != null) {
 				if (houseDAO.get(customer.getId()) != null) {
 					houseDAO.update(customer.getHouse());
+				} else {
+					houseDAO.add(customer.getHouse());
 				}
 			}
 			if (customer.getShip() != null) {
 				if (shipDAO.get(customer.getId()) != null) {
 					shipDAO.update(customer.getShip());
+				} else {
+					shipDAO.add(customer.getShip());
 				}
 			}
 			return true;
