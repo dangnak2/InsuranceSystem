@@ -22,7 +22,7 @@ public class DBCarInsuranceDAO extends DBConnectorDAO implements CarInsuranceDAO
             while (rs.next()) {
                 CarInsurance carInsurance = new CarInsurance();
 
-                carInsurance.setCarInsuranceId(rs.getInt("carInsurance_id"));
+                carInsurance.setId(rs.getInt("carInsurance_id"));
                 carInsurance.setHumanDamageBasicMoney(rs.getInt("humanDamageBasicMoney"));
                 carInsurance.setCarDamageBasicMoney(rs.getInt("carDamageBasicMoney"));
 
@@ -37,7 +37,7 @@ public class DBCarInsuranceDAO extends DBConnectorDAO implements CarInsuranceDAO
     @Override
     public boolean add(CarInsurance carInsurance) {
         String query = "INSERT INTO carInsurance VALUES ("
-                + carInsurance.getCarInsuranceId() + "," + carInsurance.getHumanDamageBasicMoney()
+                + carInsurance.getId() + "," + carInsurance.getHumanDamageBasicMoney()
                 + "," + carInsurance.getCarDamageBasicMoney() + ");";
         if (super.create(query)) {
             return true;
@@ -59,9 +59,11 @@ public class DBCarInsuranceDAO extends DBConnectorDAO implements CarInsuranceDAO
 
     @Override
     public boolean update(CarInsurance carInsurance) {
-        String query = "UPDATE carInsurance SET ("
-                + carInsurance.getCarInsuranceId() + "," + carInsurance.getHumanDamageBasicMoney()
-                + "," + carInsurance.getCarDamageBasicMoney() + ")" + "WHERE carInsurance_id = " + carInsurance.getCarInsuranceId();
+
+        String query = "UPDATE carInsurance SET humanDamageBasicMoney = "
+                + carInsurance.getHumanDamageBasicMoney()
+                + ", carDamageBasicMoney = " + carInsurance.getCarDamageBasicMoney()
+                + " WHERE carInsurance_id = " + carInsurance.getId();
         if (super.update(query)) {
             return true;
         } else {
@@ -72,7 +74,7 @@ public class DBCarInsuranceDAO extends DBConnectorDAO implements CarInsuranceDAO
     @Override
     public CarInsurance get(int insuranceId) {
         for (CarInsurance carInsurance : getCarInsuranceList()) {
-            if (insuranceId == carInsurance.getCarInsuranceId()) {
+            if (insuranceId == carInsurance.getId()) {
                 return carInsurance;
             }
         }

@@ -22,7 +22,7 @@ public class DBSeaInsuranceDAO extends DBConnectorDAO implements SeaInsuranceDAO
       while (rs.next()) {
         SeaInsurance seaInsurance = new SeaInsurance();
 
-        seaInsurance.setSeaInsuranceId(rs.getInt("seaInsurance_id"));
+        seaInsurance.setId(rs.getInt("seaInsurance_id"));
         seaInsurance.setGeneralDamageBasicMoney(rs.getInt("generalDamageBasicMoney"));
         seaInsurance.setRevenueDamageBasicMoney(rs.getInt("revenueDamageBasicMoney"));
 
@@ -37,7 +37,7 @@ public class DBSeaInsuranceDAO extends DBConnectorDAO implements SeaInsuranceDAO
   @Override
   public boolean add(SeaInsurance seaInsurance) {
       String query = "INSERT INTO seaInsurance VALUES ("
-              + seaInsurance.getSeaInsuranceId() + ","
+              + seaInsurance.getId() + ","
               + seaInsurance.getGeneralDamageBasicMoney() + "," + seaInsurance.getRevenueDamageBasicMoney() + ");";
 
     if (super.create(query)) {
@@ -62,7 +62,7 @@ public class DBSeaInsuranceDAO extends DBConnectorDAO implements SeaInsuranceDAO
   @Override
   public SeaInsurance get(int insuranceId) {
     for(SeaInsurance seaInsurance : getSeaInsuranceList()){
-      if(insuranceId == seaInsurance.getSeaInsuranceId()){
+      if(insuranceId == seaInsurance.getId()){
         return seaInsurance;
       }
     }
@@ -71,9 +71,10 @@ public class DBSeaInsuranceDAO extends DBConnectorDAO implements SeaInsuranceDAO
 
   @Override
   public boolean update(SeaInsurance seaInsurance) {
-      String query = "UPDATE carInsurance SET ("
-              + seaInsurance.getSeaInsuranceId() + "," + seaInsurance.getGeneralDamageBasicMoney()
-              + "," + seaInsurance.getRevenueDamageBasicMoney() + ")" + "WHERE seaInsurance_id = " + seaInsurance.getSeaInsuranceId();
+    String query = "UPDATE seaInsurance SET generalDamageBasicMoney = "
+            + seaInsurance.getGeneralDamageBasicMoney()
+            + ", revenueDamageBasicMoney = " + seaInsurance.getRevenueDamageBasicMoney()
+            + " WHERE seaInsurance_id = " + seaInsurance.getId();
       if(super.update(query)){
       return true;
     } else {
