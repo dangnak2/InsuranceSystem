@@ -14,15 +14,10 @@ import java.util.ArrayList;
 public class InsuranceService {
 
     private InsuranceDAO insuranceDAO;
-    private FireInsuranceDAO fireInsuranceDAO;
-    private CarInsuranceDAO carInsuranceDAO;
-    private SeaInsuranceDAO seaInsuranceDAO;
 
-    public InsuranceService(InsuranceDAO insuranceDAO, FireInsuranceDAO fireInsuranceDAO, CarInsuranceDAO carInsuranceDAO, SeaInsuranceDAO seaInsuranceDAO) {
+    public InsuranceService(InsuranceDAO insuranceDAO) {
         this.insuranceDAO = insuranceDAO;
-        this.fireInsuranceDAO = fireInsuranceDAO;
-        this.carInsuranceDAO = carInsuranceDAO;
-        this.seaInsuranceDAO = seaInsuranceDAO;
+
     }
 
 
@@ -70,28 +65,24 @@ public class InsuranceService {
         insurance.setName(name);
         insurance.setExplanation(explanation);
         insurance.setPremium(premium);
-        insuranceDAO.add(insurance);
+
 
         if (insurance instanceof FireInsurance) {
             ((FireInsurance) insurance).setFireInsuranceId(insurance.getId());
             ((FireInsurance) insurance).setSurroundingDamageBasicMoney(surroundingDamageBasicMoney);
             ((FireInsurance) insurance).setHumanDamageBasicMoney(humanDamageBasicMoney);
             ((FireInsurance) insurance).setBuildingDamageBasicMoney(buildingDamageBasicMoney);
-
-            fireInsuranceDAO.add((FireInsurance) insurance);
         }else if (insurance instanceof CarInsurance) {
             ((CarInsurance) insurance).setCarInsuranceId(insurance.getId());
             ((CarInsurance) insurance).setCarDamageBasicMoney(carDamageBasicMoney);
             ((CarInsurance) insurance).setHumanDamageBasicMoney(humanDamageBasicMoney);
-
-            carInsuranceDAO.add((CarInsurance) insurance);
         }else if (insurance instanceof SeaInsurance) {
             ((SeaInsurance) insurance).setSeaInsuranceId(insurance.getId());
             ((SeaInsurance) insurance).setGeneralDamageBasicMoney(generalDamageBasicMoney);
             ((SeaInsurance) insurance).setRevenueDamageBasicMoney(revenueDamageBasicMoney);
-
-            seaInsuranceDAO.add((SeaInsurance) insurance);
         }
+
+        insuranceDAO.add(insurance);
 
 
         return insurance;

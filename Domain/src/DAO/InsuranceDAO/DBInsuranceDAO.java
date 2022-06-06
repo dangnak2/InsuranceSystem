@@ -83,8 +83,15 @@ public class DBInsuranceDAO extends DBConnectorDAO implements InsuranceDAO {
             + insurance.getId() + "," + insurance.isAuthorization() + "," + null
             + ",'" + insurance.getCreatedDate() + "','" + insurance.getExplanation() + "','" + insurance.getModifiedDate() + "','"
             + insurance.getName() + "'," + insurance.getPremium() + ",'" + insurance.getType() + "'" + ");";
-
     if (super.create(query)) {
+      if (insurance instanceof FireInsurance) {
+        fireInsuranceDAO.add((FireInsurance) insurance);
+      } else if (insurance instanceof CarInsurance) {
+        carInsuranceDAO.add((CarInsurance) insurance);
+      }else if (insurance instanceof SeaInsurance) {
+        seaInsuranceDAO.add((SeaInsurance) insurance);
+      }
+
       return true;
     } else {
       return false;
@@ -112,6 +119,13 @@ public class DBInsuranceDAO extends DBConnectorDAO implements InsuranceDAO {
             + insurance.getName() + "', premium = " + insurance.getPremium() + ", type = '" + insurance.getType()
             + "' where id = " + insurance.getId();
     if (super.update(query)) {
+      if (insurance instanceof FireInsurance) {
+        fireInsuranceDAO.update((FireInsurance) insurance);
+      } else if (insurance instanceof CarInsurance) {
+        carInsuranceDAO.update((CarInsurance) insurance);
+      }else if (insurance instanceof SeaInsurance) {
+        seaInsuranceDAO.update((SeaInsurance) insurance);
+      }
       return true;
     } else {
       return false;

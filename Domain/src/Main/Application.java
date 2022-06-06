@@ -52,8 +52,8 @@ public class Application {
         Date date = new Date();
 
         ContractService contractService = new ContractService(contractDAO, insuranceDAO, customerDAO, calculatePremium);
-        CustomerService customerService = new CustomerService(customerDAO, carDAO, shipDAO, houseDAO, medicalHistoryDAO);
-        InsuranceService insuranceService = new InsuranceService(insuranceDAO, fireInsuranceDAO, carInsuranceDAO, seaInsuranceDAO);
+        CustomerService customerService = new CustomerService(customerDAO);
+        InsuranceService insuranceService = new InsuranceService(insuranceDAO);
         StaffService staffService = new StaffService(staffDAO);
 
         main:

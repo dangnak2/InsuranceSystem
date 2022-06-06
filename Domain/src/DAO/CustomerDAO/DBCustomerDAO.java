@@ -80,6 +80,19 @@ public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 				+ "','" + customer.getAccount() + "','" + customer.getJob() + "','" + customer.getName() + "','"
 				+ customer.getPhoneNumber() + "', " + customer.isSex() + ",'" + customer.getSSN() + "'," + customer.getAge() +",'" + customer.getJoinDate() + "');";
 		if(super.create(query)){
+
+			if (customer.getMedicalHistory() != null) {
+				medicalHistoryDAO.add(customer.getMedicalHistory());
+			}
+			if (customer.getCar() != null) {
+				carDAO.add(customer.getCar());
+			}
+			if (customer.getHouse() != null) {
+				houseDAO.add(customer.getHouse());
+			}
+			if (customer.getShip() != null) {
+				shipDAO.add(customer.getShip());
+			}
 			return true;
 		}
 		return false;
@@ -104,6 +117,26 @@ public class DBCustomerDAO extends DBConnectorDAO implements CustomerDAO {
 				+ "', age = " + customer.getAge() + ", joinDate = '" + customer.getJoinDate()
 				+ "' where customer_id = " + customer.getId();
 		if(super.update(query)){
+			if (customer.getMedicalHistory() != null) {
+				if (medicalHistoryDAO.get(customer.getId()) != null) {
+					medicalHistoryDAO.update(customer.getMedicalHistory());
+				}
+			}
+			if (customer.getCar() != null) {
+				if (carDAO.get(customer.getId()) != null) {
+					carDAO.update(customer.getCar());
+				}
+			}
+			if (customer.getHouse() != null) {
+				if (houseDAO.get(customer.getId()) != null) {
+					houseDAO.update(customer.getHouse());
+				}
+			}
+			if (customer.getShip() != null) {
+				if (shipDAO.get(customer.getId()) != null) {
+					shipDAO.update(customer.getShip());
+				}
+			}
 			return true;
 		}
 		return false;
