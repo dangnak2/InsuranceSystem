@@ -12,17 +12,10 @@ import java.util.Date;
 public class CustomerService {
 
     private CustomerDAO customerDAO;
-    private CarDAO carDAO;
-    private ShipDAO shipDAO;
-    private HouseDAO houseDAO;
-    private MedicalHistoryDAO medicalHistoryDAO;
 
-    public CustomerService(CustomerDAO customerDAO, CarDAO carDAO, ShipDAO shipDAO, HouseDAO houseDAO, MedicalHistoryDAO medicalHistoryDAO) {
+
+    public CustomerService(CustomerDAO customerDAO) {
         this.customerDAO = customerDAO;
-        this.carDAO = carDAO;
-        this.shipDAO = shipDAO;
-        this.houseDAO = houseDAO;
-        this.medicalHistoryDAO = medicalHistoryDAO;
     }
 
 
@@ -112,7 +105,6 @@ public class CustomerService {
         customer.setMedicalHistory(medicalHistory);
 
         this.customerDAO.add(customer);
-        this.medicalHistoryDAO.add(medicalHistory);
 
         return customer;
     }
@@ -137,7 +129,7 @@ public class CustomerService {
         car.setPrice(price);
 
         customer.setCar(car);
-        this.carDAO.add(car);
+        this.customerDAO.update(customer);
     }
 
     public void setCustomerHouse(Customer customer, int houseType, int housePrice) {
@@ -148,7 +140,7 @@ public class CustomerService {
 
         customer.setHouse(house);
 
-        this.houseDAO.add(house);
+        this.customerDAO.update(customer);
     }
 
     public void setCustomerSea(Customer customer, int shipNum, int year, int price, int shipType) {
@@ -160,7 +152,7 @@ public class CustomerService {
         ship.setShipType(Ship.ShipType.values()[shipType - 1]);
 
         customer.setShip(ship);
-        this.shipDAO.add(ship);
+        this.customerDAO.update(customer);
     }
 
 
