@@ -2266,6 +2266,8 @@ public class Application {
                                                                                         }
                                                                                     }
                                                                                     System.out.println("입력하신 정보로 보상금 계산을 하시겠습니까?");
+                                                                                    System.out.println("1. 예");
+                                                                                    System.out.println("2. 아니요");
 
                                                                                     String select3 = sc.nextLine();
 
@@ -2385,6 +2387,8 @@ public class Application {
                                                                                     }
 
                                                                                     System.out.println("입력하신 정보로 보상금 계산을 하시겠습니까?");
+                                                                                    System.out.println("1. 예");
+                                                                                    System.out.println("2. 아니요");
 
                                                                                     String select3 = sc.nextLine();
 
